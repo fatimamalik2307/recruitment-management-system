@@ -1,0 +1,52 @@
+.root {
+    -fx-background-color: #f5f7fa;
+    -fx-font-family: "Segoe UI", sans-serif;
+}
+
+/* Card Layout */
+.card {
+    -fx-background-color: white;
+    -fx-padding: 20px;
+    -fx-background-radius: 12px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.18), 10, 0, 0, 4);
+}
+
+/* Text fields */
+.text-field, .password-field {
+    -fx-background-radius: 8px;
+    -fx-padding: 10px;
+    -fx-border-color: #d9d9d9;
+    -fx-border-radius: 8px;
+}
+
+/* Buttons */
+.button {
+    -fx-background-color: #3b82f6;
+    -fx-text-fill: white;
+    -fx-padding: 10px 20px;
+    -fx-background-radius: 8px;
+    -fx-font-size: 14px;
+}
+
+.button:hover {
+    -fx-background-color: #2563eb;
+}
+
+.button:pressed {
+    -fx-background-color: #1d4ed8;
+}
+
+/* Labels */
+.label-title {
+    -fx-font-size: 24px;
+    -fx-text-fill: #374151;
+    -fx-font-weight: bold;
+}
+
+.label-error {
+    -fx-text-fill: red;
+}
+
+.label-success {
+    -fx-text-fill: #16a34a;
+}

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.recruitment.app.controllers.WelcomeController">
+
+    <Button text="Login" fx:id="loginBtn" layoutX="150" layoutY="100" onAction="#openLogin"/>
+    <Button text="Register" fx:id="registerBtn" layoutX="150" layoutY="160" onAction="#openRegister"/>
+
+</AnchorPane>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.recruitment.app.controllers.RegisterController"
+      spacing="12" alignment="CENTER">
+    <padding>
+        <Insets top="10" right="10" bottom="10" left="10"/>
+    </padding>
+
+    <TextField fx:id="fullNameField" promptText="Full Name" />
+    <TextField fx:id="emailField" promptText="Email" />
+    <TextField fx:id="usernameField" promptText="Username" />
+    <PasswordField fx:id="passwordField" promptText="Password" />
+    <PasswordField fx:id="confirmPasswordField" promptText="Confirm Password" />
+    <TextField fx:id="contactField" promptText="Contact Number" />
+
+    <Button text="Register" onAction="#registerUser"/>
+    <Label fx:id="messageLabel"/>
+
+    <Hyperlink text="Back to Login" onAction="#openLogin" />
+
+</VBox>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<AnchorPane prefWidth="400" prefHeight="450" stylesheets="@style.css"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.recruitment.app.controllers.LoginController">
+
+    <VBox spacing="15" alignment="CENTER" layoutX="50" layoutY="40" styleClass="card">
+
+        <Label text="Login" styleClass="label-title" />
+
+        <TextField fx:id="usernameField" promptText="Username" />
+        <PasswordField fx:id="passwordField" promptText="Password" />
+
+        <Button text="Login" onAction="#loginUser" />
+        <Label fx:id="messageLabel" styleClass="label-error" />
+
+        <Hyperlink text="Create an account" onAction="#openRegister" />
+
+    </VBox>
+</AnchorPane>

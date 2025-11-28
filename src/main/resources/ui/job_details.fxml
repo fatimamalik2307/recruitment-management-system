@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.recruitment.app.controllers.JobDetailsController"
+      spacing="10">
+
+    <padding>
+        <Insets top="10" right="10" bottom="10" left="10"/>
+    </padding>
+
+    <Label text="Job Details" style="-fx-font-size: 22px; -fx-font-weight: bold;" />
+
+    <Label fx:id="titleLabel"/>
+    <Label fx:id="deptLabel"/>
+    <Label fx:id="descLabel" wrapText="true"/>
+    <Label fx:id="reqLabel" wrapText="true"/>
+    <Label fx:id="deadlineLabel"/>
+
+    <Button text="Back" onAction="#goBack"/>
+
+</VBox>

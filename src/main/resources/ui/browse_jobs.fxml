@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.recruitment.app.controllers.BrowseJobsController">
+
+    <!-- Top Bar -->
+    <top>
+        <VBox spacing="10">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+
+            <Button text="Logout" onAction="#logout"/>
+            <Button text="Update Profile" onAction="#openProfile"/>
+            <Label text="Browse Jobs" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+        </VBox>
+    </top>
+
+    <!-- Jobs Table -->
+    <center>
+        <TableView fx:id="jobsTable" prefHeight="400">
+
+            <columns>
+                <TableColumn fx:id="titleCol" text="Job Title" prefWidth="150"/>
+                <TableColumn fx:id="deptCol" text="Department" prefWidth="120"/>
+                <TableColumn fx:id="reqCol" text="Required Qualification" prefWidth="180"/>
+                <TableColumn fx:id="deadlineCol" text="Deadline" prefWidth="120"/>
+                <TableColumn fx:id="actionCol" text="Action" prefWidth="100"/>
+            </columns>
+
+        </TableView>
+    </center>
+
+</BorderPane>
