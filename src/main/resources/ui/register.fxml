@@ -1,26 +1,66 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Button?>
+<GridPane xmlns="http://javafx.com/javafx"
+          xmlns:fx="http://javafx.com/fxml"
+          fx:controller="com.recruitment.app.controllers.RegisterController"
+          alignment="CENTER" hgap="10" vgap="12"
+          style="-fx-padding: 30;">
 
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.geometry.Insets?>
+    <!-- TITLE -->
+    <Label text="User Registration"
+           style="-fx-font-size: 22px; -fx-font-weight: bold;"
+           GridPane.columnIndex="0" GridPane.rowIndex="0"
+           GridPane.columnSpan="2" />
 
-<VBox xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.recruitment.app.controllers.RegisterController"
-      spacing="12" alignment="CENTER">
-    <padding>
-        <Insets top="10" right="10" bottom="10" left="10"/>
-    </padding>
+    <!-- Full Name -->
+    <Label text="Full Name:" GridPane.rowIndex="1"/>
+    <TextField fx:id="fullNameField" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
 
-    <TextField fx:id="fullNameField" promptText="Full Name" />
-    <TextField fx:id="emailField" promptText="Email" />
-    <TextField fx:id="usernameField" promptText="Username" />
-    <PasswordField fx:id="passwordField" promptText="Password" />
-    <PasswordField fx:id="confirmPasswordField" promptText="Confirm Password" />
-    <TextField fx:id="contactField" promptText="Contact Number" />
+    <!-- Email -->
+    <Label text="Email:" GridPane.rowIndex="2"/>
+    <TextField fx:id="emailField" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
 
-    <Button text="Register" onAction="#registerUser"/>
-    <Label fx:id="messageLabel"/>
+    <!-- Username -->
+    <Label text="Username:" GridPane.rowIndex="3"/>
+    <TextField fx:id="usernameField" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
 
-    <Hyperlink text="Back to Login" onAction="#openLogin" />
+    <!-- Password -->
+    <Label text="Password:" GridPane.rowIndex="4"/>
+    <PasswordField fx:id="passwordField" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
 
-</VBox>
+    <!-- Confirm Password -->
+    <Label text="Confirm Password:" GridPane.rowIndex="5"/>
+    <PasswordField fx:id="confirmPasswordField" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+
+    <!-- Contact -->
+    <Label text="Contact:" GridPane.rowIndex="6"/>
+    <TextField fx:id="contactField" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
+
+    <!-- Role Dropdown -->
+    <Label text="Role:" GridPane.rowIndex="7"/>
+    <ComboBox fx:id="roleCombo" prefWidth="200"
+              GridPane.columnIndex="1" GridPane.rowIndex="7" />
+
+    <!-- Company Name (hidden unless Recruiter/Manager) -->
+    <Label text="Company:" GridPane.rowIndex="8"/>
+    <TextField fx:id="companyField"
+               GridPane.columnIndex="1" GridPane.rowIndex="8"/>
+
+    <!-- Info / Error Messages -->
+    <Label fx:id="messageLabel" textFill="red"
+           GridPane.columnIndex="0" GridPane.rowIndex="9"
+           GridPane.columnSpan="2" />
+
+    <!-- Buttons -->
+    <HBox spacing="10" GridPane.columnIndex="0" GridPane.rowIndex="10"
+          GridPane.columnSpan="2" alignment="CENTER">
+        <Button text="Register" onAction="#registerUser" />
+        <Button text="Go to Login" onAction="#goToLogin" />
+    </HBox>
+
+</GridPane>

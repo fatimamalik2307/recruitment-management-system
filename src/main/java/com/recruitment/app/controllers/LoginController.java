@@ -2,6 +2,7 @@ package com.recruitment.app.controllers;
 
 import com.recruitment.app.models.User;
 import com.recruitment.app.services.UserService;
+import com.recruitment.app.services.UserServiceImpl;
 import com.recruitment.app.utils.SceneLoader;
 import com.recruitment.app.utils.SessionManager;
 import javafx.event.ActionEvent;
@@ -16,23 +17,31 @@ public class LoginController {
     @FXML private PasswordField passwordField;
     @FXML private Label messageLabel;
 
-    private final UserService userService = new UserService();
+    private final UserService userService = new UserService(); // inject service
 
     @FXML
     public void loginUser(ActionEvent event) {
         String username = usernameField.getText();
         String password = passwordField.getText();
 
-        // FIX: remove local var, assign directly
         User user = userService.login(username, password);
 
         if (user != null) {
-
-            // Store user in global session
+            // store in session
             SessionManager.loggedInUser = user;
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            SceneLoader.load(stage, "/ui/browse_jobs.fxml");
+
+            // Check role and load correct dashboard
+            try {
+                if ("Recruiter".equalsIgnoreCase(user.getRole())) {
+                    SceneLoader.load(stage, "/ui/RecruiterDashboard.fxml");
+                } else {
+                    SceneLoader.load(stage, "/ui/browse_jobs.fxml"); // applicant dashboard
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
         } else {
             messageLabel.setText("Invalid username or password!");

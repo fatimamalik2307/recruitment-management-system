@@ -10,7 +10,7 @@ import javafx.event.ActionEvent;
 
 public class JobDetailsController {
 
-    public static JobPosting selectedJob;
+    private JobPosting job; // non-static field
 
     @FXML private Label titleLabel;
     @FXML private Label deptLabel;
@@ -18,14 +18,19 @@ public class JobDetailsController {
     @FXML private Label reqLabel;
     @FXML private Label deadlineLabel;
 
-    @FXML
-    public void initialize() {
-        if (selectedJob != null) {
-            titleLabel.setText("Title: " + selectedJob.getJobTitle());
-            deptLabel.setText("Department: " + selectedJob.getDepartment());
-            descLabel.setText("Description: " + selectedJob.getDescription());
-            reqLabel.setText("Required: " + selectedJob.getRequiredQualification());
-            deadlineLabel.setText("Deadline: " + selectedJob.getDeadline());
+    // Setter to pass the job from previous controller
+    public void setJob(JobPosting job) {
+        this.job = job;
+        populateFields();
+    }
+
+    private void populateFields() {
+        if (job != null) {
+            titleLabel.setText("Title: " + job.getTitle());
+            deptLabel.setText("Department: " + job.getDepartment());
+            descLabel.setText("Description: " + job.getDescription());
+            reqLabel.setText("Required: " + job.getRequiredQualification());
+            deadlineLabel.setText("Deadline: " + (job.getDeadline() != null ? job.getDeadline().toString() : "N/A"));
         }
     }
 

@@ -1,40 +1,19 @@
 package com.recruitment.app.dao;
 
 import com.recruitment.app.models.JobPosting;
-import com.recruitment.app.utils.DBConnection;
-
-import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 
-public class JobDAO {
+/**
+ * Interface for Job Data Access
+ * Follows DIP: Controller depends on this abstraction, not implementation.
+ */
+public interface JobDAO {
+    void addJob(JobPosting job);
 
-    public List<JobPosting> getAllJobs() {
-        List<JobPosting> jobs = new ArrayList<>();
+    List<JobPosting> getAllJobs();
 
-        String query = "SELECT id, job_title, department, description, required_qualification, deadline FROM jobs";
-
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query);
-             ResultSet rs = stmt.executeQuery()) {
-
-            while (rs.next()) {
-                JobPosting job = new JobPosting(
-                        rs.getInt("id"),
-                        rs.getString("job_title"),
-                        rs.getString("department"),
-                        rs.getString("description"),
-                        rs.getString("required_qualification"),
-                        rs.getString("deadline")
-                );
-
-                jobs.add(job);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return jobs;
-    }
+    List<JobPosting> getJobsByRecruiter(int recruiterId);
+    JobPosting getJobById(int jobId);
+    void updateJob(JobPosting job);
+    void deleteJob(int jobId);
 }

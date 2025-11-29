@@ -3,10 +3,15 @@ package com.recruitment.app.controllers;
 import com.recruitment.app.dao.JobDAOImpl;
 import com.recruitment.app.models.JobPosting;
 import com.recruitment.app.utils.SceneLoader;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import javafx.scene.Node;
+
+import java.io.IOException;
 
 public class BrowseJobsController {
 
@@ -20,13 +25,18 @@ public class BrowseJobsController {
 
     @FXML
     public void initialize() {
+        // Map table columns
+        titleCol.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getTitle()));
+        deptCol.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getDepartment()));
+        deadlineCol.setCellValueFactory(data -> {
+            if (data.getValue().getDeadline() != null) {
+                return new SimpleStringProperty(data.getValue().getDeadline().toString());
+            } else {
+                return new SimpleStringProperty("");
+            }
+        });
 
-        // Mapping table columns
-        titleCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getJobTitle()));
-        deptCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getDepartment()));
-        deadlineCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getDeadline()));
-
-        // Add action button
+        // Action button
         actionCol.setCellFactory(col -> new TableCell<>() {
             private final Button btn = new Button("View");
 
@@ -40,8 +50,7 @@ public class BrowseJobsController {
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
-                if (empty) setGraphic(null);
-                else setGraphic(btn);
+                setGraphic(empty ? null : btn);
             }
         });
 
@@ -50,10 +59,20 @@ public class BrowseJobsController {
     }
 
     private void openJobDetails(JobPosting job, javafx.event.ActionEvent event) {
-        JobDetailsController.selectedJob = job;
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        SceneLoader.load(stage, "/ui/job_details.fxml");
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/job_details.fxml"));
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(loader.load()));
+
+            JobDetailsController controller = loader.getController();
+            controller.setJob(job); // pass the job object
+
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
+
 
     @FXML
     public void logout(javafx.event.ActionEvent event) {
