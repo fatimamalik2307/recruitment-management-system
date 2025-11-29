@@ -1,5 +1,6 @@
 package com.recruitment.app.controllers;
 
+import com.recruitment.app.config.DBConnection;
 import com.recruitment.app.dao.JobDAOImpl;
 import com.recruitment.app.models.JobPosting;
 import com.recruitment.app.utils.SceneLoader;
@@ -12,6 +13,7 @@ import javafx.stage.Stage;
 import javafx.scene.Node;
 
 import java.io.IOException;
+import java.sql.Connection;
 
 public class BrowseJobsController {
 
@@ -21,7 +23,7 @@ public class BrowseJobsController {
     @FXML private TableColumn<JobPosting, String> deadlineCol;
     @FXML private TableColumn<JobPosting, Void> actionCol;
 
-    private JobDAOImpl jobDAO = new JobDAOImpl();
+    private JobDAOImpl jobDAO = new JobDAOImpl(DBConnection.getConnection());
 
     @FXML
     public void initialize() {

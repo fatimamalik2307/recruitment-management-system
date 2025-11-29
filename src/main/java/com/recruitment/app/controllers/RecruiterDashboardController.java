@@ -17,7 +17,7 @@ import java.io.IOException;
 public class RecruiterDashboardController {
 
     // Use your DBConnection
-    JobDAO jobDAO = new JobDAOImpl();
+    JobDAO jobDAO = new JobDAOImpl(DBConnection.getConnection());
     private final JobService jobService = new JobServiceImpl(jobDAO);
 
     @FXML

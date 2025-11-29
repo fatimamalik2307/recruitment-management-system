@@ -17,7 +17,7 @@ public class LoginController {
     @FXML private PasswordField passwordField;
     @FXML private Label messageLabel;
 
-    private final UserService userService = new UserService(); // inject service
+    private final UserService userService = new UserService(); // FIXED
 
     @FXML
     public void loginUser(ActionEvent event) {
@@ -26,25 +26,40 @@ public class LoginController {
 
         User user = userService.login(username, password);
 
-        if (user != null) {
-            // store in session
-            SessionManager.loggedInUser = user;
+        if (user == null) {
+            messageLabel.setText("Invalid username or password!");
+            return;
+        }
 
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        // store in session
+        SessionManager.loggedInUser = user;
 
-            // Check role and load correct dashboard
-            try {
-                if ("Recruiter".equalsIgnoreCase(user.getRole())) {
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+
+        try {
+            String role = user.getRole().toLowerCase().trim();
+
+            switch (role) {
+
+                case "recruiter":
                     SceneLoader.load(stage, "/ui/RecruiterDashboard.fxml");
-                } else {
-                    SceneLoader.load(stage, "/ui/browse_jobs.fxml"); // applicant dashboard
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+                    break;
+
+                case "hiring manager":
+                case "hiring_manager":
+                case "hiringmanager":
+                    SceneLoader.load(stage, "/ui/HiringManagerDashboard.fxml");
+                    break;
+
+                case "applicant":
+                default:
+                    SceneLoader.load(stage, "/ui/browse_jobs.fxml");
+                    break;
             }
 
-        } else {
-            messageLabel.setText("Invalid username or password!");
+        } catch (Exception e) {
+            e.printStackTrace();
+            messageLabel.setText("Failed to load dashboard!");
         }
     }
 
