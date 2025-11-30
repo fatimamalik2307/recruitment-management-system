@@ -17,6 +17,8 @@
     <Button text="Create Job Posting" onAction="#openCreateJob"/>
     <Button text="Review Applications" onAction="#openReviewApplications"/>
     <Button text="Define Shortlisting Criteria" onAction="#openShortlistingCriteria"/>
+    <Button text="Review Shortlist" onAction="#openReviewShortlist"/>
+    <Button text="Generate Final Ranking" onAction="#openFinalRanking"/>
     <Button text="Update Profile" onAction="#openProfile"/>
     <Button text="Logout" onAction="#logout"/>
 

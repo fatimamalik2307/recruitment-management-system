@@ -45,4 +45,14 @@ public class RecruiterServiceImpl implements RecruiterService {
     public String getApplicantName(int userId) {
         return applicationDAO.getApplicantFullName(userId);
     }
+    @Override
+    public Application getApplicationById(int applicationId) {
+        return applicationDAO.getById(applicationId); // make sure this DAO method exists
+    }
+
+
+    @Override
+    public String getApplicantPhone(int userId) {
+        return applicationDAO.getApplicantPhone(userId);
+    }
 }

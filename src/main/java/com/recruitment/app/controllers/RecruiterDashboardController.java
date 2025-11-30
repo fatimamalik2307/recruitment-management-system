@@ -1,24 +1,36 @@
 package com.recruitment.app.controllers;
 
-import com.recruitment.app.dao.JobDAO;
-import com.recruitment.app.dao.JobDAOImpl;
-import com.recruitment.app.services.JobService;
-import com.recruitment.app.services.JobServiceImpl;
 import com.recruitment.app.config.DBConnection;
+import com.recruitment.app.dao.*;
+import com.recruitment.app.services.*;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
-import javafx.event.ActionEvent;
+
 import java.io.IOException;
 
 public class RecruiterDashboardController {
 
-    // Use your DBConnection
-    JobDAO jobDAO = new JobDAOImpl(DBConnection.getConnection());
+    // DAOs
+    private final JobDAO jobDAO = new JobDAOImpl(DBConnection.getConnection());
+    private final ApplicationDAO applicationDAO = new ApplicationDAOImpl(DBConnection.getConnection());
+    private final ShortlistingCriteriaDAO criteriaDAO = new ShortlistingCriteriaDAOImpl(DBConnection.getConnection());
+    private final ShortlistDAO shortlistDAO = new ShortlistDAOImpl(DBConnection.getConnection());
+    private final AssessmentResultDAO assessmentResultDAO = new AssessmentResultDAOImpl(DBConnection.getConnection());
+    private final FinalRankedCandidateDAO candidateDAO = new FinalRankedCandidateDAOImpl(DBConnection.getConnection());
+    private final UserDAO userDAO = new UserDAOImpl();
+    private final FinalRankingCriteriaDAO criteriaDAO2 = new FinalRankingCriteriaDAOImpl(DBConnection.getConnection());
+    // Services
     private final JobService jobService = new JobServiceImpl(jobDAO);
+    private final ShortlistingCriteriaService criteriaService = new ShortlistingCriteriaServiceImpl(criteriaDAO);
+    private final ShortlistService shortlistService = new ShortlistServiceImpl(shortlistDAO, criteriaDAO, applicationDAO);
+    private final RecruiterService recruiterService = new RecruiterServiceImpl(jobDAO, applicationDAO, criteriaDAO);
+    private final AssessmentService assessmentService =
+            new AssessmentServiceImpl(new AssessmentResultDAOImpl(DBConnection.getConnection()));
 
     @FXML
     private void openCreateJob(ActionEvent event) {
@@ -28,11 +40,10 @@ public class RecruiterDashboardController {
             stage.setScene(new Scene(loader.load()));
             stage.setTitle("Create Job Posting");
 
-            // Inject JobService into the controller
             CreateJobPostingController controller = loader.getController();
             controller.setJobService(jobService);
 
-            stage.showAndWait(); // Wait until user closes the create job window
+            stage.showAndWait();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -52,6 +63,24 @@ public class RecruiterDashboardController {
     }
 
     @FXML
+    private void openReviewShortlist(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/ReviewShortlist.fxml"));
+            Stage stage = new Stage();
+            stage.setScene(new Scene(loader.load()));
+            stage.setTitle("Review Shortlist");
+
+            ReviewShortlistController controller = loader.getController();
+            // PASS the initialized services
+            controller.setServices(shortlistService, criteriaService, recruiterService, assessmentService);
+
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
     private void openShortlistingCriteria(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/ShortlistingCriteria.fxml"));
@@ -63,6 +92,40 @@ public class RecruiterDashboardController {
             e.printStackTrace();
         }
     }
+
+    @FXML
+    private void openFinalRanking(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/FinalRanking.fxml"));
+            Stage stage = new Stage();
+            stage.setScene(new Scene(loader.load()));
+            stage.setTitle("Final Ranking");
+
+            FinalRankingController controller = loader.getController();
+
+            // Create services
+            FinalRankingServiceImpl finalRankingService = new FinalRankingServiceImpl(
+                    candidateDAO,
+                    criteriaDAO2,
+                    assessmentResultDAO,
+                    jobDAO,
+                    shortlistDAO,
+                    userDAO
+            );
+
+            HMService hmService = new HMServiceImpl(candidateDAO, applicationDAO, jobDAO);
+
+            // Inject both services
+            controller.setFinalRankingService(finalRankingService);
+            controller.setHMService(hmService); // Add this line
+
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "Failed to open Final Ranking window.").show();
+        }
+    }
+
 
     @FXML
     private void openProfile(ActionEvent event) {

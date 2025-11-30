@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.recruitment.app.controllers.AssessmentFormController"
+      spacing="10"
+      alignment="CENTER_LEFT">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <Label text="Fill Assessment" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+
+    <GridPane hgap="10" vgap="10">
+        <Label text="Technical Score:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <TextField fx:id="technicalScoreField" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+        <Label text="HR Score:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <TextField fx:id="hrScoreField" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+        <Label text="Remarks:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <TextArea fx:id="remarksArea" GridPane.rowIndex="2" GridPane.columnIndex="1" prefRowCount="4"/>
+    </GridPane>
+
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button fx:id="submitBtn" text="Submit"/>
+        <Button fx:id="cancelBtn" text="Cancel"/>
+    </HBox>
+
+</VBox>

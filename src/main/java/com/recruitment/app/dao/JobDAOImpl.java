@@ -17,30 +17,28 @@ public class JobDAOImpl implements JobDAO {
 
     @Override
     public void addJob(JobPosting job) {
-        // set recruiterId from logged-in user
-        job.setRecruiterId(SessionManager.loggedInUser.getId());
-
-        String sql = "INSERT INTO jobs (job_title, department, description, recruiter_id) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO jobs (job_title, department, description, recruiter_id, hiring_manager_id) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, job.getJobTitle());
             ps.setString(2, job.getDepartment());
             ps.setString(3, job.getDescription());
-            ps.setInt(4, job.getRecruiterId()); // just get it, don't call set here
+            ps.setInt(4, job.getRecruiterId());
+            ps.setInt(5, job.getHiringManagerId()); // Add this
             ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-
     @Override
     public void updateJob(JobPosting job) {
-        String sql = "UPDATE jobs SET job_title=?, department=?, description=? WHERE id=?";
+        String sql = "UPDATE jobs SET job_title=?, department=?, description=?, hiring_manager_id=? WHERE id=?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, job.getJobTitle());
             ps.setString(2, job.getDepartment());
             ps.setString(3, job.getDescription());
-            ps.setInt(4, job.getId());
+            ps.setInt(4, job.getHiringManagerId()); // Add this
+            ps.setInt(5, job.getId());
             ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -143,6 +141,12 @@ public class JobDAOImpl implements JobDAO {
         job.setDepartment(rs.getString("department"));
         job.setDescription(rs.getString("description"));
         job.setRecruiterId(rs.getInt("recruiter_id"));
+
+        // Add hiring manager ID if column exists
+        if (columnExists(rs, "hiring_manager_id")) {
+            job.setHiringManagerId(rs.getInt("hiring_manager_id"));
+        }
+
         // Optional: set status if available in DB
         if (columnExists(rs, "status")) {
             job.setStatus(rs.getString("status"));
@@ -158,4 +162,36 @@ public class JobDAOImpl implements JobDAO {
             return false;
         }
     }
+    @Override
+    public List<JobPosting> getJobsForHMByCompany(int hmId) {
+        List<JobPosting> jobs = new ArrayList<>();
+        String sql = """
+        SELECT j.id, j.job_title, j.department, j.status
+        FROM jobs j
+        JOIN users r ON j.recruiter_id = r.id
+        JOIN users hm ON hm.id = ?
+        WHERE r.company_id = hm.company_id AND r.role = 'Recruiter'
+    """;
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, hmId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                JobPosting job = new JobPosting();
+                job.setId(rs.getInt("id"));
+                job.setJobTitle(rs.getString("job_title"));
+                job.setDepartment(rs.getString("department"));
+                job.setStatus(rs.getString("status"));
+                jobs.add(job);
+            }
+        } catch (SQLException e) { e.printStackTrace(); }
+        return jobs;
+    }
+
+
+    // In your JobDAOImpl class, replace the Long methods with int methods:
+
+
+
+// Remove the findById(Long jobId) method since you already have getJobById(int jobId)
 }

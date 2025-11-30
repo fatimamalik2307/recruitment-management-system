@@ -109,4 +109,7 @@ public class UserService {
         public boolean isSuccess() { return success; }
         public String getMessage() { return message; }
     }
+    public User getUserById(int userId) {
+        return userDAO.getById(userId);  // delegate to DAO
+    }
 }

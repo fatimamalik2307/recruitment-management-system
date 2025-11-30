@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.recruitment.app.controllers.FinalRankingController"
+      spacing="15" alignment="TOP_CENTER">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <Label text="Final Ranking" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Select Job:"/>
+        <ComboBox fx:id="jobComboBox" prefWidth="250"/>
+    </HBox>
+
+    <HBox spacing="10">
+        <Button text="Generate Final Ranking" onAction="#generateFinalRanking"/>
+        <Button fx:id="sendToHMButton" text="📤 Send to Hiring Manager" onAction="#sendToHiringManager"
+                disable="true" style="-fx-background-color: #3498db; -fx-text-fill: white;"/>
+    </HBox>
+
+    <TableView fx:id="finalRankingTable" prefHeight="400" prefWidth="600">
+        <columns>
+            <TableColumn fx:id="colRank" text="Rank" prefWidth="80"/>
+            <TableColumn fx:id="colApplicantName" text="Applicant Name" prefWidth="250"/>
+            <TableColumn fx:id="colScore" text="Composite Score" prefWidth="120"/>
+            <TableColumn fx:id="colStatus" text="Status" prefWidth="120"/>
+        </columns>
+    </TableView>
+
+</VBox>

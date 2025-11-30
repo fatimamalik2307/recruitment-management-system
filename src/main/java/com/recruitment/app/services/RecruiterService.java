@@ -11,4 +11,8 @@ public interface RecruiterService {
     ShortlistingCriteria getShortlistingCriteria(int jobId);
     List<JobPosting> getJobsByRecruiter(int recruiterId);
     String getApplicantName(int userId);
+
+    Application getApplicationById(int applicationId);
+
+    String getApplicantPhone(int userId);
 }

@@ -1,0 +1,65 @@
+package com.recruitment.app.controllers;
+
+import com.recruitment.app.models.AssessmentResult;
+import com.recruitment.app.services.RecruiterService;
+import com.recruitment.app.services.AssessmentService;
+import com.recruitment.app.utils.SessionManager;
+import javafx.fxml.FXML;
+import javafx.scene.control.*;
+import javafx.stage.Stage;
+
+public class AssessmentFormController {
+
+    @FXML private TextField technicalScoreField;
+    @FXML private TextField hrScoreField;
+    @FXML private TextArea remarksArea;
+    @FXML private Button submitBtn;
+    @FXML private Button cancelBtn;
+
+    private int shortlistId;
+    private int applicationId;
+    private RecruiterService recruiterService;
+    private AssessmentService assessmentService;
+
+    public void setData(int shortlistId, int applicationId, RecruiterService recruiterService, AssessmentService assessmentService) {
+        this.shortlistId = shortlistId;
+        this.applicationId = applicationId;
+        this.recruiterService = recruiterService;
+        this.assessmentService = assessmentService;
+    }
+
+    @FXML
+    private void initialize() {
+        submitBtn.setOnAction(e -> saveAssessment());
+        cancelBtn.setOnAction(e -> closeWindow());
+    }
+
+    private void saveAssessment() {
+        try {
+            double technical = Double.parseDouble(technicalScoreField.getText());
+            double hr = Double.parseDouble(hrScoreField.getText());
+            String remarks = remarksArea.getText();
+
+            int recruiterId = SessionManager.loggedInUser.getId();
+
+            AssessmentResult result = new AssessmentResult(shortlistId, recruiterId, technical, hr, remarks);
+            assessmentService.recordAssessment(result);
+
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Assessment saved successfully!");
+            alert.showAndWait();
+
+            closeWindow();
+
+        } catch (NumberFormatException ex) {
+            new Alert(Alert.AlertType.ERROR, "Please enter valid numeric scores!").show();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "Error saving assessment!").show();
+        }
+    }
+
+    private void closeWindow() {
+        Stage stage = (Stage) submitBtn.getScene().getWindow();
+        stage.close();
+    }
+}

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.recruitment.app.controllers.ReviewShortlistController"
+      spacing="10" alignment="CENTER">
+
+    <padding>
+        <Insets top="10" right="10" bottom="10" left="10"/>
+    </padding>
+
+    <Label text="Review Shortlist" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+
+    <ComboBox fx:id="jobComboBox" promptText="Select Job"/>
+    <TextArea fx:id="criteriaDetails" editable="false" prefRowCount="5" prefWidth="400"/>
+    <Button fx:id="generateBtn" text="Generate Shortlist" onAction="#generateShortlist"/>
+
+    <TableView fx:id="shortlistTable">
+        <columns>
+            <TableColumn text="ID" prefWidth="50" fx:id="colId"/>
+            <TableColumn text="Application ID" prefWidth="100" fx:id="colAppId"/> <!-- Added -->
+            <TableColumn text="Applicant Name" prefWidth="150" fx:id="colApplicantName"/>
+            <TableColumn text="Phone" prefWidth="120" fx:id="colPhone"/>
+            <TableColumn text="Shortlisted At" prefWidth="150" fx:id="colShortlistedAt"/>
+            <TableColumn text="Actions" prefWidth="250" fx:id="colActions"/>
+        </columns>
+    </TableView>
+
+
+</VBox>

@@ -19,6 +19,11 @@ public class JobPosting {
     private String status; // Active / Closed
     private int createdBy; // Recruiter ID
     private int recruiterId;
+    private int hiringManagerId; // Add this
+
+    // Getters and setters
+    public int getHiringManagerId() { return hiringManagerId; }
+    public void setHiringManagerId(int hiringManagerId) { this.hiringManagerId = hiringManagerId; }
 
     // Default constructor
     public JobPosting() {}

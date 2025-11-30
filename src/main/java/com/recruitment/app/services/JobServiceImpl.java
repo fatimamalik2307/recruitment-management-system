@@ -2,13 +2,9 @@ package com.recruitment.app.services;
 
 import com.recruitment.app.dao.JobDAO;
 import com.recruitment.app.models.JobPosting;
-import com.recruitment.app.services.JobService;
+import java.util.List;
 
-/**
- * Implements business logic for job posting
- */
 public class JobServiceImpl implements JobService {
-
     private final JobDAO jobDAO;
 
     public JobServiceImpl(JobDAO jobDAO) {
@@ -24,5 +20,17 @@ public class JobServiceImpl implements JobService {
             e.printStackTrace();
             return false;
         }
+    }
+
+
+
+    @Override
+    public JobPosting getJobById(int jobId) {
+        return jobDAO.getJobById(jobId);
+    }
+
+    @Override
+    public List<JobPosting> getAllJobsForRecruiter(int recruiterId) {
+        return jobDAO.getJobsByRecruiterId(recruiterId);
     }
 }

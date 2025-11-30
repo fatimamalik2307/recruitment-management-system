@@ -12,12 +12,13 @@
         <Insets top="20" right="20" bottom="20" left="20"/>
     </padding>
 
-    <Label text="Hiring Manager Dashboard"
-           style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+    <Label text="Hiring Manager Dashboard" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
 
-    <Button text="View Shortlisted Candidates" onAction="#openShortlistedCandidates"/>
-    <Button text="View All Applications" onAction="#openAllApplications"/>
-    <Button text="Finalize Hiring Decision" onAction="#openFinalDecision"/>
-    <Button text="Logout" onAction="#logout"/>
+    <Button text="Review Candidates" onAction="#openHMCandidateReview" style="-fx-font-size: 14px;"/>
+<!--    <Button text="My Job Postings" onAction="#openJobPostings" style="-fx-font-size: 14px;"/>-->
+    <!-- REMOVE THE "Selected Candidates" BUTTON COMPLETELY -->
+    <!-- <Button text="Selected Candidates" onAction="#openSelectedCandidates" style="-fx-font-size: 14px;"/> -->
+    <Button text="Update Profile" onAction="#openProfile" style="-fx-font-size: 14px;"/>
+    <Button text="Logout" onAction="#logout" style="-fx-font-size: 14px; -fx-text-fill: red;"/>
 
 </VBox>
