@@ -18,6 +18,7 @@ public class JobPosting {
     private String salaryRange;
     private String status; // Active / Closed
     private int createdBy; // Recruiter ID
+    private int recruiterId;
 
     // Default constructor
     public JobPosting() {}
@@ -125,4 +126,26 @@ public class JobPosting {
     public void setCreatedBy(int createdBy) {
         this.createdBy = createdBy;
     }
+
+    public String getJobTitle() {
+        return title;
+    }
+
+    public int getRecruiterId() {
+        return recruiterId;
+    }
+
+    public void setJobTitle(String jobTitle) {
+        this.title = jobTitle;
+    }
+
+    public int setRecruiterId(int recruiterId) {
+        this.recruiterId = recruiterId;
+        return recruiterId;
+    }
+    @Override
+    public String toString() {
+        return title + " (" + department + ")";
+    }
+
 }
