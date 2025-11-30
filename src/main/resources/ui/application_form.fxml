@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.recruitment.app.controllers.ApplicationFormController"
+      spacing="10">
+    <padding>
+        <Insets top="10" right="10" bottom="10" left="10"/>
+    </padding>
+
+    <Label text="Application Form" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+    <TextField fx:id="fullNameField" promptText="Full name"/>
+    <TextField fx:id="emailField" promptText="Email"/>
+    <TextField fx:id="contactField" promptText="Contact number"/>
+    <TextArea fx:id="qualificationField" promptText="Qualifications" prefRowCount="3"/>
+    <TextArea fx:id="experienceField" promptText="Experience (optional)" prefRowCount="3"/>
+    <TextArea fx:id="coverLetterField" promptText="Cover letter" prefRowCount="4"/>
+    <Label text="Uploaded documents:"/>
+    <ListView fx:id="filesList" prefHeight="120"/>
+    <HBox spacing="8">
+        <Button text="Upload Documents" onAction="#openUploadPage"/>
+        <Button text="Submit Application" onAction="#submitApplication"/>
+        <Button text="Back" onAction="#goBack"/>
+    </HBox>
+    <Label fx:id="messageLabel"/>
+</VBox>

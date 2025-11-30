@@ -2,15 +2,15 @@ package com.recruitment.app.controllers;
 
 import com.recruitment.app.models.JobPosting;
 import com.recruitment.app.utils.SceneLoader;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import javafx.scene.Node;
-import javafx.event.ActionEvent;
 
 public class JobDetailsController {
 
-    private JobPosting job; // non-static field
+    private JobPosting job;
 
     @FXML private Label titleLabel;
     @FXML private Label deptLabel;
@@ -18,7 +18,6 @@ public class JobDetailsController {
     @FXML private Label reqLabel;
     @FXML private Label deadlineLabel;
 
-    // Setter to pass the job from previous controller
     public void setJob(JobPosting job) {
         this.job = job;
         populateFields();
@@ -30,7 +29,8 @@ public class JobDetailsController {
             deptLabel.setText("Department: " + job.getDepartment());
             descLabel.setText("Description: " + job.getDescription());
             reqLabel.setText("Required: " + job.getRequiredQualification());
-            deadlineLabel.setText("Deadline: " + (job.getDeadline() != null ? job.getDeadline().toString() : "N/A"));
+            deadlineLabel.setText("Deadline: " +
+                    (job.getDeadline() != null ? job.getDeadline().toString() : "N/A"));
         }
     }
 
@@ -38,5 +38,13 @@ public class JobDetailsController {
     public void goBack(ActionEvent event) {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         SceneLoader.load(stage, "/ui/browse_jobs.fxml");
+    }
+
+    @FXML
+    public void openApplicationForm(ActionEvent event) {
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        SceneLoader.loadWithData(stage, "/ui/application_form.fxml", controller -> {
+            ((ApplicationFormController) controller).setJob(job);
+        });
     }
 }
