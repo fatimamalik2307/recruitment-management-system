@@ -9,5 +9,6 @@ public interface ApplicationDAO {
     String getApplicantPhone(int userId);
     Application getById(int applicationId);
     void save(Application application);
-
+    List<Application> getApplicationsByUserId(int userId);
+    String getJobTitle(int jobId);
 }
