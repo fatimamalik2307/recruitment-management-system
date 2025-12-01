@@ -1,6 +1,8 @@
 package com.recruitment.app.controllers;
 
+import com.recruitment.app.dao.ApplicationDAOImpl;
 import com.recruitment.app.models.JobPosting;
+import com.recruitment.app.services.ApplicationServiceImpl;
 import com.recruitment.app.utils.SceneLoader;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -43,8 +45,21 @@ public class JobDetailsController {
     @FXML
     public void openApplicationForm(ActionEvent event) {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+
         SceneLoader.loadWithData(stage, "/ui/application_form.fxml", controller -> {
-            ((ApplicationFormController) controller).setJob(job);
+
+            ApplicationFormController form = (ApplicationFormController) controller;
+
+            // STEP 1 — Pass the Job
+            form.setJob(job);
+
+            // STEP 2 — Inject ApplicationService
+            form.setApplicationService(
+                    new ApplicationServiceImpl(
+                            new ApplicationDAOImpl(com.recruitment.app.config.DBConnection.getConnection())
+                    )
+            );
         });
     }
+
 }

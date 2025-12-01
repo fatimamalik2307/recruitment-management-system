@@ -1,10 +1,12 @@
 package com.recruitment.app.controllers;
 
 import com.recruitment.app.dao.JobDAOImpl;
+import com.recruitment.app.dao.PersonSpecificationDAOImpl;
 import com.recruitment.app.models.JobDescription;
 import com.recruitment.app.models.JobPosting;
 import com.recruitment.app.services.JobService;
 import com.recruitment.app.services.JobServiceImpl;
+import com.recruitment.app.services.PersonSpecificationServiceImpl;
 import com.recruitment.app.utils.DBConnection;
 import com.recruitment.app.utils.SceneLoader;
 import com.recruitment.app.utils.SessionManager;
@@ -108,8 +110,18 @@ public class CreateJobPostingController {
     @FXML
     private void openPersonSpecification() {
         Stage stage = (Stage) publishButton.getScene().getWindow();
-        SceneLoader.load(stage, "/ui/person_specification.fxml");
+
+        SceneLoader.loadWithData(stage, "/ui/person_specification.fxml", controller -> {
+            ((PersonSpecificationController) controller).setPersonSpecificationService(
+                    new PersonSpecificationServiceImpl(
+                            new PersonSpecificationDAOImpl(
+                                    com.recruitment.app.config.DBConnection.getConnection()
+                            )
+                    )
+            );
+        });
     }
+
     @FXML
     private void openJobDescription() {
         Stage stage = (Stage) publishButton.getScene().getWindow();

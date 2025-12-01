@@ -1,8 +1,8 @@
-package com.recruitment.app.dao;
+package com.recruitment.app.services;
 
 import com.recruitment.app.models.PersonSpecification;
 
-public interface PersonSpecificationDAO {
+public interface PersonSpecificationService {
 
     boolean save(PersonSpecification spec);
 
