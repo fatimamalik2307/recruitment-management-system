@@ -87,4 +87,9 @@ public class BrowseJobsController {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         SceneLoader.load(stage, "/ui/profile.fxml");
     }
+    @FXML
+    public void openTrackApplications(javafx.event.ActionEvent event) {
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        SceneLoader.load(stage, "/ui/track_applications.fxml");
+    }
 }

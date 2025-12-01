@@ -16,6 +16,9 @@
 
             <Button text="Logout" onAction="#logout"/>
             <Button text="Update Profile" onAction="#openProfile"/>
+            <Button text="Track My Applications"
+                    onAction="#openTrackApplications"
+                    style="-fx-background-color: #4a90e2; -fx-text-fill: white; -fx-font-weight: bold;" />
             <Label text="Browse Jobs" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
         </VBox>
     </top>

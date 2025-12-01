@@ -21,5 +21,6 @@
     <Label fx:id="deadlineLabel"/>
 
     <Button text="Back" onAction="#goBack"/>
+    <Button text="Apply Now" onAction="#openApplicationForm"/>
 
 </VBox>
