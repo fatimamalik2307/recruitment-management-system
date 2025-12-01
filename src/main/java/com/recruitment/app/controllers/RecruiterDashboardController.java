@@ -94,6 +94,25 @@ public class RecruiterDashboardController {
     }
 
     @FXML
+    private void openRecruitmentReport(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/recruitment_report_view.fxml"));
+            Stage stage = new Stage();
+            stage.setScene(new Scene(loader.load()));
+            stage.setTitle("Recruitment Report");
+
+            // Get controller and pass services if needed
+            RecruitmentReportController controller = loader.getController();
+            // Services are handled inside RecruitmentReportController, so no need to pass anything
+
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "Failed to open Recruitment Report window.").show();
+        }
+    }
+
+    @FXML
     private void openFinalRanking(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/FinalRanking.fxml"));
