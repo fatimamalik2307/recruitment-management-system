@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+<VBox spacing="10" xmlns:fx="http://javafx.com/fxml" fx:controller="com.recruitment.app.controllers.JobDescriptionListController">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <TableView fx:id="table">
+        <columns>
+            <TableColumn fx:id="titleCol" text="Job Title" prefWidth="200"/>
+            <TableColumn fx:id="dateCol" text="Created" prefWidth="150"/>
+        </columns>
+    </TableView>
+
+    <Button text="Load Selected" onAction="#loadSelected"/>
+    <Button text="Back" onAction="#goBack"/>
+
+</VBox>

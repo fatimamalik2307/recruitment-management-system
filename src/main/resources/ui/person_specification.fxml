@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+<VBox spacing="10" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.recruitment.app.controllers.PersonSpecificationController"
+      >
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+    <Label text="Prepare Person Specification" style="-fx-font-size:18; -fx-font-weight:bold;"/>
+
+    <TextArea fx:id="skillsArea" promptText="Required Skills"/>
+    <TextArea fx:id="experienceArea" promptText="Required Experience"/>
+    <TextArea fx:id="educationArea" promptText="Required Education"/>
+    <TextArea fx:id="traitsArea" promptText="Traits / Personality"/>
+
+    <Button text="Save" onAction="#saveSpecification"/>
+    <Button text="Cancel" onAction="#cancel"/>
+</VBox>
