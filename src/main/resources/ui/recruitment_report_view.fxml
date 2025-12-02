@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      spacing="15"
+      fx:controller="com.recruitment.app.controllers.RecruitmentReportController">
+
+    <!-- Set padding correctly -->
+    <padding>
+        <Insets top="15" right="15" bottom="15" left="15"/>
+    </padding>
+
+    <!-- Job selection -->
+    <HBox spacing="10">
+        <Label text="Select Job:"/>
+        <ComboBox fx:id="jobComboBox" prefWidth="300"/>
+        <Button text="Generate Report" onAction="#onGenerateReport"/>
+    </HBox>
+
+    <!-- Report display -->
+    <GridPane hgap="10" vgap="10">
+        <Label text="Job Title:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <Label fx:id="jobTitleLabel" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+        <Label text="Department:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <Label fx:id="departmentLabel" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+        <Label text="Posted On:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <Label fx:id="postedDateLabel" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+        <Label text="Total Applications:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+        <Label fx:id="totalAppsLabel" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+        <Label text="Shortlisted:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+        <Label fx:id="shortlistedLabel" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+        <Label text="Generated At:" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+        <Label fx:id="generatedDateLabel" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+    </GridPane>
+
+    <!-- Export button -->
+    <Button text="Export as PDF" onAction="#exportPDF"/>
+</VBox>
