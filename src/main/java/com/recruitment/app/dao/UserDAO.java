@@ -13,4 +13,6 @@ public interface UserDAO {
 
     // Optional: fetch by userId directly
     User getById(int userId);
+    boolean updatePassword(int id, String hashedPassword);
+
 }

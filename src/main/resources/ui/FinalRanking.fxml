@@ -33,5 +33,9 @@
             <TableColumn fx:id="colStatus" text="Status" prefWidth="120"/>
         </columns>
     </TableView>
+    <Button text="📧 Notify Candidates"
+            onAction="#notifyCandidates"
+            style="-fx-background-color: #2ecc71; -fx-text-fill: white;"/>
+
 
 </VBox>

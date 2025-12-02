@@ -1,6 +1,9 @@
 package com.recruitment.app.controllers;
 
+import com.recruitment.app.config.DBConnection;
+import com.recruitment.app.dao.ApplicationDAOImpl;
 import com.recruitment.app.models.JobPosting;
+import com.recruitment.app.services.ApplicationServiceImpl;
 import com.recruitment.app.utils.SceneLoader;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
@@ -31,7 +34,9 @@ public class UploadDocumentsController {
         selectedFiles.addAll(oldFiles);
         filesList.getItems().setAll(selectedFiles);
     }
-
+    public List<String> getSelectedFiles() {
+        return selectedFiles;
+    }
     @FXML
     public void selectDocuments() {
         FileChooser fc = new FileChooser();
@@ -59,10 +64,20 @@ public class UploadDocumentsController {
 
         SceneLoader.loadWithData(stage, "/ui/application_form.fxml", controller -> {
             ApplicationFormController form = (ApplicationFormController) controller;
+
+            // RETURN JOB + FILES
             form.setJob(job);
             form.setUploadedFiles(selectedFiles);
+
+            // 🔥 FIX: ALSO RETURN APPLICATION SERVICE
+            form.setApplicationService(
+                    new ApplicationServiceImpl(
+                            new ApplicationDAOImpl(DBConnection.getConnection())
+                    )
+            );
         });
     }
+
 
     @FXML
     public void cancel(ActionEvent event) {

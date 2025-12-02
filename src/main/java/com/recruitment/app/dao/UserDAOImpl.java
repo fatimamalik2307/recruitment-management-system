@@ -117,4 +117,18 @@ public class UserDAOImpl implements UserDAO {
         if (!rs.wasNull()) u.setCompanyId(companyId);
         return u;
     }
+    @Override
+    public boolean updatePassword(int id, String hashedPassword) {
+        String sql = "UPDATE users SET password=? WHERE id=?";
+        Connection conn = DBConnection.getConnection();
+        try (PreparedStatement ps=conn.prepareStatement(sql)) {
+            ps.setString(1, hashedPassword);
+            ps.setInt(2, id);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 }

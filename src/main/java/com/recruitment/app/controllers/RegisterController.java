@@ -4,6 +4,7 @@ import com.recruitment.app.models.User;
 import com.recruitment.app.models.UserFactory;
 import com.recruitment.app.services.UserService;
 import com.recruitment.app.services.UserService.RegistrationResult;
+import com.recruitment.app.services.UserServiceImpl;
 import com.recruitment.app.utils.SceneLoader;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -40,8 +41,8 @@ public class RegisterController {
     @FXML private TextField companyField; // used only when role != Applicant
     @FXML private Label messageLabel;
 
-    private final UserService userService = new UserService();
 
+    private final UserService userService = new UserServiceImpl();
     @FXML
     public void initialize() {
         // Populate role dropdown

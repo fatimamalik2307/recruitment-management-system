@@ -24,4 +24,7 @@ public interface ApplicationDAO {
     boolean updateHMDecision(int applicationId, String decision);
     List<Application> findByJobAndHmDecision(int jobId, String decision);
     int countByJobAndDecision(int jobId, String decision);
+    List<Application> getFinalRankingsByJob(int jobId);
+    String getApplicantEmail(int userId);
+
 }

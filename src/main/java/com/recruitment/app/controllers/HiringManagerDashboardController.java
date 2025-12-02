@@ -28,7 +28,7 @@ public class HiringManagerDashboardController {
     private final HMService hmService = new HMServiceImpl(candidateDAO, applicationDAO, jobDAO);
     private final NoteService noteService = new NoteServiceImpl(noteDAO);
     private final JobService jobService = new JobServiceImpl(jobDAO);
-    private final UserService userService = new UserService();
+    private final UserService userService = new UserServiceImpl();
 
     @FXML
     private void openHMCandidateReview(ActionEvent event) {
@@ -89,11 +89,7 @@ public class HiringManagerDashboardController {
         // openHMCandidateReview(event);
     }
 
-    @FXML
-    private void openProfile(ActionEvent event) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION, "Profile window not implemented yet.", ButtonType.OK);
-        alert.showAndWait();
-    }
+
 
     @FXML
     private void logout(ActionEvent event) {
@@ -120,4 +116,36 @@ public class HiringManagerDashboardController {
         Alert alert = new Alert(type, message, ButtonType.OK);
         alert.showAndWait();
     }
+    @FXML
+    private void openProfile(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getClassLoader().getResource("ui/profile.fxml")
+            );
+
+            Stage stage = new Stage();
+            stage.setScene(new Scene(loader.load()));
+            stage.setTitle("Update Profile");
+            stage.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("⚠ ERROR: Could not load update_profile.fxml");
+        }
+    }
+
+
+    @FXML
+    private void openChangePassword(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/change_password.fxml"));
+            Stage stage = new Stage();
+            stage.setScene(new Scene(loader.load()));
+            stage.setTitle("Change Password");
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

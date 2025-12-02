@@ -207,4 +207,40 @@ public class ApplicationDAOImpl implements ApplicationDAO {
         app.setAppliedAt(rs.getTimestamp("applied_at").toLocalDateTime());
         return app;
     }
+    @Override
+    public List<Application> getFinalRankingsByJob(int jobId) {
+        List<Application> list = new ArrayList<>();
+
+        String sql = "SELECT * FROM applications WHERE job_id = ? ORDER BY final_score DESC";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, jobId);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                list.add(mapRow(rs));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+    @Override
+    public String getApplicantEmail(int userId) {
+        String sql = "SELECT email FROM users WHERE id = ?";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) return rs.getString("email");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
 }

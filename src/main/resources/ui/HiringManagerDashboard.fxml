@@ -19,6 +19,8 @@
     <!-- REMOVE THE "Selected Candidates" BUTTON COMPLETELY -->
     <!-- <Button text="Selected Candidates" onAction="#openSelectedCandidates" style="-fx-font-size: 14px;"/> -->
     <Button text="Update Profile" onAction="#openProfile" style="-fx-font-size: 14px;"/>
+    <Button text="Update Profile" onAction="#openProfile"/>
+    <Button text="Change Password" onAction="#openChangePassword"/>
     <Button text="Logout" onAction="#logout" style="-fx-font-size: 14px; -fx-text-fill: red;"/>
 
 </VBox>

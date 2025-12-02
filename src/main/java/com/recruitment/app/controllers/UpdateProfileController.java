@@ -2,6 +2,7 @@ package com.recruitment.app.controllers;
 
 import com.recruitment.app.models.User;
 import com.recruitment.app.services.UserService;
+import com.recruitment.app.services.UserServiceImpl;
 import com.recruitment.app.utils.SceneLoader;
 import com.recruitment.app.utils.SessionManager;
 import javafx.event.ActionEvent;
@@ -17,7 +18,7 @@ public class UpdateProfileController {
     @FXML private TextField contactField;
     @FXML private Label messageLabel;
 
-    private final UserService userService = new UserService();
+    private final UserService userService = new UserServiceImpl();
 
     @FXML
     public void initialize() {

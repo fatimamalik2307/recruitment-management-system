@@ -17,7 +17,8 @@ public class LoginController {
     @FXML private PasswordField passwordField;
     @FXML private Label messageLabel;
 
-    private final UserService userService = new UserService(); // FIXED
+    private final UserService userService = new UserServiceImpl();
+
 
     @FXML
     public void loginUser(ActionEvent event) {

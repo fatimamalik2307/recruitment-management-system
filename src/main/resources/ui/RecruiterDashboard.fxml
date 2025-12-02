@@ -20,6 +20,8 @@
     <Button text="Review Shortlist" onAction="#openReviewShortlist"/>
     <Button text="Generate Final Ranking" onAction="#openFinalRanking"/>
     <Button text="Update Profile" onAction="#openProfile"/>
+    <Button text="Change Password" onAction="#openChangePassword"/>
+
     <Button text="Logout" onAction="#logout"/>
 
 </VBox>

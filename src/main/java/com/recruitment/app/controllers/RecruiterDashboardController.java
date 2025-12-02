@@ -129,9 +129,22 @@ public class RecruiterDashboardController {
 
     @FXML
     private void openProfile(ActionEvent event) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION, "Profile window not implemented yet.", ButtonType.OK);
-        alert.showAndWait();
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getClassLoader().getResource("ui/profile.fxml")
+            );
+
+            Stage stage = new Stage();
+            stage.setScene(new Scene(loader.load()));
+            stage.setTitle("Update Profile");
+            stage.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("⚠ ERROR: Could not load profile.fxml");
+        }
     }
+
 
     @FXML
     private void logout(ActionEvent event) {
@@ -148,4 +161,18 @@ public class RecruiterDashboardController {
             e.printStackTrace();
         }
     }
+    @FXML
+    private void openChangePassword(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/change_password.fxml"));
+            Stage stage = new Stage();
+            stage.setScene(new Scene(loader.load()));
+            stage.setTitle("Change Password");
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "Cannot open change password screen").show();
+        }
+    }
+
 }

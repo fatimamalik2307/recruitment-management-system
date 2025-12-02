@@ -92,4 +92,18 @@ public class BrowseJobsController {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         SceneLoader.load(stage, "/ui/track_applications.fxml");
     }
+    @FXML
+    public void openChangePassword(javafx.event.ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/change_password.fxml"));
+            Stage stage = new Stage();
+            stage.setScene(new Scene(loader.load()));
+            stage.setTitle("Change Password");
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(" ERROR: Could not load change_password.fxml");
+        }
+    }
+
 }
