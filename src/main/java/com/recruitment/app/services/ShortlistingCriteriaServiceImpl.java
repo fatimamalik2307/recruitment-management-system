@@ -2,7 +2,6 @@ package com.recruitment.app.services;
 
 import com.recruitment.app.dao.ShortlistingCriteriaDAO;
 import com.recruitment.app.models.ShortlistingCriteria;
-import com.recruitment.app.services.ShortlistingCriteriaService;
 
 public class ShortlistingCriteriaServiceImpl implements ShortlistingCriteriaService {
 
@@ -14,6 +13,13 @@ public class ShortlistingCriteriaServiceImpl implements ShortlistingCriteriaServ
 
     @Override
     public ShortlistingCriteria createCriteria(ShortlistingCriteria criteria) {
+
+        // ---- Prevent duplicates ----
+        ShortlistingCriteria existing = dao.getByJobId(criteria.getJobId());
+        if (existing != null) {
+            return null; // means criteria already exists — controller will show alert
+        }
+
         return dao.save(criteria);
     }
 

@@ -12,7 +12,7 @@ public class ShortlistingCriteriaDAOImpl implements ShortlistingCriteriaDAO {
     private final Connection conn;
 
     public ShortlistingCriteriaDAOImpl(Connection connection) {
-        this.conn = DBConnection.getConnection();
+        this.conn = connection;
     }
 
     @Override

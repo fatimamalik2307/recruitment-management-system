@@ -19,7 +19,7 @@ public interface FinalRankedCandidateDAO {
     void updateRankAndScore(int id, double compositeScore, int rank);
 
     // Update hiring manager notes and status
-    void updateStatusAndNotes(int id, String status, String hmNotes);
+    boolean updateStatusAndNotes(int id, String status, String hmNotes);
 
     // Delete candidate by ID
     void delete(int id);
@@ -32,4 +32,6 @@ public interface FinalRankedCandidateDAO {
     Optional<FinalRankedCandidate> findById(int id);
     Optional<FinalRankedCandidate> findByApplicationId(int applicationId);
     List<FinalRankedCandidate> findByHiringManagerId(int hiringManagerId);
+
+    boolean existsForJob(int jobId);
 }

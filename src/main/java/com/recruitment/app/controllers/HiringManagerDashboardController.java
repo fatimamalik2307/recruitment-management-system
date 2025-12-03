@@ -1,8 +1,5 @@
 package com.recruitment.app.controllers;
 
-import com.recruitment.app.config.DBConnection;
-import com.recruitment.app.dao.*;
-import com.recruitment.app.models.ShortlistingCriteria;
 import com.recruitment.app.services.*;
 import com.recruitment.app.utils.SessionManager;
 import javafx.event.ActionEvent;
@@ -17,18 +14,27 @@ import java.io.IOException;
 
 public class HiringManagerDashboardController {
 
-    // DAOs
-    private final JobDAO jobDAO = new JobDAOImpl(DBConnection.getConnection());
-    private final ApplicationDAO applicationDAO = new ApplicationDAOImpl(DBConnection.getConnection());
-    private final FinalRankedCandidateDAO candidateDAO = new FinalRankedCandidateDAOImpl(DBConnection.getConnection());
-    private final ApplicantNoteDAO noteDAO = new ApplicantNoteDAOImpl(DBConnection.getConnection());
-    private  final ShortlistingCriteriaDAO criteriaDAO = new ShortlistingCriteriaDAOImpl(DBConnection.getConnection());
-    // Services
-    private final RecruiterService recruiterService = new RecruiterServiceImpl(jobDAO,applicationDAO,criteriaDAO);
-    private final HMService hmService = new HMServiceImpl(candidateDAO, applicationDAO, jobDAO);
-    private final NoteService noteService = new NoteServiceImpl(noteDAO);
-    private final JobService jobService = new JobServiceImpl(jobDAO);
-    private final UserService userService = new UserServiceImpl();
+    // Services only (injected)
+    private final RecruiterService recruiterService;
+    private final HMService hmService;
+    private final NoteService noteService;
+    private final JobService jobService;
+    private final UserService userService;
+
+    // Constructor injection
+    public HiringManagerDashboardController(
+            RecruiterService recruiterService,
+            HMService hmService,
+            NoteService noteService,
+            JobService jobService,
+            UserService userService
+    ) {
+        this.recruiterService = recruiterService;
+        this.hmService = hmService;
+        this.noteService = noteService;
+        this.jobService = jobService;
+        this.userService = userService;
+    }
 
     @FXML
     private void openHMCandidateReview(ActionEvent event) {
@@ -46,7 +52,7 @@ public class HiringManagerDashboardController {
             controller.setRecruiterService(recruiterService);
             controller.setUserService(userService);
 
-            controller.setCurrentUserId((int) getCurrentUserId());
+            controller.setCurrentUserId(getCurrentUserId());
 
             // VERY IMPORTANT: call this after injecting services & user ID
             controller.loadInitialData();
@@ -57,7 +63,6 @@ public class HiringManagerDashboardController {
             showAlert(Alert.AlertType.ERROR, "Failed to open Candidate Review.");
         }
     }
-
 
 //    @FXML
 //    private void openJobPostings(ActionEvent event) {
@@ -79,17 +84,18 @@ public class HiringManagerDashboardController {
 //        }
 //    }
 
-    // ADD THIS MISSING METHOD
     @FXML
     private void openSelectedCandidates(ActionEvent event) {
-        // For now, just show a message since we removed this feature
         showAlert(Alert.AlertType.INFORMATION, "Selected Candidates view is integrated into the Review Candidates section.");
-
         // Optionally, you can open the candidate review instead
         // openHMCandidateReview(event);
     }
 
-
+    @FXML
+    private void openProfile(ActionEvent event) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION, "Profile window not implemented yet.", ButtonType.OK);
+        alert.showAndWait();
+    }
 
     @FXML
     private void logout(ActionEvent event) {
@@ -108,7 +114,6 @@ public class HiringManagerDashboardController {
     }
 
     private int getCurrentUserId() {
-        // Get the actual logged-in user ID from session
         return SessionManager.loggedInUser.getId();
     }
 
@@ -116,36 +121,4 @@ public class HiringManagerDashboardController {
         Alert alert = new Alert(type, message, ButtonType.OK);
         alert.showAndWait();
     }
-    @FXML
-    private void openProfile(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getClassLoader().getResource("ui/profile.fxml")
-            );
-
-            Stage stage = new Stage();
-            stage.setScene(new Scene(loader.load()));
-            stage.setTitle("Update Profile");
-            stage.show();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("⚠ ERROR: Could not load update_profile.fxml");
-        }
-    }
-
-
-    @FXML
-    private void openChangePassword(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/change_password.fxml"));
-            Stage stage = new Stage();
-            stage.setScene(new Scene(loader.load()));
-            stage.setTitle("Change Password");
-            stage.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
 }

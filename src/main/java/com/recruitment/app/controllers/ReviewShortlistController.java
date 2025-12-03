@@ -4,10 +4,7 @@ import com.recruitment.app.models.Application;
 import com.recruitment.app.models.JobPosting;
 import com.recruitment.app.models.Shortlist;
 import com.recruitment.app.models.ShortlistingCriteria;
-import com.recruitment.app.services.RecruiterService;
-import com.recruitment.app.services.AssessmentService;
-import com.recruitment.app.services.ShortlistService;
-import com.recruitment.app.services.ShortlistingCriteriaService;
+import com.recruitment.app.services.*;
 import com.recruitment.app.utils.SessionManager;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -38,16 +35,20 @@ public class ReviewShortlistController {
     private ShortlistingCriteriaService criteriaService;
     private RecruiterService recruiterService;
     private AssessmentService assessmentService;
+    private FinalRankingService finalRankedService;
+
 
     public ReviewShortlistController() {}
 
     public void setServices(ShortlistService shortlistService,
                             ShortlistingCriteriaService criteriaService,
-                            RecruiterService recruiterService,AssessmentService assessmentService) {
+                            RecruiterService recruiterService,AssessmentService assessmentService,FinalRankingService finalRankedService)
+    {
         this.shortlistService = shortlistService;
         this.criteriaService = criteriaService;
         this.recruiterService = recruiterService;
         this.assessmentService = assessmentService;
+        this.finalRankedService = finalRankedService;
 
         initializeData();
     }
@@ -55,7 +56,7 @@ public class ReviewShortlistController {
     private void initializeData() {
         int recruiterId = SessionManager.loggedInUser.getId();
 
-        List<JobPosting> jobs = recruiterService.getJobsByRecruiter(recruiterId);
+        List<JobPosting> jobs = shortlistService.getJobsEligibleForShortlisting();
         jobComboBox.getItems().addAll(jobs);
 
         colId.setCellValueFactory(data -> javafx.beans.binding.Bindings.createIntegerBinding(data.getValue()::getId));
@@ -134,10 +135,45 @@ public class ReviewShortlistController {
             return;
         }
 
+        // --- CHECK IF FINAL RANKING IS ALREADY GENERATED ---
+        if (finalRankedService.existsForJob(job.getId())) {
+            new Alert(Alert.AlertType.WARNING,
+                    "Final ranking has already been generated for this job.\nShortlist cannot be viewed or generated again.")
+                    .show();
+            return;
+        }
+
+        // --- CONFIRMATION: CLOSE JOB? ---
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
+                "Generating shortlist will CLOSE this job.\nApplicants will no longer see it.\n\nContinue?",
+                ButtonType.YES, ButtonType.NO);
+
+        confirm.setTitle("Confirm Operation");
+        confirm.showAndWait();
+
+        if (confirm.getResult() != ButtonType.YES) return;
+
+        // --- CALL SERVICE ---
         List<Shortlist> list = shortlistService.generateShortlist(job.getId());
+
+        if (list == null) {
+            // Means ranking exists
+            new Alert(Alert.AlertType.WARNING,
+                    "Final ranking already exists. Cannot generate or view shortlist.")
+                    .show();
+            return;
+        }
+
+        if (list.isEmpty()) {
+            new Alert(Alert.AlertType.INFORMATION,
+                    "No applicants met the criteria.")
+                    .show();
+            return;
+        }
+
         shortlistTable.setItems(FXCollections.observableList(list));
 
-        new Alert(Alert.AlertType.INFORMATION, "Shortlist generated successfully!").show();
+        new Alert(Alert.AlertType.INFORMATION, "Shortlist loaded successfully!").show();
     }
 
     private void openApplicationDetails(int applicationId) {

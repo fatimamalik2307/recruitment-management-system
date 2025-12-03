@@ -15,8 +15,16 @@ public interface FinalRankingService {
             double hrWeight);
 
     List<FinalRankedCandidate> getFinalRankingByJob(int jobId);
+
+    List<FinalRankedCandidate> generateFinalRankingForJob(int jobId);
+
+    double[] getCriteriaFromUser();
+
     void saveFinalRanking(List<FinalRankedCandidate> finalList);
     void flagListReady(int jobId);
+    boolean existsForJob(int jobId);
     void updateStatusAndNotes(int candidateId, String status, String hmNotes);
+
+    List<JobPosting> getJobsEligibleForFinalRanking();
 }
 

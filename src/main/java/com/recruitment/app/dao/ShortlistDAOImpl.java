@@ -30,6 +30,27 @@ public class ShortlistDAOImpl implements ShortlistDAO {
     }
 
     @Override
+    public boolean existsForJob(int jobId) {
+        String sql = """
+        SELECT COUNT(*) AS cnt 
+        FROM shortlist s 
+        JOIN shortlisting_criteria sc ON s.criteria_id = sc.id
+        WHERE sc.job_id = ?
+    """;
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, jobId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("cnt") > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    @Override
     public List<Shortlist> getByJobId(int jobId) {
         String sql = "SELECT s.id, s.criteria_id, s.application_id, s.shortlisted_at " +
                 "FROM shortlist s " +

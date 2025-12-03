@@ -97,12 +97,21 @@ public class RecruitmentReportDAOImpl implements RecruitmentReportDAO {
                 report.setId(rs.getInt("id"));
                 report.setJobId(rs.getInt("job_id"));
                 report.setRecruiterId(rs.getInt("recruiter_id"));
-                report.setGeneratedAt(rs.getTimestamp("generated_at").toLocalDateTime());
+
+                java.sql.Timestamp generatedAt = rs.getTimestamp("generated_at");
+                if (generatedAt != null) {
+                    report.setGeneratedAt(generatedAt.toLocalDateTime());
+                }
+
                 report.setTotalApplications(rs.getInt("total_applications"));
                 report.setTotalShortlisted(rs.getInt("total_shortlisted"));
-                report.setJobTitle(rs.getString("job_title"));
-                report.setDepartment(rs.getString("department"));
-                report.setPostedOn(rs.getDate("posted_on").toString());
+
+                report.setJobTitle(rs.getString("job_title") != null ? rs.getString("job_title") : "");
+                report.setDepartment(rs.getString("department") != null ? rs.getString("department") : "");
+
+                java.sql.Date postedOn = rs.getDate("posted_on");
+                report.setPostedOn(postedOn != null ? postedOn.toString() : "");
+
                 return report;
             }
 
@@ -111,4 +120,5 @@ public class RecruitmentReportDAOImpl implements RecruitmentReportDAO {
         }
         return null;
     }
+
 }

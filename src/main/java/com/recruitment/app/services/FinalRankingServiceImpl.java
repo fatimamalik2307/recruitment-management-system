@@ -9,7 +9,6 @@ import javafx.scene.control.TextInputDialog;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class FinalRankingServiceImpl implements FinalRankingService {
 
@@ -36,6 +35,10 @@ public class FinalRankingServiceImpl implements FinalRankingService {
         this.userDAO = userDAO;
     }
 
+    @Override
+    public boolean existsForJob(int jobId) {
+        return candidateDAO.existsForJob(jobId);   // <-- calls DAO
+    }
     /** ==========================
      * Jobs
      * ========================== */
@@ -124,24 +127,88 @@ public class FinalRankingServiceImpl implements FinalRankingService {
     /** ==========================
      * Convenience method for generating by jobId (fetch assessments & shortlist automatically)
      * ========================== */
+    /** ==========================
+     * Generate final ranking for a job
+     * ========================== */
     public List<FinalRankedCandidate> generateFinalRankingForJob(int jobId) {
         JobPosting job = jobDAO.getJobById(jobId);
-        if (job == null) throw new IllegalStateException("Job not found");
+        if (job == null) {
+            throw new IllegalStateException("Job not found.");
+        }
 
-        List<AssessmentResult> assessments = assessmentDAO.getByJobId(jobId);
+        // Check if final ranking already exists
+        if (candidateDAO.existsForJob(jobId)) {
+            List<FinalRankedCandidate> existing = candidateDAO.getByJobId(jobId);
+
+            // Check if already sent or ready for HM
+            boolean alreadySentOrReady = existing.stream()
+                    .allMatch(c -> c.getStatus().equalsIgnoreCase("Sent to HM")
+                            || c.getStatus().equalsIgnoreCase("Ready for HM"));
+            if (alreadySentOrReady) {
+                throw new IllegalStateException("Final ranking already sent to HM. Cannot generate again.");
+            }
+
+            // Populate applicant names if missing
+            for (FinalRankedCandidate candidate : existing) {
+                if (candidate.getApplicantName() == null || candidate.getApplicantName().isBlank()) {
+                    var user = userDAO.getByApplicationId(candidate.getApplicationId());
+                    if (user != null) candidate.setApplicantName(user.getFullName());
+                }
+            }
+
+            return existing;
+        }
+
+        // Fetch shortlists
         List<Shortlist> shortlists = shortlistDAO.getByJobId(jobId);
+        if (shortlists.isEmpty()) {
+            throw new IllegalStateException("No shortlisted candidates found for this job. Cannot generate final ranking.");
+        }
 
+        // Fetch assessments
+        List<AssessmentResult> assessments = assessmentDAO.getByJobId(jobId);
+        if (assessments.isEmpty() || assessments.size() < shortlists.size()) {
+            throw new IllegalStateException("Assessment results not complete for all shortlisted candidates.");
+        }
+
+        // Fetch ranking criteria
         FinalRankingCriteria criteria = criteriaDAO.getByJobId(jobId);
         if (criteria == null) {
-            double[] weights = getCriteriaFromUser();
+            double[] weights = getCriteriaFromUser(); // prompt user
             criteria = new FinalRankingCriteria(jobId, weights[0], weights[1], 1.0);
             criteriaDAO.save(criteria);
         }
 
+        // Generate final ranking
         return generateFinalRanking(job, assessments, shortlists, criteria.getTechnicalWeight(), criteria.getHrWeight());
     }
 
-    private double[] getCriteriaFromUser() {
+
+    /** ==========================
+     * Get jobs eligible for final ranking
+     * ========================== */
+    @Override
+    public List<JobPosting> getJobsEligibleForFinalRanking() {
+        int recruiterId = SessionManager.loggedInUser.getId();
+        List<JobPosting> allJobs = jobDAO.getJobsByRecruiterId(recruiterId);
+
+        return allJobs.stream()
+                .filter(job -> {
+                    if (candidateDAO.existsForJob(job.getId())) {
+                        List<FinalRankedCandidate> candidates = candidateDAO.getByJobId(job.getId());
+                        // Hide jobs where all candidates are HM_REVIEWED
+                        boolean allHMReviewed = candidates.stream()
+                                .allMatch(c -> c.getStatus().equalsIgnoreCase("HM_REVIEWED"));
+                        return !allHMReviewed; // include job only if not fully HM_REVIEWED
+                    }
+                    return true; // include if no ranking exists
+                })
+                .toList();
+    }
+
+
+    @Override
+    public double[] getCriteriaFromUser() {
         final double[] weights = new double[2];
         Runnable dialogTask = () -> {
             TextInputDialog techDialog = new TextInputDialog("0.7");
@@ -226,4 +293,6 @@ public class FinalRankingServiceImpl implements FinalRankingService {
     public boolean isListReadyForHM(int jobId) {
         return readyForHMJobs.contains(jobId);
     }
+
+
 }

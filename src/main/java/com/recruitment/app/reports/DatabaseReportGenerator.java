@@ -10,6 +10,13 @@ public class DatabaseReportGenerator implements IReportGenerator {
 
     @Override
     public RecruitmentReport generate(int jobId, int recruiterId) {
+        // 1. Check if a report already exists
+        RecruitmentReport existingReport = reportDAO.getReportByJobId(jobId);
+        if (existingReport != null) {
+            return existingReport;
+        }
+
+        // 2. Generate a new report if none exists
         return reportDAO.generateReport(jobId, recruiterId);
     }
 }

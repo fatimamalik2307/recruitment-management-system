@@ -27,11 +27,10 @@ public class RecruiterDashboardController {
     // Services
     private final JobService jobService = new JobServiceImpl(jobDAO);
     private final ShortlistingCriteriaService criteriaService = new ShortlistingCriteriaServiceImpl(criteriaDAO);
-    private final ShortlistService shortlistService = new ShortlistServiceImpl(shortlistDAO, criteriaDAO, applicationDAO);
+    private final ShortlistService shortlistService = new ShortlistServiceImpl(shortlistDAO, criteriaDAO, applicationDAO,candidateDAO,jobDAO);
     private final RecruiterService recruiterService = new RecruiterServiceImpl(jobDAO, applicationDAO, criteriaDAO);
-    private final AssessmentService assessmentService =
-            new AssessmentServiceImpl(new AssessmentResultDAOImpl(DBConnection.getConnection()));
-
+    private final AssessmentService assessmentService = new AssessmentServiceImpl(new AssessmentResultDAOImpl(DBConnection.getConnection()));
+    private final FinalRankingService finalRankingService = new FinalRankingServiceImpl(candidateDAO,criteriaDAO2,assessmentResultDAO,jobDAO,shortlistDAO,userDAO);
     @FXML
     private void openCreateJob(ActionEvent event) {
         try {
@@ -72,7 +71,7 @@ public class RecruiterDashboardController {
 
             ReviewShortlistController controller = loader.getController();
             // PASS the initialized services
-            controller.setServices(shortlistService, criteriaService, recruiterService, assessmentService);
+            controller.setServices(shortlistService, criteriaService, recruiterService, assessmentService,finalRankingService);
 
             stage.show();
         } catch (IOException e) {

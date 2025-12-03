@@ -95,16 +95,18 @@ public class FinalRankedCandidateDAOImpl implements FinalRankedCandidateDAO {
     }
 
     @Override
-    public void updateStatusAndNotes(int id, String status, String hmNotes) {
+    public boolean updateStatusAndNotes(int id, String status, String hmNotes) {
         String sql = "UPDATE final_ranked_candidates SET status = ?, hm_notes = ? WHERE id = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, status);
             stmt.setString(2, hmNotes);
             stmt.setInt(3, id);
             stmt.executeUpdate();
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return false;
     }
 
     @Override
@@ -292,6 +294,20 @@ public class FinalRankedCandidateDAOImpl implements FinalRankedCandidateDAO {
             e.printStackTrace();
         }
         return list;
+    }
+
+    @Override
+    public boolean existsForJob(int jobId) {
+        String sql = "SELECT COUNT(*) AS cnt FROM final_ranked_candidates WHERE job_id = ?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, jobId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) return rs.getInt("cnt") > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
 

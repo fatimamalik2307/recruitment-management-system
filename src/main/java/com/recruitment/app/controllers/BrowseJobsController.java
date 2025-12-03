@@ -57,7 +57,13 @@ public class BrowseJobsController {
         });
 
         // Load jobs from DB
-        jobsTable.getItems().setAll(jobDAO.getAllJobs());
+        // Load only valid (non-expired) jobs
+        jobsTable.getItems().setAll(
+                jobDAO.getAllJobs().stream()
+                        .filter(job -> job.getDeadline() == null || !job.getDeadline().isBefore(java.time.LocalDate.now()))
+                        .toList()
+        );
+
     }
 
     private void openJobDetails(JobPosting job, javafx.event.ActionEvent event) {

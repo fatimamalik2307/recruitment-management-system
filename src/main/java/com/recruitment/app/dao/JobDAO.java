@@ -17,6 +17,8 @@ public interface JobDAO {
 
     List<JobPosting> getJobsByRecruiterId(int recruiterId);
 
+    void closeJob(int jobId);
+
     List<JobPosting> getJobsByRecruiterAndStatus(int recruiterId, String status);
     List<JobPosting> getJobsForHMByCompany(int hmId);
 

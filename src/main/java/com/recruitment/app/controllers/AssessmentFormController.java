@@ -16,16 +16,23 @@ public class AssessmentFormController {
     @FXML private Button submitBtn;
     @FXML private Button cancelBtn;
 
+    private final RecruiterService recruiterService;
+    private final AssessmentService assessmentService;
+
+    // IDs for the current assessment
     private int shortlistId;
     private int applicationId;
-    private RecruiterService recruiterService;
-    private AssessmentService assessmentService;
 
-    public void setData(int shortlistId, int applicationId, RecruiterService recruiterService, AssessmentService assessmentService) {
-        this.shortlistId = shortlistId;
-        this.applicationId = applicationId;
+    // Constructor-based dependency injection
+    public AssessmentFormController(RecruiterService recruiterService, AssessmentService assessmentService) {
         this.recruiterService = recruiterService;
         this.assessmentService = assessmentService;
+    }
+
+    // Pass contextual IDs separately
+    public void setContext(int shortlistId, int applicationId) {
+        this.shortlistId = shortlistId;
+        this.applicationId = applicationId;
     }
 
     @FXML

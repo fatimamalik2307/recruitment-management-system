@@ -28,20 +28,32 @@ public class HMServiceImpl implements HMService {
             List<FinalRankedCandidate> candidates = candidateDAO.getByJobId(jobPostingId);
             System.out.println("[DEBUG HMService] Found " + candidates.size() + " candidates for job: " + jobPostingId);
 
-            boolean allUpdated = true;
+            if (candidates.isEmpty()) {
+                System.out.println("[INFO HMService] No candidates to send for this job.");
+                return false;
+            }
+
             int updatedCount = 0;
 
-            // Update each candidate individually (same approach as flagListReady)
+            // Update each candidate individually
             for (FinalRankedCandidate candidate : candidates) {
                 System.out.println("[DEBUG HMService] Updating candidate ID: " + candidate.getId() +
                         " from status: '" + candidate.getStatus() + "' to 'SENT_TO_HM'");
 
-                candidateDAO.updateStatusAndNotes(candidate.getId(), "SENT_TO_HM", candidate.getHmNotes());
-
+                // Make sure DAO method returns true if update succeeded
+                boolean updated = candidateDAO.updateStatusAndNotes(candidate.getId(), "SENT_TO_HM", candidate.getHmNotes());
+                if (updated) {
+                    updatedCount++;
+                } else {
+                    System.out.println("[WARNING HMService] Failed to update candidate ID: " + candidate.getId());
+                }
             }
 
-            System.out.println("[DEBUG HMService] Successfully updated " + updatedCount + " out of " + candidates.size() + " candidates to 'SENT_TO_HM'");
-            return allUpdated && updatedCount > 0;
+            System.out.println("[DEBUG HMService] Successfully updated " + updatedCount + " out of " + candidates.size() +
+                    " candidates to 'SENT_TO_HM'");
+
+            // Return true if at least one candidate was updated
+            return updatedCount > 0;
 
         } catch (Exception e) {
             System.err.println("[ERROR HMService] Exception in sendToHiringManager: " + e.getMessage());
@@ -49,6 +61,7 @@ public class HMServiceImpl implements HMService {
             return false;
         }
     }
+
 
     @Override
     public List<FinalRankedCandidate> getCandidatesSentToHM(int jobPostingId) {

@@ -1,7 +1,6 @@
 package com.recruitment.app.dao;
 
 import com.recruitment.app.models.JobPosting;
-import com.recruitment.app.utils.SessionManager;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -102,6 +101,17 @@ public class JobDAOImpl implements JobDAO {
         }
         return jobs;
     }
+    @Override
+    public void closeJob(int jobId) {
+        String sql = "UPDATE jobs SET deadline = NOW() WHERE id = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, jobId);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     @Override
     public List<JobPosting> getJobsByRecruiterAndStatus(int recruiterId, String status) {
