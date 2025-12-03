@@ -4,6 +4,9 @@ import com.recruitment.app.dao.CompanyDAO;
 import com.recruitment.app.dao.CompanyDAOImpl;
 import com.recruitment.app.dao.UserDAO;
 import com.recruitment.app.dao.UserDAOImpl;
+import com.recruitment.app.models.Applicant;
+import com.recruitment.app.models.HiringManager;
+import com.recruitment.app.models.Recruiter;
 import com.recruitment.app.models.User;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -16,41 +19,41 @@ public class UserServiceImpl implements UserService {
 
     // ----------------- REGISTER APPLICANT -----------------
     @Override
-    public boolean registerApplicant(User user) {
-        String hashed = hashPassword(user.getPassword());
-        user.setPassword(hashed);
+    public RegistrationResult registerUser(User user, String companyName) {
+        if (user instanceof Applicant) {
+            // Applicant doesn't need a company
+            user.setStatus("pending_verification");
+            user.setPassword(hashPassword(user.getPassword()));
+            boolean ok = userDAO.register(user);
+            return ok ? new RegistrationResult(true, "Registration successful!")
+                    : new RegistrationResult(false, "Database error");
+        } else if (user instanceof Recruiter || user instanceof HiringManager) {
+            if (companyName == null || companyName.isBlank()) {
+                return new RegistrationResult(false, "Company name required.");
+            }
 
-        if (user.getRole() == null) user.setRole("Applicant");
-        if (user.getStatus() == null) user.setStatus("pending_verification");
+            int companyId = companyDAO.getOrCreateCompanyId(companyName.trim());
 
-        return userDAO.register(user);
+            if (companyId <= 0) {
+                return new RegistrationResult(false, "Company not found.");
+            }
+
+            if (userDAO.roleExistsForCompany(user.getRole(), companyId)) {
+                return new RegistrationResult(false, user.getRole() + " already exists.");
+            }
+
+            user.setCompanyId(companyId);
+            user.setStatus("pending_verification");
+            user.setPassword(hashPassword(user.getPassword()));
+
+            boolean ok = userDAO.register(user);
+            return ok ? new RegistrationResult(true, "Registration successful.")
+                    : new RegistrationResult(false, "Database error");
+        } else {
+            return new RegistrationResult(false, "Unknown user type");
+        }
     }
 
-    // ----------------- REGISTER RECRUITER / MANAGER -----------------
-    @Override
-    public RegistrationResult registerRecruiterOrManager(User user, String companyName) {
-        if (companyName == null || companyName.isBlank()) {
-            return new RegistrationResult(false, "Company name required.");
-        }
-
-        int companyId = companyDAO.getOrCreateCompanyId(companyName.trim());
-
-        if (companyId <= 0) {
-            return new RegistrationResult(false, "Company not found.");
-        }
-
-        if (userDAO.roleExistsForCompany(user.getRole(), companyId)) {
-            return new RegistrationResult(false, user.getRole() + " already exists.");
-        }
-
-        user.setPassword(hashPassword(user.getPassword()));
-        user.setCompanyId(companyId);
-        user.setStatus("pending_verification");
-
-        boolean ok = userDAO.register(user);
-        return ok ? new RegistrationResult(true, "Registration successful.")
-                : new RegistrationResult(false, "Database error");
-    }
 
     // ----------------- LOGIN -----------------
     @Override

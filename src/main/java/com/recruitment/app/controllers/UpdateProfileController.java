@@ -2,7 +2,6 @@ package com.recruitment.app.controllers;
 
 import com.recruitment.app.models.User;
 import com.recruitment.app.services.UserService;
-import com.recruitment.app.services.UserServiceImpl;
 import com.recruitment.app.utils.SceneLoader;
 import com.recruitment.app.utils.SessionManager;
 import javafx.event.ActionEvent;
@@ -18,11 +17,21 @@ public class UpdateProfileController {
     @FXML private TextField contactField;
     @FXML private Label messageLabel;
 
-    private final UserService userService = new UserServiceImpl();
+    // Service will be injected by ControllerFactory
+    private UserService userService;
+
+    // ---------- DEFAULT CONSTRUCTOR ----------
+    public UpdateProfileController() {
+        // Empty - service will be injected
+    }
+
+    // ---------- SERVICE INJECTION ----------
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
 
     @FXML
     public void initialize() {
-
         if (SessionManager.loggedInUser == null) {
             messageLabel.setText("Error: No user session found");
             return;
@@ -35,9 +44,14 @@ public class UpdateProfileController {
         contactField.setText(user.getContact());
     }
 
-
     @FXML
     public void updateProfile(ActionEvent event) {
+        // ADD null check for service
+        if (userService == null) {
+            messageLabel.setText("System error: Services not initialized!");
+            return;
+        }
+
         User user = SessionManager.loggedInUser;
 
         user.setFullName(fullNameField.getText());
@@ -56,6 +70,7 @@ public class UpdateProfileController {
     @FXML
     public void backToJobs(ActionEvent event) {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        SceneLoader.load(stage, "/ui/browse_jobs.fxml");
+        // Use DI method for navigation
+        SceneLoader.loadWithDI(stage, "/ui/browse_jobs.fxml", "Browse Jobs");
     }
 }

@@ -25,16 +25,22 @@ public class FinalRankingController {
     @FXML private Button sendToHMButton;
     @FXML private Button notifyCandidatesButton;
 
-    private final FinalRankingService finalRankingService; // interface only
-    private final HMService hmService;                     // interface only
-    private final NotificationService notificationService; // interface only
+    // Services - will be injected by ControllerFactory
+    private FinalRankingService finalRankingService;
+    private HMService hmService;
+    private NotificationService notificationService;
 
     private int selectedJobId; // For notification purposes
 
-    // Constructor injection ensures proper service injection
-    public FinalRankingController(FinalRankingService finalRankingService,
-                                  HMService hmService,
-                                  NotificationService notificationService) {
+    // ---------- DEFAULT CONSTRUCTOR ----------
+    public FinalRankingController() {
+        // Empty - services will be injected via setters
+    }
+
+    // ---------- SERVICE INJECTION ----------
+    public void setServices(FinalRankingService finalRankingService,
+                            HMService hmService,
+                            NotificationService notificationService) {
         this.finalRankingService = finalRankingService;
         this.hmService = hmService;
         this.notificationService = notificationService;
@@ -51,12 +57,31 @@ public class FinalRankingController {
         sendToHMButton.setDisable(true);
         notifyCandidatesButton.setDisable(true);
 
-        populateJobs();
+        // Don't populate jobs here - wait for services to be injected
+        // We'll populate jobs when services are available
+    }
+
+    // Call this after services are injected
+    public void initializeAfterInjection() {
+        System.out.println("DEBUG: initializeAfterInjection called");
+        if (finalRankingService != null) {
+            System.out.println("DEBUG: finalRankingService is injected");
+            populateJobs();
+        } else {
+            System.err.println("ERROR: FinalRankingService not injected!");
+        }
     }
 
     private void populateJobs() {
+        System.out.println("DEBUG: populateJobs called");
         try {
             List<JobPosting> jobs = finalRankingService.getJobsEligibleForFinalRanking();
+            System.out.println("DEBUG: Jobs fetched: " + (jobs == null ? "null" : jobs.size()));
+            if (jobs != null) {
+                for (JobPosting job : jobs) {
+                    System.out.println("DEBUG: Job -> " + job.getTitle() + " (ID: " + job.getId() + ")");
+                }
+            }
             jobComboBox.setItems(FXCollections.observableArrayList(jobs));
             if (!jobs.isEmpty()) jobComboBox.getSelectionModel().selectFirst();
         } catch (Exception e) {
@@ -67,7 +92,20 @@ public class FinalRankingController {
 
     @FXML
     private void generateFinalRanking() {
+        System.out.println("DEBUG: generateFinalRanking called");
+        if (finalRankingService == null) {
+            showAlert(Alert.AlertType.ERROR, "Service not initialized!");
+            return;
+        }
+
+        if (jobComboBox.getItems().isEmpty()) {
+            System.out.println("DEBUG: jobComboBox is empty, calling populateJobs()");
+            populateJobs(); // populate if empty
+        }
+
         JobPosting job = jobComboBox.getValue();
+        System.out.println("DEBUG: Selected job -> " + (job == null ? "null" : job.getTitle()));
+
         if (job == null) {
             showAlert(Alert.AlertType.WARNING, "Please select a job.");
             return;
@@ -75,6 +113,7 @@ public class FinalRankingController {
 
         try {
             List<FinalRankedCandidate> finalList = finalRankingService.generateFinalRankingForJob(job.getId());
+            System.out.println("DEBUG: Final ranking list size -> " + (finalList == null ? "null" : finalList.size()));
             finalRankingTable.setItems(FXCollections.observableArrayList(finalList));
             sendToHMButton.setDisable(finalList.isEmpty());
             notifyCandidatesButton.setDisable(finalList.isEmpty());
@@ -87,8 +126,15 @@ public class FinalRankingController {
         }
     }
 
+
     @FXML
     private void sendToHiringManager() {
+        // ADD null check for service
+        if (hmService == null) {
+            showAlert(Alert.AlertType.ERROR, "Service not initialized!");
+            return;
+        }
+
         JobPosting job = jobComboBox.getValue();
         if (job == null) {
             showAlert(Alert.AlertType.WARNING, "Please select a job.");
@@ -111,13 +157,19 @@ public class FinalRankingController {
 
     @FXML
     private void notifyCandidates() {
+        // ADD null check for service
+        if (notificationService == null) {
+            showAlert(Alert.AlertType.ERROR, "Service not initialized!");
+            return;
+        }
+
         if (selectedJobId == 0) {
             showAlert(Alert.AlertType.WARNING, "Generate final ranking before notifying candidates.");
             return;
         }
 
         try {
-            List<Application> finalRankings = finalRankingService.getFinalRankingApplications(selectedJobId);
+            List<Application> finalRankings = finalRankingService.getFinalRankingApplicationsByJob(selectedJobId);
 
             Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
                     "Notify ALL candidates of their final decision?",

@@ -1,10 +1,7 @@
 package com.recruitment.app.controllers;
 
-import com.recruitment.app.config.DBConnection;
-import com.recruitment.app.dao.ApplicationDAOImpl;
 import com.recruitment.app.models.JobPosting;
 import com.recruitment.app.services.ApplicationService;
-import com.recruitment.app.services.ApplicationServiceImpl;
 import com.recruitment.app.utils.SceneLoader;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -16,11 +13,24 @@ public class JobDetailsController {
 
     private JobPosting job;
 
+    // Service will be injected by ControllerFactory
+    private ApplicationService applicationService;
+
     @FXML private Label titleLabel;
     @FXML private Label deptLabel;
     @FXML private Label descLabel;
     @FXML private Label reqLabel;
     @FXML private Label deadlineLabel;
+
+    // ---------- DEFAULT CONSTRUCTOR ----------
+    public JobDetailsController() {
+        // Empty - service will be injected
+    }
+
+    // ---------- SERVICE INJECTION ----------
+    public void setApplicationService(ApplicationService applicationService) {
+        this.applicationService = applicationService;
+    }
 
     public void setJob(JobPosting job) {
         this.job = job;
@@ -44,18 +54,16 @@ public class JobDetailsController {
         SceneLoader.load(stage, "/ui/browse_jobs.fxml");
     }
 
-
     @FXML
     public void openApplicationForm(ActionEvent event) {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
+        // Use updated SceneLoader that uses DI
         SceneLoader.loadApplicationForm(
                 stage,
                 "/ui/application_form.fxml",
-                new ApplicationServiceImpl(new ApplicationDAOImpl(DBConnection.getConnection())),
+                applicationService, // Pass the injected service
                 job
         );
     }
-
-
 }

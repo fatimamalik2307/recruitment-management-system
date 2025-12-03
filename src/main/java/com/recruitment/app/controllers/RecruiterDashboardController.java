@@ -1,9 +1,11 @@
 package com.recruitment.app.controllers;
 
+import com.recruitment.app.di.ControllerFactory;
 import com.recruitment.app.services.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -13,17 +15,19 @@ import java.io.IOException;
 
 public class RecruiterDashboardController {
 
-    // Services (injected via constructor)
-    private final JobService jobService;
-    private final ShortlistingCriteriaService criteriaService;
-    private final ShortlistService shortlistService;
-    private final RecruiterService recruiterService;
-    private final AssessmentService assessmentService;
-    private final FinalRankingService finalRankingService;
-    private final HMService hmService;
+    private JobService jobService;
+    private ShortlistingCriteriaService criteriaService;
+    private ShortlistService shortlistService;
+    private RecruiterService recruiterService;
+    private AssessmentService assessmentService;
+    private FinalRankingService finalRankingService;
+    private HMService hmService;
 
-    // Constructor injection
-    public RecruiterDashboardController(
+    // NO-ARG constructor required for FXMLLoader
+    public RecruiterDashboardController() { }
+
+    // Setter method to inject services (KEEP THIS - ControllerFactory uses it)
+    public void setServices(
             JobService jobService,
             ShortlistingCriteriaService criteriaService,
             ShortlistService shortlistService,
@@ -41,6 +45,7 @@ public class RecruiterDashboardController {
         this.hmService = hmService;
     }
 
+
     // -----------------------
     // Open Create Job Posting
     // -----------------------
@@ -48,14 +53,17 @@ public class RecruiterDashboardController {
     private void openCreateJob(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/create_job_posting.fxml"));
+
+            // USE ControllerFactory instead of manually setting service
+            loader.setControllerFactory(ControllerFactory.getInstance());
+
             Stage stage = new Stage();
             stage.setScene(new Scene(loader.load()));
             stage.setTitle("Create Job Posting");
-
-            CreateJobPostingController controller = loader.getController();
-            controller.setJobService(jobService);
-
             stage.showAndWait();
+
+            // REMOVED: controller.setJobService(jobService); // No longer needed
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -68,6 +76,10 @@ public class RecruiterDashboardController {
     private void openReviewApplications(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/ReviewApplications.fxml"));
+
+            // USE ControllerFactory
+            loader.setControllerFactory(ControllerFactory.getInstance());
+
             Stage stage = new Stage();
             stage.setScene(new Scene(loader.load()));
             stage.setTitle("Review Applications");
@@ -81,18 +93,22 @@ public class RecruiterDashboardController {
     // Review Shortlist
     // -----------------------
     @FXML
-    private void openReviewShortlist(ActionEvent event) {
+    private void openReviewShortlist() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/ReviewShortlist.fxml"));
+
+            // USE ControllerFactory instead of manual service injection
+            loader.setControllerFactory(ControllerFactory.getInstance());
+
+            Parent root = loader.load();
             Stage stage = new Stage();
-            stage.setScene(new Scene(loader.load()));
+            stage.setScene(new Scene(root));
             stage.setTitle("Review Shortlist");
-
-            ReviewShortlistController controller = loader.getController();
-            controller.setServices(shortlistService, criteriaService, recruiterService, assessmentService, finalRankingService);
-
             stage.show();
-        } catch (IOException e) {
+
+            // REMOVED: Manual service injection - ControllerFactory handles it
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -104,6 +120,10 @@ public class RecruiterDashboardController {
     private void openShortlistingCriteria(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/ShortlistingCriteria.fxml"));
+
+            // USE ControllerFactory
+            loader.setControllerFactory(ControllerFactory.getInstance());
+
             Stage stage = new Stage();
             stage.setScene(new Scene(loader.load()));
             stage.setTitle("Define Shortlisting Criteria");
@@ -120,13 +140,13 @@ public class RecruiterDashboardController {
     private void openRecruitmentReport(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/recruitment_report_view.fxml"));
+
+            // USE ControllerFactory
+            loader.setControllerFactory(ControllerFactory.getInstance());
+
             Stage stage = new Stage();
             stage.setScene(new Scene(loader.load()));
             stage.setTitle("Recruitment Report");
-
-            RecruitmentReportController controller = loader.getController();
-            // Services handled internally
-
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -141,11 +161,13 @@ public class RecruiterDashboardController {
     private void openFinalRanking(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/FinalRanking.fxml"));
+
+            // USE ControllerFactory
+            loader.setControllerFactory(ControllerFactory.getInstance());
+
             Stage stage = new Stage();
             stage.setScene(new Scene(loader.load()));
             stage.setTitle("Final Ranking");
-
-            FinalRankingController controller = loader.getController();
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -160,6 +182,10 @@ public class RecruiterDashboardController {
     private void openProfile(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("ui/profile.fxml"));
+
+            // USE ControllerFactory
+            loader.setControllerFactory(ControllerFactory.getInstance());
+
             Stage stage = new Stage();
             stage.setScene(new Scene(loader.load()));
             stage.setTitle("Update Profile");
@@ -177,6 +203,10 @@ public class RecruiterDashboardController {
     private void openChangePassword(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/change_password.fxml"));
+
+            // USE ControllerFactory
+            loader.setControllerFactory(ControllerFactory.getInstance());
+
             Stage stage = new Stage();
             stage.setScene(new Scene(loader.load()));
             stage.setTitle("Change Password");
@@ -197,6 +227,10 @@ public class RecruiterDashboardController {
 
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/Login.fxml"));
+
+            // USE ControllerFactory for Login too (if LoginController needs services)
+            // loader.setControllerFactory(ControllerFactory.getInstance());
+
             Stage loginStage = new Stage();
             loginStage.setScene(new Scene(loader.load()));
             loginStage.setTitle("Login");

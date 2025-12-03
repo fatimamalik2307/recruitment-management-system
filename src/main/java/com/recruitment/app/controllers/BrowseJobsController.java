@@ -1,19 +1,15 @@
 package com.recruitment.app.controllers;
 
-import com.recruitment.app.config.DBConnection;
-import com.recruitment.app.dao.JobDAOImpl;
 import com.recruitment.app.models.JobPosting;
+import com.recruitment.app.services.JobService;
 import com.recruitment.app.utils.SceneLoader;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import javafx.scene.Node;
 
-import java.io.IOException;
-import java.sql.Connection;
+import java.time.LocalDate;
 
 public class BrowseJobsController {
 
@@ -23,10 +19,24 @@ public class BrowseJobsController {
     @FXML private TableColumn<JobPosting, String> deadlineCol;
     @FXML private TableColumn<JobPosting, Void> actionCol;
 
-    private JobDAOImpl jobDAO = new JobDAOImpl(DBConnection.getConnection());
+    // Service injected by ControllerFactory
+    private JobService jobService;
+
+    // ---------- DEFAULT CONSTRUCTOR ----------
+    public BrowseJobsController() {
+        // Empty - services will be injected
+    }
+
+    // ---------- SERVICE INJECTION ----------
+    public void setJobService(JobService jobService) {
+        System.out.println("BrowseJobsController: JobService injected = " + (jobService != null));
+        this.jobService = jobService;
+    }
 
     @FXML
     public void initialize() {
+        System.out.println("BrowseJobsController: initialize() called");
+
         // Map table columns
         titleCol.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getTitle()));
         deptCol.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getDepartment()));
@@ -56,60 +66,76 @@ public class BrowseJobsController {
             }
         });
 
-        // Load jobs from DB
-        // Load only valid (non-expired) jobs
-        jobsTable.getItems().setAll(
-                jobDAO.getAllJobs().stream()
-                        .filter(job -> job.getDeadline() == null || !job.getDeadline().isBefore(java.time.LocalDate.now()))
-                        .toList()
-        );
+        // Load jobs from service
+        loadJobs();
+    }
 
+    private void loadJobs() {
+        try {
+            if (jobService != null) {
+                System.out.println("Loading jobs...");
+                jobsTable.getItems().setAll(
+                        jobService.getAllJobs().stream()
+                                .filter(job -> job.getDeadline() == null ||
+                                        !job.getDeadline().isBefore(LocalDate.now()))
+                                .toList()
+                );
+                System.out.println("Loaded " + jobsTable.getItems().size() + " jobs");
+            } else {
+                System.err.println("ERROR: JobService is NULL!");
+                new Alert(Alert.AlertType.ERROR, "System error: Services not initialized").show();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "Failed to load jobs: " + e.getMessage()).show();
+        }
     }
 
     private void openJobDetails(JobPosting job, javafx.event.ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/job_details.fxml"));
+            // USE SceneLoader with DI
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(loader.load()));
-
-            JobDetailsController controller = loader.getController();
-            controller.setJob(job); // pass the job object
-
-            stage.show();
-        } catch (IOException e) {
+            SceneLoader.loadWithDIAndConfig(stage, "/ui/job_details.fxml", controller -> {
+                if (controller instanceof JobDetailsController) {
+                    ((JobDetailsController) controller).setJob(job);
+                }
+            });
+        } catch (Exception e) {
             e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "Failed to open job details").show();
         }
     }
-
 
     @FXML
     public void logout(javafx.event.ActionEvent event) {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        SceneLoader.load(stage, "/ui/login.fxml");
+        // USE DI METHOD
+        SceneLoader.loadWithDI(stage, "/ui/login.fxml", "Login");
     }
 
     @FXML
     public void openProfile(javafx.event.ActionEvent event) {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        SceneLoader.load(stage, "/ui/profile.fxml");
+        // USE DI METHOD
+        SceneLoader.loadWithDI(stage, "/ui/profile.fxml", "Update Profile");
     }
+
     @FXML
     public void openTrackApplications(javafx.event.ActionEvent event) {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        SceneLoader.load(stage, "/ui/track_applications.fxml");
+        // USE DI METHOD
+        SceneLoader.loadWithDI(stage, "/ui/track_applications.fxml", "Track Applications");
     }
+
     @FXML
     public void openChangePassword(javafx.event.ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/change_password.fxml"));
             Stage stage = new Stage();
-            stage.setScene(new Scene(loader.load()));
-            stage.setTitle("Change Password");
-            stage.show();
+            // USE DI METHOD
+            SceneLoader.loadWithDI(stage, "/ui/change_password.fxml", "Change Password");
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println(" ERROR: Could not load change_password.fxml");
+            new Alert(Alert.AlertType.ERROR, "Cannot open change password screen").show();
         }
     }
-
 }

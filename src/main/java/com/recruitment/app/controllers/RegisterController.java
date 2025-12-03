@@ -1,10 +1,8 @@
 package com.recruitment.app.controllers;
 
-import com.recruitment.app.models.User;
-import com.recruitment.app.models.UserFactory;
+import com.recruitment.app.models.*;
 import com.recruitment.app.services.UserService;
 import com.recruitment.app.services.UserService.RegistrationResult;
-import com.recruitment.app.services.UserServiceImpl;
 import com.recruitment.app.utils.SceneLoader;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -12,22 +10,6 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 
-/**
- * Controller for registration UI.
- * - Controller handles UI interactions only (SRP).
- * - Delegates business logic to UserService (DIP).
- *
- * FXML fields used (wire these in your register.fxml):
- *   - TextField fullNameField
- *   - TextField emailField
- *   - TextField usernameField
- *   - PasswordField passwordField
- *   - PasswordField confirmPasswordField
- *   - TextField contactField
- *   - ComboBox<String> roleCombo
- *   - TextField companyField  (visible only when role is Recruiter/Hiring Manager)
- *   - Label messageLabel
- */
 public class RegisterController {
 
     @FXML private TextField fullNameField;
@@ -36,20 +18,25 @@ public class RegisterController {
     @FXML private PasswordField passwordField;
     @FXML private PasswordField confirmPasswordField;
     @FXML private TextField contactField;
-
     @FXML private ComboBox<String> roleCombo;
-    @FXML private TextField companyField; // used only when role != Applicant
+    @FXML private TextField companyField;
     @FXML private Label messageLabel;
 
+    private UserService userService;
 
-    private final UserService userService = new UserServiceImpl();
+    public RegisterController() {}
+
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
+
     @FXML
     public void initialize() {
-        // Populate role dropdown
+        // Populate roles
         roleCombo.getItems().addAll("Applicant", "Recruiter", "Hiring Manager");
         roleCombo.setValue("Applicant");
 
-        // Toggle company field visibility based on role
+        // Show/hide company field
         roleCombo.setOnAction(e -> {
             String role = roleCombo.getValue();
             companyField.setDisable(role.equalsIgnoreCase("Applicant"));
@@ -57,7 +44,6 @@ public class RegisterController {
             if (role.equalsIgnoreCase("Applicant")) companyField.clear();
         });
 
-        // Initially hide/disable the company field for applicants
         companyField.setDisable(true);
         companyField.setVisible(false);
     }
@@ -65,7 +51,12 @@ public class RegisterController {
     @FXML
     public void registerUser(ActionEvent event) {
         try {
-            // Basic validations
+            if (userService == null) {
+                messageLabel.setText("System error: Services not initialized!");
+                return;
+            }
+
+            // Basic validation
             if (fullNameField.getText().trim().isEmpty() ||
                     emailField.getText().trim().isEmpty() ||
                     usernameField.getText().trim().isEmpty() ||
@@ -81,42 +72,53 @@ public class RegisterController {
             }
 
             String role = roleCombo.getValue();
-            String companyName = companyField.getText();
+            String companyName = companyField.getText().trim();
+            User user;
 
-            if (role.equalsIgnoreCase("Applicant")) {
-                User user = UserFactory.createApplicant(
-                        fullNameField.getText().trim(),
-                        emailField.getText().trim(),
-                        usernameField.getText().trim(),
-                        passwordField.getText(),
-                        contactField.getText().trim()
-                );
+            // Create appropriate subclass
+            switch (role) {
+                case "Recruiter":
+                    if (companyName.isEmpty()) {
+                        messageLabel.setText("Company name is required for Recruiter");
+                        return;
+                    }
+                    user = new Recruiter(
+                            fullNameField.getText().trim(),
+                            emailField.getText().trim(),
+                            usernameField.getText().trim(),
+                            passwordField.getText(),
+                            contactField.getText().trim()
+                    );
+                    break;
 
-                boolean ok = userService.registerApplicant(user);
-                messageLabel.setText(ok ? "Registration successful!" : "Registration failed!");
-                if (ok) gotoLogin(event);
+                case "Hiring Manager":
+                    if (companyName.isEmpty()) {
+                        messageLabel.setText("Company name is required for Hiring Manager");
+                        return;
+                    }
+                    user = new HiringManager(
+                            fullNameField.getText().trim(),
+                            emailField.getText().trim(),
+                            usernameField.getText().trim(),
+                            passwordField.getText(),
+                            contactField.getText().trim()
+                    );
+                    break;
 
-            } else {
-                // Recruiter or Hiring Manager path
-                if (companyName == null || companyName.trim().isEmpty()) {
-                    messageLabel.setText("Company name is required for " + role);
-                    return;
-                }
-
-                User user = UserFactory.createRecruiterOrManager(
-                        fullNameField.getText().trim(),
-                        emailField.getText().trim(),
-                        usernameField.getText().trim(),
-                        passwordField.getText(),
-                        contactField.getText().trim(),
-                        role,
-                        null // company id handled by service
-                );
-
-                RegistrationResult result = userService.registerRecruiterOrManager(user, companyName.trim());
-                messageLabel.setText(result.getMessage());
-                if (result.isSuccess()) gotoLogin(event);
+                default: // Applicant
+                    user = new Applicant(
+                            fullNameField.getText().trim(),
+                            emailField.getText().trim(),
+                            usernameField.getText().trim(),
+                            passwordField.getText(),
+                            contactField.getText().trim()
+                    );
             }
+
+            // Unified registration call
+            RegistrationResult result = userService.registerUser(user, companyName);
+            messageLabel.setText(result.getMessage());
+            if (result.isSuccess()) gotoLogin(event);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -126,7 +128,7 @@ public class RegisterController {
 
     private void gotoLogin(ActionEvent event) {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        SceneLoader.load(stage, "/ui/login.fxml");
+        SceneLoader.loadWithDI(stage, "/ui/login.fxml", "Login");
     }
 
     @FXML

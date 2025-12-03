@@ -1,14 +1,9 @@
 package com.recruitment.app.controllers;
 
-import com.recruitment.app.dao.JobDAO;
-import com.recruitment.app.dao.JobDAOImpl;
 import com.recruitment.app.models.RecruitmentReport;
 import com.recruitment.app.models.JobPosting;
 import com.recruitment.app.services.RecruitmentReportService;
-import com.recruitment.app.services.RecruitmentReportServiceImpl;
 import com.recruitment.app.services.JobService;
-import com.recruitment.app.services.JobServiceImpl;
-import com.recruitment.app.utils.DBConnection;
 import com.recruitment.app.utils.SessionManager;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -28,28 +23,50 @@ public class RecruitmentReportController {
 
     private RecruitmentReport report;
 
-    // Services
-    private final RecruitmentReportService reportService = new RecruitmentReportServiceImpl();
-    private final JobDAO jobDAO = new JobDAOImpl(DBConnection.getConnection());
-    private final JobService jobService = new JobServiceImpl(jobDAO);
+    // Services will be injected by ControllerFactory
+    private RecruitmentReportService reportService;
+    private JobService jobService;
+
+    // ---------- DEFAULT CONSTRUCTOR ----------
+    public RecruitmentReportController() {
+        // Empty - services will be injected
+    }
+
+    // ---------- SERVICE INJECTION ----------
+    public void setServices(RecruitmentReportService reportService, JobService jobService) {
+        this.reportService = reportService;
+        this.jobService = jobService;
+    }
 
     @FXML
     public void initialize() {
-        // Load jobs for recruiter (hardcoded recruiterId for example, normally get from session)
+        // Load jobs for recruiter
         int recruiterId = SessionManager.loggedInUser.getId();
-        List<JobPosting> jobs = jobService.getAllJobsForRecruiter(recruiterId);
-        jobComboBox.setItems(FXCollections.observableArrayList(jobs));
+
+        // ADD null check for services
+        if (jobService != null) {
+            List<JobPosting> jobs = jobService.getAllJobsForRecruiter(recruiterId);
+            jobComboBox.setItems(FXCollections.observableArrayList(jobs));
+        } else {
+            System.err.println("JobService not injected!");
+        }
     }
 
     @FXML
     public void onGenerateReport() {
+        // ADD null check for service
+        if (reportService == null) {
+            showError("Service not initialized!");
+            return;
+        }
+
         JobPosting selectedJob = jobComboBox.getValue();
         if (selectedJob == null) {
             showError("Please select a job.");
             return;
         }
 
-        int recruiterId = SessionManager.loggedInUser.getId(); // normally from logged-in session
+        int recruiterId = SessionManager.loggedInUser.getId();
         this.report = reportService.generateReport(selectedJob.getId(), recruiterId);
 
         if (report == null) {

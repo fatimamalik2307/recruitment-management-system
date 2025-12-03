@@ -1,10 +1,7 @@
 package com.recruitment.app.controllers;
 
-import com.recruitment.app.dao.JobDescriptionDAOImpl;
 import com.recruitment.app.models.JobDescription;
 import com.recruitment.app.services.JobDescriptionService;
-import com.recruitment.app.services.JobDescriptionServiceImpl;
-import com.recruitment.app.utils.DBConnection;
 import com.recruitment.app.utils.SceneLoader;
 import com.recruitment.app.utils.SessionManager;
 import javafx.fxml.FXML;
@@ -22,15 +19,24 @@ public class JobDescriptionController {
     @FXML private TextArea reportArea;
     @FXML private TextArea qualificationArea;
 
+    // Service will be injected by ControllerFactory
     private JobDescriptionService service;
     public static JobDescription selectedDescription = null;
 
+    // ---------- DEFAULT CONSTRUCTOR ----------
+    public JobDescriptionController() {
+        // Empty - service will be injected
+    }
+
+    // ---------- SERVICE INJECTION ----------
+    public void setJobDescriptionService(JobDescriptionService service) {
+        this.service = service;
+    }
+
     @FXML
     public void initialize() {
-
-        service = new JobDescriptionServiceImpl(
-                new JobDescriptionDAOImpl(DBConnection.getConnection())
-        );
+        // REMOVED: Manual service instantiation
+        // service = new JobDescriptionServiceImpl(...)
 
         // Populate dropdowns
         jobTypeCombo.getItems().addAll("Full-Time", "Part-Time", "Contract", "Internship");
@@ -56,6 +62,11 @@ public class JobDescriptionController {
 
     @FXML
     private void saveDescription() {
+        // ADD null check for service
+        if (service == null) {
+            new Alert(Alert.AlertType.ERROR, "Service not initialized!").show();
+            return;
+        }
 
         if (titleField.getText().isEmpty() ||
                 jobTypeCombo.getValue() == null ||

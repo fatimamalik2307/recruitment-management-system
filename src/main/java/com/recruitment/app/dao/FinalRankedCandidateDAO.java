@@ -1,5 +1,6 @@
 package com.recruitment.app.dao;
 
+import com.recruitment.app.models.Application;
 import com.recruitment.app.models.FinalRankedCandidate;
 import java.util.List;
 import java.util.Optional;
@@ -17,6 +18,8 @@ public interface FinalRankedCandidateDAO {
 
     // Update rank and composite score (used by recruiter)
     void updateRankAndScore(int id, double compositeScore, int rank);
+
+    List<Application> getFinalRankingApplicationsByJob(int jobId);
 
     // Update hiring manager notes and status
     boolean updateStatusAndNotes(int id, String status, String hmNotes);

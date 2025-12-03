@@ -1,5 +1,6 @@
 package com.recruitment.app.dao;
 
+import com.recruitment.app.models.Application;
 import com.recruitment.app.models.FinalRankedCandidate;
 import java.sql.*;
 import java.util.ArrayList;
@@ -93,6 +94,39 @@ public class FinalRankedCandidateDAOImpl implements FinalRankedCandidateDAO {
             e.printStackTrace();
         }
     }
+    @Override
+    public List<Application> getFinalRankingApplicationsByJob(int jobId) {
+        List<Application> applications = new ArrayList<>();
+        String sql = """
+        SELECT a.* 
+        FROM applications a
+        JOIN final_ranked_candidates f ON a.id = f.application_id
+        WHERE f.job_id = ?
+        ORDER BY f.rank ASC
+    """;
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) { // use conn directly
+            stmt.setInt(1, jobId);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Application app = new Application();
+                app.setId(rs.getInt("id"));
+                app.setUserId(rs.getInt("user_id"));
+                app.setJobId(rs.getInt("job_id"));
+                app.setQualification(rs.getString("qualification"));
+                app.setExperience(rs.getString("experience"));
+                app.setCoverLetter(rs.getString("cover_letter"));
+                app.setStatus(rs.getString("status"));
+                app.setAppliedAt(rs.getTimestamp("applied_at").toLocalDateTime());
+                applications.add(app);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return applications;
+    }
+
 
     @Override
     public boolean updateStatusAndNotes(int id, String status, String hmNotes) {

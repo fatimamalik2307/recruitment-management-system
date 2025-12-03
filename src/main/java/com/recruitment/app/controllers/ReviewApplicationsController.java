@@ -3,10 +3,6 @@ package com.recruitment.app.controllers;
 import com.recruitment.app.models.Application;
 import com.recruitment.app.models.JobPosting;
 import com.recruitment.app.services.RecruiterService;
-import com.recruitment.app.services.RecruiterServiceImpl;
-import com.recruitment.app.dao.ApplicationDAOImpl;
-import com.recruitment.app.dao.JobDAOImpl;
-import com.recruitment.app.config.DBConnection;
 import com.recruitment.app.utils.SessionManager;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
@@ -24,13 +20,19 @@ public class ReviewApplicationsController {
     @FXML private TableColumn<Application, String> statusCol;
     @FXML private TableColumn<Application, Void> actionCol;
 
+    // Service will be injected by ControllerFactory
+    private RecruiterService recruiterService;
 
-    private final RecruiterService recruiterService =
-            new RecruiterServiceImpl(
-                    new JobDAOImpl(DBConnection.getConnection()),
-                    new ApplicationDAOImpl(DBConnection.getConnection()),
-                    null // no criteria needed here
-            );
+    // ---------- DEFAULT CONSTRUCTOR ----------
+    public ReviewApplicationsController() {
+        // Empty - service will be injected
+    }
+
+    // ---------- SERVICE INJECTION ----------
+    public void setRecruiterService(RecruiterService recruiterService) {
+        this.recruiterService = recruiterService;
+    }
+
     private void showApplicationDetails(Application app) {
         StringBuilder details = new StringBuilder();
         details.append("Qualification: ").append(app.getQualification()).append("\n");
@@ -48,6 +50,12 @@ public class ReviewApplicationsController {
 
     @FXML
     public void initialize() {
+        // ADD null check for service
+        if (recruiterService == null) {
+            System.err.println("RecruiterService not injected!");
+            return;
+        }
+
         // Populate jobs for the logged-in recruiter
         List<JobPosting> jobs = recruiterService.getJobsByRecruiter(SessionManager.loggedInUser.getId());
         if (jobs != null && !jobs.isEmpty()) {
@@ -87,11 +95,16 @@ public class ReviewApplicationsController {
                 }
             }
         });
-
     }
 
     @FXML
     private void loadApplications() {
+        // ADD null check for service
+        if (recruiterService == null) {
+            new Alert(Alert.AlertType.ERROR, "Service not initialized!").show();
+            return;
+        }
+
         JobPosting selectedJob = jobComboBox.getSelectionModel().getSelectedItem();
         if (selectedJob == null) return;
 
@@ -107,7 +120,10 @@ public class ReviewApplicationsController {
 
     // Fetch applicant name using service or DAO
     private String getApplicantName(int userId) {
-        // Ideally, create a UserService to fetch names instead of JobDAO, but simple for now
-        return new JobDAOImpl(DBConnection.getConnection()).getUserFullName(userId);
+        // Use the injected service instead of creating new DAO
+        if (recruiterService != null) {
+            return recruiterService.getApplicantName(userId);
+        }
+        return "Unknown Applicant";
     }
 }

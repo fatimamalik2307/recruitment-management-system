@@ -87,6 +87,34 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
+    public User findHiringManagerByRecruiterId(int recruiterId) {
+        String sql = """
+        SELECT hm.id, hm.full_name, hm.email, hm.role, hm.company_id
+        FROM users AS hm
+        JOIN users AS recruiter ON recruiter.company_id = hm.company_id
+        WHERE recruiter.id = ? AND hm.role = 'Hiring Manager'
+        LIMIT 1
+        """;
+        Connection conn = DBConnection.getConnection();
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, recruiterId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                User user = new User();
+                user.setId(rs.getInt("id"));
+                user.setFullName(rs.getString("full_name"));
+                user.setEmail(rs.getString("email"));
+                user.setRole(rs.getString("role"));
+                user.setCompanyId(rs.getInt("company_id"));
+                return user;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
     public User getByApplicationId(int applicationId) {
         String sql = "SELECT u.* FROM users u " +
                 "JOIN applications a ON a.user_id = u.id " +

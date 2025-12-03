@@ -8,6 +8,8 @@ public interface UserDAO {
     boolean updateProfile(User user);
     boolean roleExistsForCompany(String role, int companyId);
 
+    User findHiringManagerByRecruiterId(int recruiterId);
+
     // New method to fetch a user linked to a specific application
     User getByApplicationId(int applicationId);
 

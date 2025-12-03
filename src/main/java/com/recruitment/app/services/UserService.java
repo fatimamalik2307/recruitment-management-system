@@ -5,9 +5,8 @@ import com.recruitment.app.models.User;
 
 public interface UserService {
 
-    boolean registerApplicant(User user);
-
-    RegistrationResult registerRecruiterOrManager(User user, String companyName);
+    // ----------------- REGISTER APPLICANT -----------------
+    RegistrationResult registerUser(User user, String companyName);
 
     User login(String username, String rawPassword);
 

@@ -11,12 +11,14 @@ public class WelcomeController {
     @FXML
     public void openLogin(ActionEvent event) {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        SceneLoader.load(stage, "/ui/login.fxml");
+        // Use DI method for navigation
+        SceneLoader.loadWithDI(stage, "/ui/login.fxml", "Login");
     }
 
     @FXML
     public void openRegister(ActionEvent event) {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        SceneLoader.load(stage, "/ui/register.fxml");
+        // Use DI method for navigation
+        SceneLoader.loadWithDI(stage, "/ui/register.fxml", "Register");
     }
 }

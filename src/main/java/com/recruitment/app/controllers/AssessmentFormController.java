@@ -16,15 +16,21 @@ public class AssessmentFormController {
     @FXML private Button submitBtn;
     @FXML private Button cancelBtn;
 
-    private final RecruiterService recruiterService;
-    private final AssessmentService assessmentService;
+    // Services injected by ControllerFactory
+    private RecruiterService recruiterService;
+    private AssessmentService assessmentService;
 
     // IDs for the current assessment
     private int shortlistId;
     private int applicationId;
 
-    // Constructor-based dependency injection
-    public AssessmentFormController(RecruiterService recruiterService, AssessmentService assessmentService) {
+    // ---------- DEFAULT CONSTRUCTOR (for ControllerFactory) ----------
+    public AssessmentFormController() {
+        // Empty - services will be injected via setter
+    }
+
+    // ---------- SERVICE INJECTION (Setter instead of Constructor) ----------
+    public void setServices(RecruiterService recruiterService, AssessmentService assessmentService) {
         this.recruiterService = recruiterService;
         this.assessmentService = assessmentService;
     }

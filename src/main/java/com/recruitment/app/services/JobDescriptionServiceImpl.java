@@ -3,6 +3,8 @@ package com.recruitment.app.services;
 import com.recruitment.app.dao.JobDescriptionDAO;
 import com.recruitment.app.models.JobDescription;
 
+import java.util.List;
+
 public class JobDescriptionServiceImpl implements JobDescriptionService {
 
     private final JobDescriptionDAO dao;
@@ -10,6 +12,7 @@ public class JobDescriptionServiceImpl implements JobDescriptionService {
     public JobDescriptionServiceImpl(JobDescriptionDAO dao) {
         this.dao = dao;
     }
+
 
     @Override
     public boolean saveDescription(JobDescription desc) {
@@ -20,5 +23,10 @@ public class JobDescriptionServiceImpl implements JobDescriptionService {
             e.printStackTrace();
             return false;
         }
+    }
+
+    @Override
+    public List<JobDescription> getByRecruiter(int recruiterId) {
+        return dao.getByRecruiter(recruiterId);
     }
 }

@@ -7,7 +7,7 @@ import java.util.List;
 public interface FinalRankingService {
     void setRankingCriteria(FinalRankingCriteria criteria);
     FinalRankingCriteria getRankingCriteria(int jobId);
-
+    List<Application> getFinalRankingApplicationsByJob(int jobId);
     List<FinalRankedCandidate> generateFinalRanking(
             JobPosting job,
             List<AssessmentResult> assessments,

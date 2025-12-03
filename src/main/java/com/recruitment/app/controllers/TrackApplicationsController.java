@@ -1,12 +1,9 @@
 package com.recruitment.app.controllers;
 
-import com.recruitment.app.dao.ApplicationDAO;
-import com.recruitment.app.dao.ApplicationDAOImpl;
 import com.recruitment.app.models.Application;
-import com.recruitment.app.utils.SessionManager;
-import com.recruitment.app.utils.DBConnection;
+import com.recruitment.app.services.ApplicationService;
 import com.recruitment.app.utils.SceneLoader;
-
+import com.recruitment.app.utils.SessionManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -25,15 +22,34 @@ public class TrackApplicationsController {
     @FXML private TableColumn<Application, String> dateCol;
     @FXML private TableColumn<Application, String> statusCol;
 
+    // Service will be injected by ControllerFactory
+    private ApplicationService applicationService;
+
+    // ---------- DEFAULT CONSTRUCTOR ----------
+    public TrackApplicationsController() {
+        // Empty - service will be injected
+    }
+
+    // ---------- SERVICE INJECTION ----------
+    public void setApplicationService(ApplicationService applicationService) {
+        this.applicationService = applicationService;
+    }
+
     @FXML
     public void initialize() {
+        // ADD null check for service
+        if (applicationService == null) {
+            System.err.println("ApplicationService not injected!");
+            return;
+        }
+
         int userId = SessionManager.loggedInUser.getId();
 
-        ApplicationDAO dao = new ApplicationDAOImpl(DBConnection.getConnection());
-        List<Application> apps = dao.getApplicationsByUserId(userId);
+        // Use injected service instead of direct DAO
+        List<Application> apps = applicationService.getByUser(userId);
 
         jobCol.setCellValueFactory(data ->
-                new SimpleStringProperty(dao.getJobTitle(data.getValue().getJobId())));
+                new SimpleStringProperty(applicationService.getJobTitle(data.getValue().getJobId())));
 
         dateCol.setCellValueFactory(data ->
                 new SimpleStringProperty(data.getValue().getAppliedAt()
@@ -48,6 +64,7 @@ public class TrackApplicationsController {
     @FXML
     public void goBack(ActionEvent event) {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        SceneLoader.load(stage, "/ui/browse_jobs.fxml");
+        // Use DI method for navigation
+        SceneLoader.loadWithDI(stage, "/ui/browse_jobs.fxml", "Browse Jobs");
     }
 }

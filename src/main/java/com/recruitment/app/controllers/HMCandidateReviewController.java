@@ -44,51 +44,75 @@ public class HMCandidateReviewController {
     private JobPosting currentJob;
     private ApplicantNote currentlyEditingNote = null;
 
-    // --- Service injection setters ---
-    public void setHMService(HMService hmService) { this.hmService = hmService; }
-    public void setRecruiterService(RecruiterService rs) { this.recruiterService = rs; }
-    public void setUserService(UserService us) { this.userService = us; }
-    public void setNoteService(NoteService ns) { this.noteService = ns; }
-    public void setCurrentUserId(int id) { this.currentUserId = id; }
+    // ---------- DEFAULT CONSTRUCTOR ----------
+    public HMCandidateReviewController() {
+        // Empty - services will be injected
+    }
+
+    // --- Service injection setters (CONSOLIDATED) ---
+    public void setServices(
+            HMService hmService,
+            RecruiterService recruiterService,
+            UserService userService,
+            NoteService noteService
+    ) {
+        this.hmService = hmService;
+        this.recruiterService = recruiterService;
+        this.userService = userService;
+        this.noteService = noteService;
+    }
+
+    // --- Runtime data setter (KEEP) ---
+    public void setCurrentUserId(int id) {
+        this.currentUserId = id;
+    }
 
     @FXML
     private void initialize() {
         candidateDetailsPanel.setDisable(true);
 
+        // Setup table columns
         colRank.setCellValueFactory(data -> new ReadOnlyObjectWrapper<>(data.getValue().getRank()));
         colApplicantName.setCellValueFactory(data -> new ReadOnlyStringWrapper(getApplicantName(data.getValue())));
         colScore.setCellValueFactory(data -> new ReadOnlyObjectWrapper<>(data.getValue().getCompositeScore()));
         colStatus.setCellValueFactory(data -> new ReadOnlyStringWrapper(data.getValue().getStatus()));
         colDecision.setCellValueFactory(data -> new ReadOnlyStringWrapper(getApplicationDecision(data.getValue())));
 
+        // Remove the button from table column since we want only one button in details panel
         colActions.setCellFactory(param -> new TableCell<>() {
-            private final Button btn = new Button("View Details");
-            { btn.setOnAction(e -> viewApplicantDetails(getTableView().getItems().get(getIndex()))); }
-
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
-                setGraphic(empty ? null : btn);
+                setGraphic(null); // No button in table
             }
         });
 
+        // Setup note type combo box
         noteTypeComboBox.setItems(FXCollections.observableArrayList(ApplicantNote.NoteType.values()));
         noteTypeComboBox.getSelectionModel().selectFirst();
 
+        // When a candidate is selected, enable details panel
         candidateTable.getSelectionModel().selectedItemProperty().addListener(
                 (obs, oldSel, newSel) -> onCandidateSelected(newSel)
         );
 
+        // Initially disable all actions
         disableCandidateActions(true);
 
+        // Setup notes list view
         notesListView.setCellFactory(param -> new ListCell<>() {
             @Override
             protected void updateItem(ApplicantNote note, boolean empty) {
                 super.updateItem(note, empty);
-                setText((empty || note == null) ? null : note.getNoteText());
+                if (empty || note == null) {
+                    setText(null);
+                } else {
+                    setText(String.format("[%s] %s", note.getNoteType(), note.getNoteText()));
+                }
             }
         });
 
+        // When a note is selected, load it for editing
         notesListView.getSelectionModel().selectedItemProperty().addListener((obs, oldNote, newNote) -> {
             if (newNote != null) {
                 noteTextArea.setText(newNote.getNoteText());
@@ -143,8 +167,18 @@ public class HMCandidateReviewController {
         }
 
         List<FinalRankedCandidate> candidates = hmService.getCandidatesSentToHM(currentJob.getId());
+
+        // Check if candidates list is null or empty
+        if (candidates == null || candidates.isEmpty()) {
+            showAlert(Alert.AlertType.INFORMATION, "No candidates sent for review for this job.");
+            candidateTable.getItems().clear();
+            candidateDetailsPanel.setDisable(true);
+            statusLabel.setText("No candidates available for review.");
+            return;
+        }
+
         candidateTable.setItems(FXCollections.observableArrayList(candidates));
-        candidateDetailsPanel.setDisable(true);
+        candidateDetailsPanel.setDisable(true); // Will be enabled when a candidate is selected
         statusLabel.setText("Candidates loaded. Select a candidate to review.");
     }
 
@@ -182,6 +216,7 @@ public class HMCandidateReviewController {
         selectButton.setDisable(disable);
         rejectButton.setDisable(disable);
         addNoteButton.setDisable(disable);
+        // View details button should be disabled when no candidate is selected
         viewDetailsButton.setDisable(disable);
         noteTextArea.setDisable(disable);
         noteTypeComboBox.setDisable(disable);
@@ -199,37 +234,97 @@ public class HMCandidateReviewController {
         return (app != null && app.getStatus() != null) ? app.getStatus() : "PENDING";
     }
 
-    private void viewApplicantDetails(FinalRankedCandidate candidate) {
-        if (candidate == null) return;
+    @FXML
+    private void viewApplicantDetails() {
+        FinalRankedCandidate candidate = candidateTable.getSelectionModel().getSelectedItem();
+        if (candidate == null) {
+            showAlert(Alert.AlertType.WARNING, "Please select a candidate first.");
+            return;
+        }
+
+        // Get the full application details
         Application app = recruiterService.getApplicationById(candidate.getApplicationId());
-        if (app == null) { showAlert(Alert.AlertType.ERROR, "Failed to load application."); return; }
+        if (app == null) {
+            showAlert(Alert.AlertType.ERROR, "Failed to load application details.");
+            return;
+        }
 
-        Dialog<String> dialog = new Dialog<>();
+        // Get user details
+        User user = userService.getUserById(app.getUserId());
+        if (user == null) {
+            showAlert(Alert.AlertType.ERROR, "Failed to load applicant information.");
+            return;
+        }
+
+        // Create a detailed dialog
+        Dialog<Void> dialog = new Dialog<>();
         dialog.setTitle("Applicant Details");
-        dialog.setHeaderText("Application Details for " + getApplicantName(candidate));
+        dialog.setHeaderText("Complete Application Details");
 
-        VBox box = new VBox(10);
-        box.getChildren().addAll(
-                new Label("Applicant: " + getApplicantName(candidate)),
-                new Label("Qualifications: " + app.getQualification()),
-                new Label("Experience: " + app.getExperience()),
-                new Label("Cover Letter: " + (app.getCoverLetter() != null ? app.getCoverLetter() : "N/A")),
-                new Label("Applied: " + app.getAppliedAt()),
-                new Label("Current Status: " + app.getStatus())
+        VBox content = new VBox(10);
+        content.setPadding(new javafx.geometry.Insets(10));
+
+        // Personal Information
+        Label personalHeader = new Label("Personal Information");
+        personalHeader.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
+        Label nameLabel = new Label("Full Name: " + user.getFullName());
+        Label emailLabel = new Label("Email: " + user.getEmail());
+        Label phoneLabel = new Label("Phone: " + (user.getContact() != null ? user.getContact() : "Not provided"));
+
+        // Application Details
+        Label appHeader = new Label("Application Details");
+        appHeader.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
+        Label jobLabel = new Label("Job Applied: " + (currentJob != null ? currentJob.getTitle() : "Unknown"));
+        Label qualificationLabel = new Label("Qualifications: " + app.getQualification());
+        Label experienceLabel = new Label("Experience: " + app.getExperience());
+        Label coverLetterLabel = new Label("Cover Letter: " +
+                (app.getCoverLetter() != null && !app.getCoverLetter().isEmpty() ?
+                        app.getCoverLetter() : "Not provided"));
+        Label appliedDateLabel = new Label("Applied Date: " + app.getAppliedAt());
+        Label statusLabel = new Label("Current Status: " + app.getStatus());
+
+        // Score Information
+        Label scoreHeader = new Label("Assessment Scores");
+        scoreHeader.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
+        Label rankLabel = new Label("Final Rank: " + candidate.getRank());
+        Label scoreLabel = new Label("Composite Score: " + candidate.getCompositeScore());
+        Label tableStatusLabel = new Label("Ranking Status: " + candidate.getStatus());
+
+        // Add all labels to content
+        content.getChildren().addAll(
+                personalHeader, nameLabel, emailLabel, phoneLabel,
+                new Separator(),
+                appHeader, jobLabel, qualificationLabel, experienceLabel,
+                coverLetterLabel, appliedDateLabel, statusLabel,
+                new Separator(),
+                scoreHeader, rankLabel, scoreLabel, tableStatusLabel
         );
 
-        dialog.getDialogPane().setContent(box);
+        // Add a scroll pane in case content is long
+        ScrollPane scrollPane = new ScrollPane(content);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setPrefHeight(400);
+
+        dialog.getDialogPane().setContent(scrollPane);
         dialog.getDialogPane().getButtonTypes().add(ButtonType.OK);
+        dialog.getDialogPane().setPrefSize(500, 450);
+
         dialog.showAndWait();
     }
 
     @FXML
     private void addNote() {
         FinalRankedCandidate c = candidateTable.getSelectionModel().getSelectedItem();
-        if (c == null) { showAlert(Alert.AlertType.WARNING, "Select a candidate first."); return; }
+        if (c == null) {
+            showAlert(Alert.AlertType.WARNING, "Select a candidate first.");
+            return;
+        }
 
         String text = noteTextArea.getText().trim();
-        if (text.isEmpty()) { showAlert(Alert.AlertType.WARNING, "Enter note text."); return; }
+        if (text.isEmpty()) {
+            showAlert(Alert.AlertType.WARNING, "Enter note text.");
+            return;
+        }
 
         try {
             if (currentlyEditingNote != null) {
@@ -238,7 +333,12 @@ public class HMCandidateReviewController {
                 noteService.updateNote(currentlyEditingNote);
                 showAlert(Alert.AlertType.INFORMATION, "Note updated!");
             } else {
-                ApplicantNote note = new ApplicantNote((long)c.getApplicationId(), (long)currentUserId, text, noteTypeComboBox.getValue());
+                ApplicantNote note = new ApplicantNote(
+                        (long)c.getApplicationId(),
+                        (long)currentUserId,
+                        text,
+                        noteTypeComboBox.getValue()
+                );
                 noteService.createNote(note);
                 showAlert(Alert.AlertType.INFORMATION, "Note added!");
             }
@@ -255,17 +355,28 @@ public class HMCandidateReviewController {
     }
 
     @FXML
-    private void selectCandidate() { makeHiringDecision("SELECTED"); }
+    private void selectCandidate() {
+        makeHiringDecision("SELECTED");
+    }
+
     @FXML
-    private void rejectCandidate() { makeHiringDecision("REJECTED"); }
+    private void rejectCandidate() {
+        makeHiringDecision("REJECTED");
+    }
 
     private void makeHiringDecision(String decision) {
         FinalRankedCandidate c = candidateTable.getSelectionModel().getSelectedItem();
-        if (c == null) { showAlert(Alert.AlertType.WARNING, "Select a candidate first."); return; }
+        if (c == null) {
+            showAlert(Alert.AlertType.WARNING, "Select a candidate first.");
+            return;
+        }
 
         try {
             boolean ok = hmService.updateHiringDecision(c.getApplicationId(), decision);
-            if (!ok) { showAlert(Alert.AlertType.ERROR, "Failed to update decision."); return; }
+            if (!ok) {
+                showAlert(Alert.AlertType.ERROR, "Failed to update decision.");
+                return;
+            }
 
             hmService.updateCandidateStatus(c.getId(), "HM_REVIEWED");
             showAlert(Alert.AlertType.INFORMATION, "Candidate " + decision + "!");

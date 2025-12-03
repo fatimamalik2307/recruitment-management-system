@@ -29,6 +29,11 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
+    public String getJobTitle(int jobId) {
+        return applicationDAO.getJobTitle(jobId);
+    }
+
+    @Override
     public List<Application> getByUser(int userId) {
         return applicationDAO.getApplicationsByUserId(userId);
     }

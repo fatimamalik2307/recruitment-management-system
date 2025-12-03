@@ -6,7 +6,6 @@ import com.recruitment.app.services.ApplicationService;
 import com.recruitment.app.utils.CVParser;
 import com.recruitment.app.utils.SceneLoader;
 import com.recruitment.app.utils.SessionManager;
-
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -27,13 +26,8 @@ public class ApplicationFormController {
     private JobPosting job;
     private List<String> uploadedFiles = new ArrayList<>();
 
-    private ApplicationService applicationService;   // Injected service
-
-    // ---------- SERVICE INJECTION ----------
-    public void setApplicationService(ApplicationService service) {
-        System.out.println(">>> ApplicationService injected = " + (service != null));
-        this.applicationService = service;
-    }
+    // Service - will be injected by ControllerFactory
+    private ApplicationService applicationService;
 
     // ---------- UI FIELDS ----------
     @FXML private TextField fullNameField;
@@ -45,26 +39,39 @@ public class ApplicationFormController {
     @FXML private ListView<String> filesList;
     @FXML private Label messageLabel;
 
-    // Buttons (NEW — because FXML has no onAction)
+    // Buttons
     @FXML private Button btnUpload;
     @FXML private Button btnSubmit;
     @FXML private Button btnBack;
 
-    // ---------- INITIALIZE (attach button handlers) ----------
+    // ---------- DEFAULT CONSTRUCTOR (KEEP) ----------
+    public ApplicationFormController() {
+        // Empty - services will be injected
+    }
+
+    // ---------- SERVICE INJECTION (SIMPLIFIED) ----------
+    public void setApplicationService(ApplicationService service) {
+        System.out.println(">>> ApplicationService injected = " + (service != null));
+        this.applicationService = service;
+    }
+
+    // Optional: Also add setter for job if ControllerFactory will inject it
+    public void setJob(JobPosting job) {
+        this.job = job;
+    }
+
+    // ---------- INITIALIZE (SIMPLIFIED) ----------
     @FXML
     public void initialize() {
         btnUpload.setOnAction(this::openUploadPage);
         btnSubmit.setOnAction(this::submitApplication);
         btnBack.setOnAction(this::goBack);
+
+        // No need to check if applicationService is null here
+        // It's guaranteed to be injected by the time initialize() is called
     }
 
-
-    // ---------- JOB SETTER ----------
-    public void setJob(JobPosting job) {
-        this.job = job;
-    }
-
-    // ---------- DOCUMENT UPLOAD FROM CHILD SCREEN ----------
+    // ---------- DOCUMENT UPLOAD FROM CHILD SCREEN (NO CHANGE) ----------
     public void setUploadedFiles(List<String> files) {
         uploadedFiles.clear();
 
@@ -90,14 +97,17 @@ public class ApplicationFormController {
         }
     }
 
-    // ---------- OPEN UPLOAD PAGE ----------
+    // ---------- OPEN UPLOAD PAGE (SIMPLIFIED) ----------
     private void openUploadPage(ActionEvent event) {
         try {
+            // Use ControllerFactory for the UploadDocumentsController
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/upload_documents.fxml"));
+            loader.setControllerFactory(com.recruitment.app.di.ControllerFactory.getInstance());
 
             Parent root = loader.load();
             UploadDocumentsController controller = loader.getController();
 
+            // Set job and previous files
             controller.setJob(job);
             controller.setPreviousUploadedFiles(uploadedFiles);
 
@@ -116,14 +126,11 @@ public class ApplicationFormController {
         }
     }
 
-    // ---------- SUBMIT APPLICATION ----------
+    // ---------- SUBMIT APPLICATION (SIMPLIFIED) ----------
     private void submitApplication(ActionEvent event) {
         try {
-            if (applicationService == null) {
-                messageLabel.setText("ERROR: ApplicationService not injected!");
-                System.out.println(">>> ERROR: ApplicationService is NULL");
-                return;
-            }
+            // REMOVED: Null check for applicationService (it's guaranteed)
+            // if (applicationService == null) { ... }
 
             Application app = new Application();
             app.setUserId(SessionManager.loggedInUser.getId());
@@ -153,11 +160,13 @@ public class ApplicationFormController {
         uploadedFiles.clear();
     }
 
-    // ---------- BACK ----------
+    // ---------- BACK (NO CHANGE) ----------
     private void goBack(ActionEvent event) {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         SceneLoader.load(stage, "/ui/job_details.fxml");
     }
+
+    // ---------- CV PARSING METHODS (NO CHANGE) ----------
     private String extractEmail(String text) {
         Matcher m = Pattern.compile("[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+")
                 .matcher(text);
@@ -196,9 +205,7 @@ public class ApplicationFormController {
         return null;
     }
 
-
     private void autoFillFromCV(String text) {
-
         if (text == null || text.trim().isEmpty()) return;
 
         String clean = text.replace("\r", "\n")
@@ -217,7 +224,6 @@ public class ApplicationFormController {
         String name = extractName(clean);
         if (name != null && fullNameField.getText().isBlank())
             fullNameField.setText(name);
-
 
         // ---------- IMPROVED SECTIONS ----------
         Map<String, String> sections = extractSections(clean);
@@ -245,9 +251,7 @@ public class ApplicationFormController {
         }
     }
 
-
     private Map<String, String> extractSections(String text) {
-
         Map<Integer, String> indexToHeader = new TreeMap<>();
         Map<String, String> result = new HashMap<>();
 
@@ -285,7 +289,6 @@ public class ApplicationFormController {
         List<Integer> positions = new ArrayList<>(indexToHeader.keySet());
 
         for (int i = 0; i < positions.size(); i++) {
-
             int start = positions.get(i);
             int end = (i == positions.size() - 1)
                     ? text.length()
@@ -303,6 +306,4 @@ public class ApplicationFormController {
 
         return result;
     }
-
-
 }

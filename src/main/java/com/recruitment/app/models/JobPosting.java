@@ -144,10 +144,10 @@ public class JobPosting {
         this.title = jobTitle;
     }
 
-    public int setRecruiterId(int recruiterId) {
+    public void setRecruiterId(int recruiterId) {
         this.recruiterId = recruiterId;
-        return recruiterId;
     }
+
     @Override
     public String toString() {
         return title + " (" + department + ")";

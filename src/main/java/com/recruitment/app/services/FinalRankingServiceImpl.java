@@ -66,6 +66,11 @@ public class FinalRankingServiceImpl implements FinalRankingService {
         return criteriaDAO.getByJobId(jobId);
     }
 
+    @Override
+    public List<Application> getFinalRankingApplicationsByJob(int jobId) {
+        return candidateDAO.getFinalRankingApplicationsByJob(jobId);
+    }
+
     /** ==========================
      * Generate final ranking
      * ========================== */

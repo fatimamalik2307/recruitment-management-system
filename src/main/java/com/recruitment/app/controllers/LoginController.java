@@ -2,7 +2,6 @@ package com.recruitment.app.controllers;
 
 import com.recruitment.app.models.User;
 import com.recruitment.app.services.UserService;
-import com.recruitment.app.services.UserServiceImpl;
 import com.recruitment.app.utils.SceneLoader;
 import com.recruitment.app.utils.SessionManager;
 import javafx.event.ActionEvent;
@@ -17,11 +16,27 @@ public class LoginController {
     @FXML private PasswordField passwordField;
     @FXML private Label messageLabel;
 
-    private final UserService userService = new UserServiceImpl();
+    // Service will be injected by ControllerFactory
+    private UserService userService;
 
+    // ---------- DEFAULT CONSTRUCTOR ----------
+    public LoginController() {
+        // Empty - service will be injected
+    }
+
+    // ---------- SERVICE INJECTION ----------
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
 
     @FXML
     public void loginUser(ActionEvent event) {
+        // ADD null check for service
+        if (userService == null) {
+            messageLabel.setText("System error: Services not initialized!");
+            return;
+        }
+
         String username = usernameField.getText();
         String password = passwordField.getText();
 
@@ -41,20 +56,22 @@ public class LoginController {
             String role = user.getRole().toLowerCase().trim();
 
             switch (role) {
-
                 case "recruiter":
-                    SceneLoader.load(stage, "/ui/RecruiterDashboard.fxml");
+                    // USE DI METHOD
+                    SceneLoader.loadWithDI(stage, "/ui/RecruiterDashboard.fxml", "Recruiter Dashboard");
                     break;
 
                 case "hiring manager":
                 case "hiring_manager":
                 case "hiringmanager":
-                    SceneLoader.load(stage, "/ui/HiringManagerDashboard.fxml");
+                    // USE DI METHOD
+                    SceneLoader.loadWithDI(stage, "/ui/HiringManagerDashboard.fxml", "Hiring Manager Dashboard");
                     break;
 
                 case "applicant":
                 default:
-                    SceneLoader.load(stage, "/ui/browse_jobs.fxml");
+                    // USE DI METHOD
+                    SceneLoader.loadWithDI(stage, "/ui/browse_jobs.fxml", "Browse Jobs");
                     break;
             }
 
@@ -67,6 +84,7 @@ public class LoginController {
     @FXML
     public void openRegister(ActionEvent event) {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        SceneLoader.load(stage, "/ui/register.fxml");
+        // Use DI for register too
+        SceneLoader.loadWithDI(stage, "/ui/register.fxml", "Register");
     }
 }

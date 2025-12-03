@@ -1,28 +1,30 @@
 package com.recruitment.app.controllers;
 
 import com.recruitment.app.services.*;
+import com.recruitment.app.utils.SceneLoader;
 import com.recruitment.app.utils.SessionManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 
-import java.io.IOException;
-
 public class HiringManagerDashboardController {
 
-    // Services only (injected)
-    private final RecruiterService recruiterService;
-    private final HMService hmService;
-    private final NoteService noteService;
-    private final JobService jobService;
-    private final UserService userService;
+    // Services (will be injected by ControllerFactory)
+    private RecruiterService recruiterService;
+    private HMService hmService;
+    private NoteService noteService;
+    private JobService jobService;
+    private UserService userService;
 
-    // Constructor injection ensures proper DI
-    public HiringManagerDashboardController(
+    // ---------- DEFAULT CONSTRUCTOR ----------
+    public HiringManagerDashboardController() {
+        // Empty - services will be injected via setter
+    }
+
+    // ---------- SERVICE INJECTION ----------
+    public void setServices(
             RecruiterService recruiterService,
             HMService hmService,
             NoteService noteService,
@@ -42,27 +44,19 @@ public class HiringManagerDashboardController {
     @FXML
     private void openHMCandidateReview(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/HMCandidateReview.fxml"));
+            // Use SceneLoader with DI
             Stage stage = new Stage();
-            stage.setScene(new Scene(loader.load()));
+            SceneLoader.loadWithDIAndConfig(stage, "/ui/HMCandidateReview.fxml", controller -> {
+                if (controller instanceof HMCandidateReviewController) {
+                    HMCandidateReviewController reviewController = (HMCandidateReviewController) controller;
+                    // Set dynamic runtime data
+                    reviewController.setCurrentUserId(getCurrentUserId());
+                    reviewController.loadInitialData();
+                }
+            });
             stage.setTitle("Review Candidates");
 
-            HMCandidateReviewController controller = loader.getController();
-
-            // Inject required services
-            controller.setHMService(hmService);
-            controller.setNoteService(noteService);
-            controller.setRecruiterService(recruiterService);
-            controller.setUserService(userService);
-
-            // Set current user ID from session
-            controller.setCurrentUserId(getCurrentUserId());
-
-            // Load initial data after injecting services & user ID
-            controller.loadInitialData();
-
-            stage.show();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             showAlert(Alert.AlertType.ERROR, "Failed to open Candidate Review.");
         }
@@ -75,18 +69,16 @@ public class HiringManagerDashboardController {
     @FXML
     private void openJobPostings(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/HMJobPostings.fxml"));
             Stage stage = new Stage();
-            stage.setScene(new Scene(loader.load()));
+            SceneLoader.loadWithDIAndConfig(stage, "/ui/HMJobPostings.fxml", controller -> {
+                if (controller instanceof HMJobPostingsController) {
+                    HMJobPostingsController jobsController = (HMJobPostingsController) controller;
+                    jobsController.setCurrentUserId(getCurrentUserId());
+                }
+            });
             stage.setTitle("My Job Postings");
 
-            HMJobPostingsController controller = loader.getController();
-            controller.setJobService(jobService);
-            controller.setHmService(hmService);
-            controller.setCurrentUserId(getCurrentUserId());
-
-            stage.show();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             showAlert(Alert.AlertType.ERROR, "Failed to open Job Postings.");
         }
@@ -109,11 +101,9 @@ public class HiringManagerDashboardController {
     @FXML
     private void openProfile(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("ui/profile.fxml"));
             Stage stage = new Stage();
-            stage.setScene(new Scene(loader.load()));
-            stage.setTitle("Update Profile");
-            stage.show();
+            SceneLoader.loadWithDI(stage, "/ui/profile.fxml", "Update Profile");
+
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("⚠ ERROR: Could not load profile.fxml");
@@ -126,13 +116,12 @@ public class HiringManagerDashboardController {
     @FXML
     private void openChangePassword(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/change_password.fxml"));
             Stage stage = new Stage();
-            stage.setScene(new Scene(loader.load()));
-            stage.setTitle("Change Password");
-            stage.show();
+            SceneLoader.loadWithDI(stage, "/ui/change_password.fxml", "Change Password");
+
         } catch (Exception e) {
             e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Cannot open change password screen");
         }
     }
 
@@ -145,12 +134,11 @@ public class HiringManagerDashboardController {
         stage.close();
 
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/Login.fxml"));
+            // Use DI for login too (if LoginController needs services)
             Stage loginStage = new Stage();
-            loginStage.setScene(new Scene(loader.load()));
-            loginStage.setTitle("Login");
-            loginStage.show();
-        } catch (IOException e) {
+            SceneLoader.loadWithDI(loginStage, "/ui/Login.fxml", "Login");
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

@@ -108,7 +108,9 @@ public class ApplicationDAOImpl implements ApplicationDAO {
     @Override
     public List<Application> getApplicationsByJobId(int jobId) {
         List<Application> list = new ArrayList<>();
-        String sql = "SELECT * FROM applications WHERE job_id=?";
+        String sql = "SELECT a.* FROM applications a " +
+                "JOIN jobs j ON a.job_id = j.id " +
+                "WHERE a.job_id = ? " ;
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, jobId);

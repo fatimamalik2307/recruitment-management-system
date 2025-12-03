@@ -3,11 +3,6 @@ package com.recruitment.app.controllers;
 import com.recruitment.app.models.JobPosting;
 import com.recruitment.app.models.ShortlistingCriteria;
 import com.recruitment.app.services.RecruiterService;
-import com.recruitment.app.services.RecruiterServiceImpl;
-import com.recruitment.app.dao.ApplicationDAOImpl;
-import com.recruitment.app.dao.JobDAOImpl;
-import com.recruitment.app.dao.ShortlistingCriteriaDAOImpl;
-import com.recruitment.app.config.DBConnection;
 import com.recruitment.app.utils.SessionManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -25,15 +20,27 @@ public class ShortlistingCriteriaController {
     @FXML private TextField locationField;
     @FXML private TextField gradeField;
 
-    private final RecruiterService recruiterService =
-            new RecruiterServiceImpl(
-                    new JobDAOImpl(DBConnection.getConnection()),
-                    new ApplicationDAOImpl(DBConnection.getConnection()),
-                    new ShortlistingCriteriaDAOImpl(DBConnection.getConnection())
-            );
+    // Service will be injected by ControllerFactory
+    private RecruiterService recruiterService;
+
+    // ---------- DEFAULT CONSTRUCTOR ----------
+    public ShortlistingCriteriaController() {
+        // Empty - service will be injected
+    }
+
+    // ---------- SERVICE INJECTION ----------
+    public void setRecruiterService(RecruiterService recruiterService) {
+        this.recruiterService = recruiterService;
+    }
 
     @FXML
     public void initialize() {
+        // ADD null check for service
+        if (recruiterService == null) {
+            System.err.println("RecruiterService not injected!");
+            return;
+        }
+
         // Populate jobs for the logged-in recruiter
         List<JobPosting> jobs = recruiterService.getJobsByRecruiter(SessionManager.loggedInUser.getId());
         if (jobs != null && !jobs.isEmpty()) {
@@ -45,6 +52,9 @@ public class ShortlistingCriteriaController {
     }
 
     private void loadCriteria() {
+        // ADD null check for service
+        if (recruiterService == null) return;
+
         JobPosting selectedJob = jobComboBox.getSelectionModel().getSelectedItem();
         if (selectedJob == null) return;
 
@@ -67,6 +77,12 @@ public class ShortlistingCriteriaController {
 
     @FXML
     private void saveCriteria() {
+        // ADD null check for service
+        if (recruiterService == null) {
+            new Alert(Alert.AlertType.ERROR, "Service not initialized!").show();
+            return;
+        }
+
         JobPosting job = jobComboBox.getSelectionModel().getSelectedItem();
         if (job == null) return;
 

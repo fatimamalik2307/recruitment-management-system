@@ -2,7 +2,6 @@ package com.recruitment.app.controllers;
 
 import com.recruitment.app.models.User;
 import com.recruitment.app.services.UserService;
-import com.recruitment.app.services.UserServiceImpl;
 import com.recruitment.app.utils.SceneLoader;
 import com.recruitment.app.utils.SessionManager;
 import javafx.event.ActionEvent;
@@ -18,8 +17,18 @@ public class ChangePasswordController {
     @FXML private PasswordField confirmPasswordField;
     @FXML private Label messageLabel;
 
-    private final UserService userService = new UserServiceImpl();
+    // Service will be injected by ControllerFactory
+    private UserService userService;
 
+    // ---------- DEFAULT CONSTRUCTOR ----------
+    public ChangePasswordController() {
+        // Empty - service will be injected
+    }
+
+    // ---------- SERVICE INJECTION ----------
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
 
     @FXML
     public void updatePassword(ActionEvent event) {
@@ -29,6 +38,7 @@ public class ChangePasswordController {
         String newPass = newPasswordField.getText();
         String confirmPass = confirmPasswordField.getText();
 
+        // NO NULL CHECK NEEDED - service is guaranteed to be injected
         if (!userService.checkPassword(oldPass, user.getPassword())) {
             messageLabel.setText("Old password is incorrect!");
             return;
@@ -56,8 +66,4 @@ public class ChangePasswordController {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.close();
     }
-
 }
-
-
-

@@ -10,6 +10,7 @@ public interface ApplicationService {
     Application getById(int id);
 
     List<Application> getByJob(int jobId);
+    String getJobTitle(int jobId);
 
     List<Application> getByUser(int userId);
 

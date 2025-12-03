@@ -1,13 +1,11 @@
 package com.recruitment.app.controllers;
 
-import com.recruitment.app.dao.JobDAOImpl;
-import com.recruitment.app.dao.PersonSpecificationDAOImpl;
+import com.recruitment.app.models.Company;
 import com.recruitment.app.models.JobDescription;
 import com.recruitment.app.models.JobPosting;
+import com.recruitment.app.models.User;
 import com.recruitment.app.services.JobService;
-import com.recruitment.app.services.JobServiceImpl;
-import com.recruitment.app.services.PersonSpecificationServiceImpl;
-import com.recruitment.app.utils.DBConnection;
+import com.recruitment.app.services.PersonSpecificationService;
 import com.recruitment.app.utils.SceneLoader;
 import com.recruitment.app.utils.SessionManager;
 import javafx.fxml.FXML;
@@ -24,21 +22,32 @@ public class CreateJobPostingController {
     @FXML private DatePicker deadlinePicker;
     @FXML private ComboBox<String> jobTypeCombo;
     @FXML private TextField salaryField;
-
     @FXML private Button publishButton;
 
+    // Services will be injected by ControllerFactory
     private JobService jobService;
+    private PersonSpecificationService personSpecificationService;
+
     public static JobDescription selectedDescription = null;
 
+    // ---------- DEFAULT CONSTRUCTOR ----------
+    public CreateJobPostingController() {
+        // Empty - services will be injected
+    }
+
+    // ---------- SERVICE INJECTION ----------
     public void setJobService(JobService jobService) {
         this.jobService = jobService;
     }
+
+    public void setPersonSpecificationService(PersonSpecificationService service) {
+        this.personSpecificationService = service;
+    }
+
     @FXML
     public void initialize() {
-
-        if (jobService == null) {
-            jobService = new JobServiceImpl(new JobDAOImpl(DBConnection.getConnection()));
-        }
+        // REMOVED: Manual service instantiation
+        // if (jobService == null) { jobService = new JobServiceImpl(...); }
 
         // Populate dropdowns
         jobTypeCombo.getItems().addAll("Full-Time", "Part-Time", "Contract", "Internship");
@@ -49,21 +58,23 @@ public class CreateJobPostingController {
 
         // Auto-fill from Job Description
         if (selectedDescription != null) {
-
             titleField.setText(selectedDescription.getTitle());
             descriptionArea.setText(selectedDescription.getDuties());
             locationField.setText(""); // user fills manually
-
             jobTypeCombo.setValue(selectedDescription.getJobType());
             deptCombo.setValue(selectedDescription.getDepartment());
             qualificationField.setText(selectedDescription.getRequiredQualification());
-
             selectedDescription = null; // reset for next time
         }
     }
 
     @FXML
     private void publishJob() {
+        // ADD null check for service
+        if (jobService == null) {
+            showAlert("Service not initialized!");
+            return;
+        }
 
         if (titleField.getText().isEmpty()
                 || deptCombo.getValue() == null
@@ -87,7 +98,15 @@ public class CreateJobPostingController {
                 salaryField.getText(),
                 SessionManager.loggedInUser.getId()
         );
-
+        job.setRecruiterId(SessionManager.loggedInUser.getId());
+        int recruiterId = job.getRecruiterId();
+        // Get hiring manager through service
+        User hiringManager = jobService.getHiringManagerForRecruiter(recruiterId);
+        if (hiringManager == null) {
+            showAlert("No hiring manager found for your company.");
+            return;
+        }
+        job.setHiringManagerId(hiringManager.getId());
         boolean success = jobService.createJob(job);
 
         if (success) {
@@ -105,27 +124,27 @@ public class CreateJobPostingController {
     @FXML
     private void openSavedDescriptions() {
         Stage stage = (Stage) publishButton.getScene().getWindow();
-        SceneLoader.load(stage, "/ui/job_description_list.fxml");
+        // Use DI method
+        SceneLoader.loadWithDI(stage, "/ui/job_description_list.fxml", "Saved Descriptions");
     }
+
     @FXML
     private void openPersonSpecification() {
         Stage stage = (Stage) publishButton.getScene().getWindow();
 
-        SceneLoader.loadWithData(stage, "/ui/person_specification.fxml", controller -> {
-            ((PersonSpecificationController) controller).setPersonSpecificationService(
-                    new PersonSpecificationServiceImpl(
-                            new PersonSpecificationDAOImpl(
-                                    com.recruitment.app.config.DBConnection.getConnection()
-                            )
-                    )
-            );
+        // Use DI method - services already injected
+        SceneLoader.loadWithDIAndConfig(stage, "/ui/person_specification.fxml", controller -> {
+            if (controller instanceof PersonSpecificationController) {
+                ((PersonSpecificationController) controller).setPersonSpecificationService(personSpecificationService);
+            }
         });
     }
 
     @FXML
     private void openJobDescription() {
         Stage stage = (Stage) publishButton.getScene().getWindow();
-        SceneLoader.load(stage, "/ui/job_description.fxml");
+        // Use DI method
+        SceneLoader.loadWithDI(stage, "/ui/job_description.fxml", "Job Description");
     }
 
     private void showAlert(String msg) {
