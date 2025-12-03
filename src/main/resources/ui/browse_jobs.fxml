@@ -1,43 +1,74 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.control.*?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.recruitment.app.controllers.BrowseJobsController">
+<?import java.net.URL?>
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.recruitment.app.controllers.BrowseJobsController"
+            prefWidth="1000" prefHeight="700"
+            styleClass="root-pane">
 
-    <!-- Top Bar -->
+    <!-- 🌟 HEADER (Top Section) 🌟 -->
     <top>
-        <VBox spacing="10">
+        <HBox alignment="CENTER_LEFT" spacing="30" styleClass="header-bar">
+
+            <!-- Logo/Title -->
+            <Label text="JobSeeker Dashboard" styleClass="header-title" HBox.hgrow="ALWAYS" />
+
+            <!-- Navigation Links (Left Side) -->
+            <HBox spacing="15" alignment="CENTER_LEFT">
+                <Button text="Track Applications" onAction="#openTrackApplications" styleClass="header-link" />
+                <Button text="Change Password" onAction="#openChangePassword" styleClass="header-link" />
+            </HBox>
+
+            <!-- Spacer to push profile/logout to the right -->
+            <Region HBox.hgrow="ALWAYS" />
+
+            <!-- Profile and Logout (Right Side) -->
+            <HBox spacing="10" alignment="CENTER_RIGHT" styleClass="profile-group">
+                <!-- Update Profile -->
+                <Button onAction="#openProfile" styleClass="icon-btn-circular">
+                    <!-- Placeholder Icon (Use SVG or proper icon library in a real app) -->
+                    <graphic>
+                        <StackPane>
+                            <Circle radius="12" fill="#cee0ff" />
+                            <Label text="👤" style="-fx-font-size: 14px;" />
+                        </StackPane>
+                    </graphic>
+                </Button>
+
+                <!-- Logout Button (Icon only) -->
+                <Button onAction="#logout" styleClass="icon-btn">
+                    <graphic>
+                        <Label text="⏻" style="-fx-font-size: 18px; -fx-text-fill: white;" />
+                    </graphic>
+                    <tooltip>
+                        <Tooltip text="Logout" />
+                    </tooltip>
+                </Button>
+            </HBox>
+
             <padding>
-                <Insets top="10" right="10" bottom="10" left="10"/>
+                <Insets top="15" right="20" bottom="15" left="20" />
             </padding>
-
-            <Button text="Logout" onAction="#logout"/>
-            <Button text="Update Profile" onAction="#openProfile"/>
-            <Button text="Change Password" onAction="#openChangePassword" />
-
-            <Button text="Track My Applications"
-                    onAction="#openTrackApplications"
-                    style="-fx-background-color: #4a90e2; -fx-text-fill: white; -fx-font-weight: bold;" />
-            <Label text="Browse Jobs" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
-        </VBox>
+        </HBox>
     </top>
 
-    <!-- Jobs Table -->
+    <!-- 📜 BODY (Scrollable Job Listings) 📜 -->
     <center>
-        <TableView fx:id="jobsTable" prefHeight="400">
-
-            <columns>
-                <TableColumn fx:id="titleCol" text="Job Title" prefWidth="150"/>
-                <TableColumn fx:id="deptCol" text="Department" prefWidth="120"/>
-                <TableColumn fx:id="reqCol" text="Required Qualification" prefWidth="180"/>
-                <TableColumn fx:id="deadlineCol" text="Deadline" prefWidth="120"/>
-                <TableColumn fx:id="actionCol" text="Action" prefWidth="100"/>
-            </columns>
-
-        </TableView>
+        <ScrollPane styleClass="job-scroll-pane" fitToWidth="true" hbarPolicy="NEVER">
+            <!-- Container for job cards -->
+            <VBox fx:id="jobsContainer" spacing="20" alignment="TOP_CENTER" style="-fx-padding: 30;" />
+        </ScrollPane>
     </center>
+
+    <stylesheets>
+        <URL value="@style.css" />
+    </stylesheets>
 
 </BorderPane>

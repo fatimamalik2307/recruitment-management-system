@@ -10,28 +10,25 @@ import java.sql.ResultSet;
  * Company DAO - SRP: handles company persistence.
  */
 public class CompanyDAOImpl implements CompanyDAO {
-
-    @Override
-    public int getOrCreateCompanyId(String companyName) {
-        String findSql = "SELECT id FROM companies WHERE name = ?";
-        String insertSql = "INSERT INTO companies(name) VALUES (?) RETURNING id";
-
+    public int getOrCreateCompanyId(String name) {
         try (Connection conn = DBConnection.getConnection()) {
-            // Check existing
-            PreparedStatement psFind = conn.prepareStatement(findSql);
-            psFind.setString(1, companyName);
-            ResultSet rs = psFind.executeQuery();
-            if (rs.next()) {
-                return rs.getInt("id");
-            }
-            // Insert new
-            PreparedStatement psInsert = conn.prepareStatement(insertSql);
-            psInsert.setString(1, companyName);
-            ResultSet rs2 = psInsert.executeQuery();
+
+            // 1. CHECK if company already exists
+            PreparedStatement check = conn.prepareStatement(
+                    "SELECT id FROM companies WHERE name = ?");
+            check.setString(1, name);
+            ResultSet rs = check.executeQuery();
+            if (rs.next()) return rs.getInt("id");
+
+            // 2. INSERT new company
+            PreparedStatement insert = conn.prepareStatement(
+                    "INSERT INTO companies (name) VALUES (?) RETURNING id");
+            insert.setString(1, name);
+            ResultSet rs2 = insert.executeQuery();
             if (rs2.next()) return rs2.getInt("id");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
+        } catch (Exception e) { e.printStackTrace(); }
         return -1;
     }
+
 }

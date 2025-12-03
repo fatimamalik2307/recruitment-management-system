@@ -1,15 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
 
 <AnchorPane xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.recruitment.app.controllers.WelcomeController">
+            fx:controller="com.recruitment.app.controllers.WelcomeController"
+            prefWidth="600" prefHeight="400"
+            style="-fx-background-color: linear-gradient(to bottom right, #3e4eb8, #5ac3ff);">
 
-    <Button text="Login" fx:id="loginBtn" layoutX="150" layoutY="100" onAction="#openLogin"/>
-    <Button text="Register" fx:id="registerBtn" layoutX="150" layoutY="160" onAction="#openRegister"/>
+    <!-- Center container -->
+    <VBox spacing="20" alignment="CENTER"
+          layoutX="150" layoutY="80"
+          prefWidth="300" prefHeight="240"
+          style="-fx-background-color: white; -fx-background-radius: 15; -fx-padding: 20;">
+
+        <Label text="Recruitment System"
+               style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #333;" />
+
+        <Button text="Login"
+                onAction="#openLogin"
+                prefWidth="200" prefHeight="40"
+                style="-fx-background-color: #3e4eb8; -fx-text-fill: white; -fx-background-radius: 10; -fx-font-size: 16;" />
+
+        <Button text="Register"
+                onAction="#openRegister"
+                prefWidth="200" prefHeight="40"
+                style="-fx-background-color: #5ac3ff; -fx-text-fill: white; -fx-background-radius: 10; -fx-font-size: 16;" />
+    </VBox>
 
 </AnchorPane>

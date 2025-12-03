@@ -1,66 +1,77 @@
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.PasswordField?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.control.Button?>
-<GridPane xmlns="http://javafx.com/javafx"
-          xmlns:fx="http://javafx.com/fxml"
-          fx:controller="com.recruitment.app.controllers.RegisterController"
-          alignment="CENTER" hgap="10" vgap="12"
-          style="-fx-padding: 30;">
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+<?import java.net.URL?>
 
-    <!-- TITLE -->
-    <Label text="User Registration"
-           style="-fx-font-size: 22px; -fx-font-weight: bold;"
-           GridPane.columnIndex="0" GridPane.rowIndex="0"
-           GridPane.columnSpan="2" />
+<StackPane xmlns:fx="http://javafx.com/fxml"
+           fx:controller="com.recruitment.app.controllers.RegisterController"
+           prefWidth="900" prefHeight="700"
+           styleClass="root-pane">
 
-    <!-- Full Name -->
-    <Label text="Full Name:" GridPane.rowIndex="1"/>
-    <TextField fx:id="fullNameField" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+    <!-- This VBox centers the card -->
+    <VBox alignment="CENTER">
 
-    <!-- Email -->
-    <Label text="Email:" GridPane.rowIndex="2"/>
-    <TextField fx:id="emailField" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+        <!-- Card -->
+        <VBox styleClass="card" spacing="25" alignment="CENTER" prefWidth="500">
 
-    <!-- Username -->
-    <Label text="Username:" GridPane.rowIndex="3"/>
-    <TextField fx:id="usernameField" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+            <Label text="User Registration" styleClass="title" />
+            <Label text="Join the Recruitment Management System" styleClass="subtitle"/>
 
-    <!-- Password -->
-    <Label text="Password:" GridPane.rowIndex="4"/>
-    <PasswordField fx:id="passwordField" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+            <GridPane hgap="20" vgap="15" alignment="CENTER">
 
-    <!-- Confirm Password -->
-    <Label text="Confirm Password:" GridPane.rowIndex="5"/>
-    <PasswordField fx:id="confirmPasswordField" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+                <!-- FULL NAME -->
+                <Label text="Full Name:" styleClass="label-form" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                <TextField fx:id="fullNameField" styleClass="input-field" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
 
-    <!-- Contact -->
-    <Label text="Contact:" GridPane.rowIndex="6"/>
-    <TextField fx:id="contactField" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
+                <!-- EMAIL -->
+                <Label text="Email:" styleClass="label-form" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                <TextField fx:id="emailField" styleClass="input-field" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
 
-    <!-- Role Dropdown -->
-    <Label text="Role:" GridPane.rowIndex="7"/>
-    <ComboBox fx:id="roleCombo" prefWidth="200"
-              GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                <!-- USERNAME -->
+                <Label text="Username:" styleClass="label-form" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                <TextField fx:id="usernameField" styleClass="input-field" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
 
-    <!-- Company Name (hidden unless Recruiter/Manager) -->
-    <Label text="Company:" GridPane.rowIndex="8"/>
-    <TextField fx:id="companyField"
-               GridPane.columnIndex="1" GridPane.rowIndex="8"/>
+                <!-- PASSWORD -->
+                <Label text="Password:" styleClass="label-form" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+                <PasswordField fx:id="passwordField" styleClass="input-field" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
 
-    <!-- Info / Error Messages -->
-    <Label fx:id="messageLabel" textFill="red"
-           GridPane.columnIndex="0" GridPane.rowIndex="9"
-           GridPane.columnSpan="2" />
+                <!-- CONFIRM PASSWORD -->
+                <Label text="Confirm Password:" styleClass="label-form" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+                <PasswordField fx:id="confirmPasswordField" styleClass="input-field" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
 
-    <!-- Buttons -->
-    <HBox spacing="10" GridPane.columnIndex="0" GridPane.rowIndex="10"
-          GridPane.columnSpan="2" alignment="CENTER">
-        <Button text="Register" onAction="#registerUser" />
-        <Button text="Go to Login" onAction="#goToLogin" />
-    </HBox>
+                <!-- CONTACT -->
+                <Label text="Contact:" styleClass="label-form" GridPane.columnIndex="0" GridPane.rowIndex="5"/>
+                <TextField fx:id="contactField" styleClass="input-field" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
 
-</GridPane>
+                <!-- ROLE -->
+                <Label text="Role:" styleClass="label-form" GridPane.columnIndex="0" GridPane.rowIndex="6"/>
+                <ComboBox fx:id="roleCombo" styleClass="input-field" prefWidth="250"
+                          GridPane.columnIndex="1" GridPane.rowIndex="6"/>
+
+                <!-- COMPANY -->
+                <Label text="Company:" styleClass="label-form" GridPane.columnIndex="0" GridPane.rowIndex="7"/>
+                <TextField fx:id="companyField" styleClass="input-field" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
+
+                <!-- MESSAGE -->
+                <Label fx:id="messageLabel" styleClass="label-error"
+                       GridPane.columnIndex="0" GridPane.rowIndex="8"
+                       GridPane.columnSpan="2"/>
+
+            </GridPane>
+
+            <!-- BUTTONS -->
+            <HBox spacing="25" alignment="CENTER">
+                <Button text="Register" onAction="#registerUser" styleClass="primary-btn" prefWidth="140"/>
+                <Button text="Login Page" onAction="#goToLogin" styleClass="secondary-btn" prefWidth="140"/>
+            </HBox>
+
+        </VBox>
+
+    </VBox>
+
+    <stylesheets>
+        <URL value="@style.css" />
+    </stylesheets>
+
+</StackPane>

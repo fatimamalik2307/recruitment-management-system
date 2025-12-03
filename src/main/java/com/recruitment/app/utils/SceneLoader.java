@@ -14,31 +14,44 @@ import java.util.function.Consumer;
 public class SceneLoader {
 
     private static final ControllerFactory controllerFactory = ControllerFactory.getInstance();
+    private static final String GLOBAL_CSS_PATH = "/ui/style.css"; // Ensure this matches your CSS location
+
+    // Helper method to create a scene and apply the global stylesheet
+    private static Scene createStyledScene(Parent root) {
+        Scene scene = new Scene(root);
+        try {
+            // Load the CSS file
+            String css = SceneLoader.class.getResource(GLOBAL_CSS_PATH).toExternalForm();
+            scene.getStylesheets().add(css);
+        } catch (Exception e) {
+            System.err.println("Error loading global stylesheet: " + GLOBAL_CSS_PATH);
+            e.printStackTrace();
+        }
+        return scene;
+    }
 
     // ============== KEEP ALL EXISTING METHODS FOR BACKWARD COMPATIBILITY ==============
 
-    // Basic load method for simple cases (UNCHANGED except setting controllerFactory)
+    // Basic load method for simple cases
     public static void load(Stage stage, String fxmlPath) {
         try {
             FXMLLoader loader = new FXMLLoader(SceneLoader.class.getResource(fxmlPath));
 
-            // <-- ensure controllers created by FXMLLoader use our ControllerFactory
             loader.setControllerFactory(controllerFactory);
 
             Parent root = loader.load();
-            stage.setScene(new Scene(root));
+            stage.setScene(createStyledScene(root)); // <-- Using the new helper
             stage.show();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    // Load with data configuration (for controllers with setters) (UNCHANGED except setting controllerFactory)
+    // Load with data configuration (for controllers with setters)
     public static void loadWithData(Stage stage, String fxmlPath, Consumer<Object> controllerConfigurer) {
         try {
             FXMLLoader loader = new FXMLLoader(SceneLoader.class.getResource(fxmlPath));
 
-            // <-- ensure controllers created by FXMLLoader use our ControllerFactory
             loader.setControllerFactory(controllerFactory);
 
             Parent root = loader.load();
@@ -46,7 +59,7 @@ public class SceneLoader {
             if (controllerConfigurer != null && controller != null) {
                 controllerConfigurer.accept(controller);
             }
-            stage.setScene(new Scene(root));
+            stage.setScene(createStyledScene(root)); // <-- Using the new helper
             stage.show();
         } catch (Exception e) {
             e.printStackTrace();
@@ -55,16 +68,14 @@ public class SceneLoader {
 
     // ============== UPDATE THIS METHOD TO USE CONTROLLERFACTORY ==============
     public static void loadApplicationForm(Stage stage, String fxmlPath,
-                                           ApplicationService applicationService, // Keep parameter for compatibility
+                                           ApplicationService applicationService,
                                            JobPosting job) {
         try {
             FXMLLoader loader = new FXMLLoader(SceneLoader.class.getResource(fxmlPath));
 
-            // USE ControllerFactory instead of manual controller creation
             loader.setControllerFactory(controllerFactory);
 
             Parent root = loader.load();
-            stage.setScene(new Scene(root));
 
             // Get the controller (services already injected by ControllerFactory)
             ApplicationFormController controller = loader.getController();
@@ -72,6 +83,7 @@ public class SceneLoader {
             // Still need to set the dynamic job parameter
             controller.setJob(job);
 
+            stage.setScene(createStyledScene(root)); // <-- Using the new helper
             stage.show();
 
         } catch (Exception e) {
@@ -79,7 +91,7 @@ public class SceneLoader {
         }
     }
 
-    // ============== ADD THESE NEW METHODS FOR DI ==============
+    // ============== ADD THESE NEW METHODS FOR DI (UPDATED) ==============
 
     /**
      * NEW: Load FXML with Dependency Injection (ControllerFactory)
@@ -100,7 +112,7 @@ public class SceneLoader {
             loader.setControllerFactory(controllerFactory);
 
             Parent root = loader.load();
-            stage.setScene(new Scene(root));
+            stage.setScene(createStyledScene(root)); // <-- Using the new helper
 
             if (title != null) {
                 stage.setTitle(title);
@@ -130,7 +142,7 @@ public class SceneLoader {
                 controllerConfigurer.accept(controller);
             }
 
-            stage.setScene(new Scene(root));
+            stage.setScene(createStyledScene(root)); // <-- Using the new helper
             stage.show();
 
         } catch (Exception e) {
