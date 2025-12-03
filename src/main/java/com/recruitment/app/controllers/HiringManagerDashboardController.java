@@ -21,7 +21,7 @@ public class HiringManagerDashboardController {
     private final JobService jobService;
     private final UserService userService;
 
-    // Constructor injection
+    // Constructor injection ensures proper DI
     public HiringManagerDashboardController(
             RecruiterService recruiterService,
             HMService hmService,
@@ -36,6 +36,9 @@ public class HiringManagerDashboardController {
         this.userService = userService;
     }
 
+    // -----------------------
+    // Candidate Review
+    // -----------------------
     @FXML
     private void openHMCandidateReview(ActionEvent event) {
         try {
@@ -46,15 +49,16 @@ public class HiringManagerDashboardController {
 
             HMCandidateReviewController controller = loader.getController();
 
-            // Inject ALL required services
+            // Inject required services
             controller.setHMService(hmService);
             controller.setNoteService(noteService);
             controller.setRecruiterService(recruiterService);
             controller.setUserService(userService);
 
+            // Set current user ID from session
             controller.setCurrentUserId(getCurrentUserId());
 
-            // VERY IMPORTANT: call this after injecting services & user ID
+            // Load initial data after injecting services & user ID
             controller.loadInitialData();
 
             stage.show();
@@ -64,39 +68,77 @@ public class HiringManagerDashboardController {
         }
     }
 
-//    @FXML
-//    private void openJobPostings(ActionEvent event) {
-//        try {
-//            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/HMJobPostings.fxml"));
-//            Stage stage = new Stage();
-//            stage.setScene(new Scene(loader.load()));
-//            stage.setTitle("My Job Postings");
-//
-//            HMJobPostingsController controller = loader.getController();
-//            controller.setJobService(jobService);
-//            controller.setHmService(hmService);
-//            controller.setCurrentUserId(getCurrentUserId());
-//
-//            stage.show();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            showAlert(Alert.AlertType.ERROR, "Failed to open Job Postings.");
-//        }
-//    }
+    // -----------------------
+    // Job Postings (optional)
+    // -----------------------
+    /*
+    @FXML
+    private void openJobPostings(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/HMJobPostings.fxml"));
+            Stage stage = new Stage();
+            stage.setScene(new Scene(loader.load()));
+            stage.setTitle("My Job Postings");
 
+            HMJobPostingsController controller = loader.getController();
+            controller.setJobService(jobService);
+            controller.setHmService(hmService);
+            controller.setCurrentUserId(getCurrentUserId());
+
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Failed to open Job Postings.");
+        }
+    }
+    */
+
+    // -----------------------
+    // Selected Candidates view
+    // -----------------------
     @FXML
     private void openSelectedCandidates(ActionEvent event) {
-        showAlert(Alert.AlertType.INFORMATION, "Selected Candidates view is integrated into the Review Candidates section.");
-        // Optionally, you can open the candidate review instead
-        // openHMCandidateReview(event);
+        showAlert(Alert.AlertType.INFORMATION,
+                "Selected Candidates view is integrated into the Review Candidates section.");
+        // Optionally: openHMCandidateReview(event);
     }
 
+    // -----------------------
+    // Profile
+    // -----------------------
     @FXML
     private void openProfile(ActionEvent event) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION, "Profile window not implemented yet.", ButtonType.OK);
-        alert.showAndWait();
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("ui/profile.fxml"));
+            Stage stage = new Stage();
+            stage.setScene(new Scene(loader.load()));
+            stage.setTitle("Update Profile");
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("⚠ ERROR: Could not load profile.fxml");
+        }
     }
 
+    // -----------------------
+    // Change Password
+    // -----------------------
+    @FXML
+    private void openChangePassword(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/change_password.fxml"));
+            Stage stage = new Stage();
+            stage.setScene(new Scene(loader.load()));
+            stage.setTitle("Change Password");
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // -----------------------
+    // Logout
+    // -----------------------
     @FXML
     private void logout(ActionEvent event) {
         Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
@@ -113,6 +155,9 @@ public class HiringManagerDashboardController {
         }
     }
 
+    // -----------------------
+    // Helpers
+    // -----------------------
     private int getCurrentUserId() {
         return SessionManager.loggedInUser.getId();
     }

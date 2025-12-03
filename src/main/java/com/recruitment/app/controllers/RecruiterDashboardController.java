@@ -1,7 +1,5 @@
 package com.recruitment.app.controllers;
 
-import com.recruitment.app.config.DBConnection;
-import com.recruitment.app.dao.*;
 import com.recruitment.app.services.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -15,22 +13,37 @@ import java.io.IOException;
 
 public class RecruiterDashboardController {
 
-    // DAOs
-    private final JobDAO jobDAO = new JobDAOImpl(DBConnection.getConnection());
-    private final ApplicationDAO applicationDAO = new ApplicationDAOImpl(DBConnection.getConnection());
-    private final ShortlistingCriteriaDAO criteriaDAO = new ShortlistingCriteriaDAOImpl(DBConnection.getConnection());
-    private final ShortlistDAO shortlistDAO = new ShortlistDAOImpl(DBConnection.getConnection());
-    private final AssessmentResultDAO assessmentResultDAO = new AssessmentResultDAOImpl(DBConnection.getConnection());
-    private final FinalRankedCandidateDAO candidateDAO = new FinalRankedCandidateDAOImpl(DBConnection.getConnection());
-    private final UserDAO userDAO = new UserDAOImpl();
-    private final FinalRankingCriteriaDAO criteriaDAO2 = new FinalRankingCriteriaDAOImpl(DBConnection.getConnection());
-    // Services
-    private final JobService jobService = new JobServiceImpl(jobDAO);
-    private final ShortlistingCriteriaService criteriaService = new ShortlistingCriteriaServiceImpl(criteriaDAO);
-    private final ShortlistService shortlistService = new ShortlistServiceImpl(shortlistDAO, criteriaDAO, applicationDAO,candidateDAO,jobDAO);
-    private final RecruiterService recruiterService = new RecruiterServiceImpl(jobDAO, applicationDAO, criteriaDAO);
-    private final AssessmentService assessmentService = new AssessmentServiceImpl(new AssessmentResultDAOImpl(DBConnection.getConnection()));
-    private final FinalRankingService finalRankingService = new FinalRankingServiceImpl(candidateDAO,criteriaDAO2,assessmentResultDAO,jobDAO,shortlistDAO,userDAO);
+    // Services (injected via constructor)
+    private final JobService jobService;
+    private final ShortlistingCriteriaService criteriaService;
+    private final ShortlistService shortlistService;
+    private final RecruiterService recruiterService;
+    private final AssessmentService assessmentService;
+    private final FinalRankingService finalRankingService;
+    private final HMService hmService;
+
+    // Constructor injection
+    public RecruiterDashboardController(
+            JobService jobService,
+            ShortlistingCriteriaService criteriaService,
+            ShortlistService shortlistService,
+            RecruiterService recruiterService,
+            AssessmentService assessmentService,
+            FinalRankingService finalRankingService,
+            HMService hmService
+    ) {
+        this.jobService = jobService;
+        this.criteriaService = criteriaService;
+        this.shortlistService = shortlistService;
+        this.recruiterService = recruiterService;
+        this.assessmentService = assessmentService;
+        this.finalRankingService = finalRankingService;
+        this.hmService = hmService;
+    }
+
+    // -----------------------
+    // Open Create Job Posting
+    // -----------------------
     @FXML
     private void openCreateJob(ActionEvent event) {
         try {
@@ -48,6 +61,9 @@ public class RecruiterDashboardController {
         }
     }
 
+    // -----------------------
+    // Review Applications
+    // -----------------------
     @FXML
     private void openReviewApplications(ActionEvent event) {
         try {
@@ -61,6 +77,9 @@ public class RecruiterDashboardController {
         }
     }
 
+    // -----------------------
+    // Review Shortlist
+    // -----------------------
     @FXML
     private void openReviewShortlist(ActionEvent event) {
         try {
@@ -70,8 +89,7 @@ public class RecruiterDashboardController {
             stage.setTitle("Review Shortlist");
 
             ReviewShortlistController controller = loader.getController();
-            // PASS the initialized services
-            controller.setServices(shortlistService, criteriaService, recruiterService, assessmentService,finalRankingService);
+            controller.setServices(shortlistService, criteriaService, recruiterService, assessmentService, finalRankingService);
 
             stage.show();
         } catch (IOException e) {
@@ -79,6 +97,9 @@ public class RecruiterDashboardController {
         }
     }
 
+    // -----------------------
+    // Shortlisting Criteria
+    // -----------------------
     @FXML
     private void openShortlistingCriteria(ActionEvent event) {
         try {
@@ -92,6 +113,9 @@ public class RecruiterDashboardController {
         }
     }
 
+    // -----------------------
+    // Recruitment Report
+    // -----------------------
     @FXML
     private void openRecruitmentReport(ActionEvent event) {
         try {
@@ -100,9 +124,8 @@ public class RecruiterDashboardController {
             stage.setScene(new Scene(loader.load()));
             stage.setTitle("Recruitment Report");
 
-            // Get controller and pass services if needed
             RecruitmentReportController controller = loader.getController();
-            // Services are handled inside RecruitmentReportController, so no need to pass anything
+            // Services handled internally
 
             stage.show();
         } catch (IOException e) {
@@ -111,6 +134,9 @@ public class RecruiterDashboardController {
         }
     }
 
+    // -----------------------
+    // Final Ranking
+    // -----------------------
     @FXML
     private void openFinalRanking(ActionEvent event) {
         try {
@@ -120,23 +146,6 @@ public class RecruiterDashboardController {
             stage.setTitle("Final Ranking");
 
             FinalRankingController controller = loader.getController();
-
-            // Create services
-            FinalRankingServiceImpl finalRankingService = new FinalRankingServiceImpl(
-                    candidateDAO,
-                    criteriaDAO2,
-                    assessmentResultDAO,
-                    jobDAO,
-                    shortlistDAO,
-                    userDAO
-            );
-
-            HMService hmService = new HMServiceImpl(candidateDAO, applicationDAO, jobDAO);
-
-            // Inject both services
-            controller.setFinalRankingService(finalRankingService);
-            controller.setHMService(hmService); // Add this line
-
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -144,26 +153,43 @@ public class RecruiterDashboardController {
         }
     }
 
-
+    // -----------------------
+    // Profile
+    // -----------------------
     @FXML
     private void openProfile(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getClassLoader().getResource("ui/profile.fxml")
-            );
-
+            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("ui/profile.fxml"));
             Stage stage = new Stage();
             stage.setScene(new Scene(loader.load()));
             stage.setTitle("Update Profile");
             stage.show();
-
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("⚠ ERROR: Could not load profile.fxml");
         }
     }
 
+    // -----------------------
+    // Change Password
+    // -----------------------
+    @FXML
+    private void openChangePassword(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/change_password.fxml"));
+            Stage stage = new Stage();
+            stage.setScene(new Scene(loader.load()));
+            stage.setTitle("Change Password");
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "Cannot open change password screen").show();
+        }
+    }
 
+    // -----------------------
+    // Logout
+    // -----------------------
     @FXML
     private void logout(ActionEvent event) {
         Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
@@ -179,18 +205,4 @@ public class RecruiterDashboardController {
             e.printStackTrace();
         }
     }
-    @FXML
-    private void openChangePassword(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/change_password.fxml"));
-            Stage stage = new Stage();
-            stage.setScene(new Scene(loader.load()));
-            stage.setTitle("Change Password");
-            stage.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-            new Alert(Alert.AlertType.ERROR, "Cannot open change password screen").show();
-        }
-    }
-
 }
