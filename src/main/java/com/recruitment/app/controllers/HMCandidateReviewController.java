@@ -1,5 +1,4 @@
 package com.recruitment.app.controllers;
-
 import com.recruitment.app.models.*;
 import com.recruitment.app.services.*;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -8,14 +7,10 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
-
 import java.util.List;
-
 public class HMCandidateReviewController {
-
     @FXML private ComboBox<JobPosting> jobDropdown;
     @FXML private Label statusLabel;
-
     @FXML private TableView<FinalRankedCandidate> candidateTable;
     @FXML private TableColumn<FinalRankedCandidate, Integer> colRank;
     @FXML private TableColumn<FinalRankedCandidate, String> colApplicantName;
@@ -23,7 +18,6 @@ public class HMCandidateReviewController {
     @FXML private TableColumn<FinalRankedCandidate, String> colStatus;
     @FXML private TableColumn<FinalRankedCandidate, String> colDecision;
     @FXML private TableColumn<FinalRankedCandidate, Void> colActions;
-
     @FXML private VBox candidateDetailsPanel;
     @FXML private Button selectButton;
     @FXML private Button rejectButton;
@@ -33,24 +27,22 @@ public class HMCandidateReviewController {
     @FXML private Button addNoteButton;
     @FXML private ListView<ApplicantNote> notesListView;
 
-    // --- Injected services ---
+
     private HMService hmService;
     private RecruiterService recruiterService;
     private UserService userService;
     private NoteService noteService;
 
-    // --- Controller state ---
+
     private int currentUserId;
     private JobPosting currentJob;
     private ApplicantNote currentlyEditingNote = null;
     private NotificationService notificationService;
 
-    // ---------- DEFAULT CONSTRUCTOR ----------
     public HMCandidateReviewController() {
-        // Empty - services will be injected
     }
 
-    // --- Service injection setters (CONSOLIDATED) ---
+
     public void setServices(
             HMService hmService,
             RecruiterService recruiterService,
@@ -66,7 +58,7 @@ public class HMCandidateReviewController {
     }
 
 
-    // --- Runtime data setter (KEEP) ---
+
     public void setCurrentUserId(int id) {
         this.currentUserId = id;
     }
@@ -75,7 +67,7 @@ public class HMCandidateReviewController {
     private void initialize() {
         candidateDetailsPanel.setDisable(true);
 
-        // Setup table columns
+
         colRank.setCellValueFactory(data -> new ReadOnlyObjectWrapper<>(data.getValue().getRank()));
         colApplicantName.setCellValueFactory(data -> new ReadOnlyStringWrapper(getApplicantName(data.getValue())));
         colScore.setCellValueFactory(data -> new ReadOnlyObjectWrapper<>(data.getValue().getCompositeScore()));
@@ -275,7 +267,6 @@ public class HMCandidateReviewController {
         Label emailLabel = new Label("Email: " + user.getEmail());
         Label phoneLabel = new Label("Phone: " + (user.getContact() != null ? user.getContact() : "Not provided"));
 
-        // Application Details
         Label appHeader = new Label("Application Details");
         appHeader.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
         Label jobLabel = new Label("Job Applied: " + (currentJob != null ? currentJob.getTitle() : "Unknown"));
@@ -287,14 +278,13 @@ public class HMCandidateReviewController {
         Label appliedDateLabel = new Label("Applied Date: " + app.getAppliedAt());
         Label statusLabel = new Label("Current Status: " + app.getStatus());
 
-        // Score Information
+
         Label scoreHeader = new Label("Assessment Scores");
         scoreHeader.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
         Label rankLabel = new Label("Final Rank: " + candidate.getRank());
         Label scoreLabel = new Label("Composite Score: " + candidate.getCompositeScore());
         Label tableStatusLabel = new Label("Ranking Status: " + candidate.getStatus());
 
-        // Add all labels to content
         content.getChildren().addAll(
                 personalHeader, nameLabel, emailLabel, phoneLabel,
                 new Separator(),
@@ -303,8 +293,6 @@ public class HMCandidateReviewController {
                 new Separator(),
                 scoreHeader, rankLabel, scoreLabel, tableStatusLabel
         );
-
-        // Add a scroll pane in case content is long
         ScrollPane scrollPane = new ScrollPane(content);
         scrollPane.setFitToWidth(true);
         scrollPane.setPrefHeight(400);
@@ -315,7 +303,6 @@ public class HMCandidateReviewController {
 
         dialog.showAndWait();
     }
-
     @FXML
     private void addNote() {
         FinalRankedCandidate c = candidateTable.getSelectionModel().getSelectedItem();
@@ -323,13 +310,11 @@ public class HMCandidateReviewController {
             showAlert(Alert.AlertType.WARNING, "Select a candidate first.");
             return;
         }
-
         String text = noteTextArea.getText().trim();
         if (text.isEmpty()) {
             showAlert(Alert.AlertType.WARNING, "Enter note text.");
             return;
         }
-
         try {
             if (currentlyEditingNote != null) {
                 currentlyEditingNote.setNoteText(text);
@@ -435,6 +420,4 @@ public class HMCandidateReviewController {
                     "Failed to notify candidates or no candidates were eligible.");
         }
     }
-
-
 }
