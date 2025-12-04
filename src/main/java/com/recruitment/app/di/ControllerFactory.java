@@ -78,7 +78,8 @@ public class ControllerFactory implements Callback<Class<?>, Object> {
                         services.getHmService(),
                         services.getRecruiterService(),
                         services.getUserService(),
-                        services.getNoteService()
+                        services.getNoteService(),
+                        services.getNotificationService()
 
                 );
                 return controller;

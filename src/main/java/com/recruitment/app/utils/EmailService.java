@@ -3,41 +3,43 @@ package com.recruitment.app.utils;
 import jakarta.mail.*;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
-
 import java.util.Properties;
 
 public class EmailService {
 
-    private static final String FROM_EMAIL = "yourgmail@gmail.com";
-    private static final String PASSWORD = "your-app-password";
+    public void sendEmail(String to, String subject, String content) {
 
-    public static boolean sendEmail(String to, String subject, String body) {
-        try {
-            Properties props = new Properties();
-            props.put("mail.smtp.auth", "true");
-            props.put("mail.smtp.starttls.enable", "true");
-            props.put("mail.smtp.host", "smtp.gmail.com");
-            props.put("mail.smtp.port", "587");
+        Properties props = new Properties();
+        props.put("mail.smtp.host", "sandbox.smtp.mailtrap.io");
+        props.put("mail.smtp.port", "2525");
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
 
-            Session session = Session.getInstance(props, new Authenticator() {
-                @Override
-                protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication(FROM_EMAIL, PASSWORD);
+        Session session = Session.getInstance(props,
+                new Authenticator() {
+                    @Override
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication(
+                                "b6a277aea17617",
+                                "076f69fc32bae0"
+                        );
+                    }
                 }
-            });
+        );
 
-            Message msg = new MimeMessage(session);
-            msg.setFrom(new InternetAddress(FROM_EMAIL));
-            msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
-            msg.setSubject(subject);
-            msg.setText(body);
+        try {
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress("noreply@recruitment-system.com"));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
+            message.setSubject(subject);
+            message.setText(content);
 
-            Transport.send(msg);
-            return true;
+            Transport.send(message);
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
+            System.out.println("Mail sent via Mailtrap!");
+
+        } catch (MessagingException e) {
+            throw new RuntimeException("Mailtrap sending failed", e);
         }
     }
 }

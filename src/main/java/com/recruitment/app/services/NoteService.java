@@ -10,4 +10,6 @@ public interface NoteService {
     ApplicantNote updateNote(ApplicantNote note);
     boolean deleteNote(Long noteId);
     boolean deleteNotesByApplication(Long applicationId);
+
+
 }

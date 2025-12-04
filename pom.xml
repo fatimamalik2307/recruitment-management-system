@@ -79,26 +79,22 @@
             <version>5.2.4</version>
         </dependency>
 
-        <!-- Jakarta Mail API -->
+        <!-- JavaMail Implementation -->
         <dependency>
-            <groupId>jakarta.mail</groupId>
-            <artifactId>jakarta.mail-api</artifactId>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>jakarta.mail</artifactId>
             <version>2.0.1</version>
         </dependency>
 
-        <!-- Angus Mail (implementation of Jakarta Mail) -->
+        <!-- Required for JavaMail MIME functionality -->
         <dependency>
-            <groupId>org.eclipse.angus</groupId>
-            <artifactId>angus-mail</artifactId>
+            <groupId>com.sun.activation</groupId>
+            <artifactId>jakarta.activation</artifactId>
             <version>2.0.1</version>
         </dependency>
 
-        <!-- Jakarta Activation -->
-        <dependency>
-            <groupId>jakarta.activation</groupId>
-            <artifactId>jakarta.activation-api</artifactId>
-            <version>2.0.1</version>
-        </dependency>
+
+
 
         <!-- Angus Activation (implementation of activation) -->
         <dependency>

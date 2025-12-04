@@ -53,12 +53,7 @@
 
     </TableView>
 
-    <!-- NOTIFY BUTTON -->
-    <Button fx:id="notifyCandidatesButton"
-            text="📧 Notify Candidates"
-            disable="true"
-            onAction="#notifyCandidates"
-            styleClass="btn-success"/>
+
 
     <!-- STYLESHEET -->
     <stylesheets>

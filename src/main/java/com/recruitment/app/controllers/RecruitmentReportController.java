@@ -8,7 +8,6 @@ import com.recruitment.app.utils.SessionManager;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-
 import java.util.List;
 
 public class RecruitmentReportController {

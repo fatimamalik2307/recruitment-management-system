@@ -1,40 +1,47 @@
 package com.recruitment.app.services;
 
-import com.recruitment.app.models.Application;
-import com.recruitment.app.dao.ApplicationDAO;
+import com.recruitment.app.dao.NotificationDAO;
+import com.recruitment.app.models.Notification;
+import com.recruitment.app.models.User;
 import com.recruitment.app.utils.EmailService;
-
-import java.util.List;
 
 public class NotificationServiceImpl implements NotificationService {
 
-    private final ApplicationDAO applicationDAO;
+    private final NotificationDAO notificationDAO;
+    private final UserService userService;
+    private final EmailService emailService;
 
-    public NotificationServiceImpl(ApplicationDAO dao) {
-        this.applicationDAO = dao;
+    public NotificationServiceImpl(NotificationDAO dao,
+                                   UserService userService,
+                                   EmailService emailService) {
+        this.notificationDAO = dao;
+        this.userService = userService;
+        this.emailService = emailService;
     }
 
     @Override
-    public void notifyCandidates(List<Application> rankings) {
+    public void sendNotificationToApplicant(int applicantId, String subject, String message) {
 
-        for (Application app : rankings) {
-            String email = applicationDAO.getApplicantEmail(app.getUserId());
+        // Save notification for in-app alerts
+        Notification notification = new Notification(applicantId, subject, message);
+        notificationDAO.save(notification);
 
-            boolean isSelected = app.getStatus().equalsIgnoreCase("selected");
+        // Send Email
+        User user = userService.getUserById(applicantId);
+        if (user != null && user.getEmail() != null) {
+            sendEmail(user.getEmail(), subject, message);
+        } else {
+            System.err.println("User email not found. Only in-app notification saved.");
+        }
+    }
 
-            String subject = isSelected
-                    ? "Congratulations! You are Selected"
-                    : "Update on Your Application";
-
-            String message = isSelected
-                    ? "Dear Candidate,\n\nYou have been selected for the position you applied for!"
-                    : "Dear Candidate,\n\nThank you for applying. Unfortunately, you were not selected.";
-
-            boolean success = EmailService.sendEmail(email, subject, message);
-
-            if (!success) {
-                System.out.println("Email failed → placing in retry queue");
-            }
+    @Override
+    public void sendEmail(String toEmail, String subject, String message) {
+        try {
+            emailService.sendEmail(toEmail, subject, message);
+        } catch (Exception e) {
+            System.err.println("Email sending failed. Queuing email for retry later...");
+            notificationDAO.queueEmail(toEmail, subject, message);
         }
     }
 }

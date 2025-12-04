@@ -27,4 +27,5 @@ public interface ApplicationDAO {
     List<Application> getFinalRankingsByJob(int jobId);
     String getApplicantEmail(int userId);
 
+    Application findById(int applicationId);
 }

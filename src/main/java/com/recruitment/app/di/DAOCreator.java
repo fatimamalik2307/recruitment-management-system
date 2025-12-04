@@ -3,7 +3,10 @@ package com.recruitment.app.di;
 import com.recruitment.app.dao.*;
 import com.recruitment.app.utils.DBConnection;
 
+import java.sql.Connection;
+
 public class DAOCreator {
+
     private static DAOCreator instance;
 
     // DAO instances
@@ -14,12 +17,13 @@ public class DAOCreator {
     private final ShortlistDAO shortlistDAO;
     private final AssessmentResultDAO assessmentDAO;
     private final FinalRankingCriteriaDAO finalRankingDAO;
-    private final FinalRankedCandidateDAO  finalRankedCandidateDAO;
+    private final FinalRankedCandidateDAO finalRankedCandidateDAO;
     private final JobDescriptionDAO jobDescriptionDAO;
     private final PersonSpecificationDAO personSpecificationDAO;
-private final ApplicantNoteDAO applicantNoteDAO;
+    private final ApplicantNoteDAO applicantNoteDAO;
+    private final NotificationDAO notificationDAO;
+
     private DAOCreator() {
-        // Initialize all DAOs (adjust constructors as needed)
         this.userDAO = new UserDAOImpl();
         this.jobDAO = new JobDAOImpl(DBConnection.getConnection());
         this.applicationDAO = new ApplicationDAOImpl(DBConnection.getConnection());
@@ -31,6 +35,7 @@ private final ApplicantNoteDAO applicantNoteDAO;
         this.applicantNoteDAO = new ApplicantNoteDAOImpl(DBConnection.getConnection());
         this.jobDescriptionDAO = new JobDescriptionDAOImpl(DBConnection.getConnection());
         this.personSpecificationDAO = new PersonSpecificationDAOImpl(DBConnection.getConnection());
+        this.notificationDAO = new NotificationDAOImpl(DBConnection.getConnection());
     }
 
     public static DAOCreator getInstance() {
@@ -40,16 +45,32 @@ private final ApplicantNoteDAO applicantNoteDAO;
         return instance;
     }
 
-    // Getters for DAOs
+    // --- ALL DAO GETTERS BELOW ---
+
     public UserDAO getUserDAO() { return userDAO; }
+
     public JobDAO getJobDAO() { return jobDAO; }
+
     public ApplicationDAO getApplicationDAO() { return applicationDAO; }
+
     public ShortlistingCriteriaDAO getCriteriaDAO() { return criteriaDAO; }
+
     public ShortlistDAO getShortlistDAO() { return shortlistDAO; }
+
     public AssessmentResultDAO getAssessmentDAO() { return assessmentDAO; }
+    public Connection getConnection() {
+        return DBConnection.getConnection();
+    }
+
     public FinalRankingCriteriaDAO getFinalRankingDAO() { return finalRankingDAO; }
-    public  FinalRankedCandidateDAO getFinalRankedCandidateDAO() { return finalRankedCandidateDAO; }
-    public ApplicantNoteDAO getApplicantNoteDAO() { return applicantNoteDAO; }
+
+    public FinalRankedCandidateDAO getFinalRankedCandidateDAO() { return finalRankedCandidateDAO; }
+
     public JobDescriptionDAO getJobDescriptionDAO() { return jobDescriptionDAO; }
+
     public PersonSpecificationDAO getPersonSpecificationDAO() { return personSpecificationDAO; }
+
+    public ApplicantNoteDAO getApplicantNoteDAO() { return applicantNoteDAO; }
+
+    public NotificationDAO getNotificationDAO() { return notificationDAO; }
 }

@@ -245,4 +245,8 @@ public class ApplicationDAOImpl implements ApplicationDAO {
         return null;
     }
 
+    @Override
+    public Application findById(int applicationId) {
+        return getById(applicationId);
+    }
 }

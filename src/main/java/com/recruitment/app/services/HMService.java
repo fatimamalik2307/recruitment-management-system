@@ -30,5 +30,6 @@ public interface HMService {
 
     boolean hasRecruiterSubmittedFinalList(int jobId);
 
+    boolean notifyCandidatesForJob(int jobPostingId);
 
 }

@@ -1,8 +1,14 @@
 package com.recruitment.app.services;
 
-import com.recruitment.app.models.Application;
-import java.util.List;
-
 public interface NotificationService {
-    void notifyCandidates(List<Application> finalRankings);
+
+    /**
+     * Sends an in-system + email notification to a specific applicant.
+     */
+    void sendNotificationToApplicant(int applicantId, String subject, String message);
+
+    /**
+     * Sends an email. If it fails, queues for retry.
+     */
+    void sendEmail(String toEmail, String subject, String message);
 }

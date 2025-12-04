@@ -1,6 +1,7 @@
 package com.recruitment.app.services;
 
 import com.recruitment.app.dao.*;
+import com.recruitment.app.models.Application;
 import com.recruitment.app.models.FinalRankedCandidate;
 import com.recruitment.app.models.JobPosting;
 
@@ -10,15 +11,82 @@ public class HMServiceImpl implements HMService {
     private final FinalRankedCandidateDAO candidateDAO;
     private final ApplicationDAO applicationDAO;
     private final JobDAO jobDAO;
+    private final NotificationService notificationService; // NEW
 
+    // Updated constructor (without breaking old code)
     public HMServiceImpl(FinalRankedCandidateDAO candidateDAO,
                          ApplicationDAO applicationDAO,
-                         JobDAO jobDAO) {
+                         JobDAO jobDAO,
+                         NotificationService notificationService) {
         this.candidateDAO = candidateDAO;
         this.applicationDAO = applicationDAO;
         this.jobDAO = jobDAO;
+        this.notificationService = notificationService; // NEW
     }
 
+    // Backward-compatible constructor (for existing code)
+    public HMServiceImpl(FinalRankedCandidateDAO candidateDAO,
+                         ApplicationDAO applicationDAO,
+                         JobDAO jobDAO) {
+        this(candidateDAO, applicationDAO, jobDAO, null);
+    }
+
+    // ----------------------------------------------------
+    // NEW METHOD (UC-28): Notify all candidates for job
+    // ----------------------------------------------------
+    @Override
+    public boolean notifyCandidatesForJob(int jobPostingId) {
+
+        if (notificationService == null) {
+            System.err.println("[HMService] NotificationService not injected!");
+            return false;
+        }
+
+        try {
+            List<FinalRankedCandidate> candidates =
+                    candidateDAO.findByJobPostingIdAndStatus(jobPostingId, "HM_REVIEWED");
+
+            if (candidates == null || candidates.isEmpty()) {
+                return false;
+            }
+
+            for (FinalRankedCandidate c : candidates) {
+
+                Application app = applicationDAO.findById(c.getApplicationId());
+                if (app == null) continue;
+
+                String subject = "Your Job Application Status";
+                String msg;
+
+                switch (app.getStatus()) {
+                    case "SELECTED":
+                        msg = "Congratulations! You have been SELECTED for: "
+                                + jobDAO.getJobById(jobPostingId).getTitle();
+                        break;
+
+                    case "REJECTED":
+                        msg = "We appreciate your interest. Unfortunately, you were NOT SELECTED for: "
+                                + jobDAO.getJobById(jobPostingId).getTitle();
+                        break;
+
+                    default:
+                        msg = "Your application status has been updated: " + app.getStatus();
+                }
+
+                notificationService.sendNotificationToApplicant(
+                        app.getUserId(),
+                        subject,
+                        msg
+                );
+            }
+
+            return true;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
     @Override
     public boolean sendToHiringManager(int jobPostingId) {
         try {
