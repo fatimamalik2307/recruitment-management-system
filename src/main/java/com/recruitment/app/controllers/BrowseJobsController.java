@@ -78,6 +78,29 @@ public class BrowseJobsController {
 
         return card;
     }
+    private LocalDate extractDeadline(Object deadlineObj) {
+
+        if (deadlineObj == null)
+            return null;
+
+        if (deadlineObj instanceof LocalDate)
+            return (LocalDate) deadlineObj;
+
+        if (deadlineObj instanceof java.sql.Date)
+            return ((java.sql.Date) deadlineObj).toLocalDate();
+
+        if (deadlineObj instanceof java.util.Date)
+            return ((java.util.Date) deadlineObj).toInstant()
+                    .atZone(java.time.ZoneId.systemDefault())
+                    .toLocalDate();
+
+        if (deadlineObj instanceof String) {
+            String s = ((String) deadlineObj).replace("\"", ""); // remove quotes
+            return LocalDate.parse(s); // must be yyyy-MM-dd
+        }
+
+        return null; // unknown type
+    }
 
     private void loadJobs() {
         try {
@@ -85,11 +108,17 @@ public class BrowseJobsController {
                 System.out.println("Loading jobs...");
 
                 List<JobPosting> activeJobs = jobService.getAllJobs().stream()
-                        .filter(job -> job.getDeadline() == null ||
-                                !job.getDeadline().isBefore(LocalDate.now()))
+//                        .filter(job -> {
+//                            LocalDate d = extractDeadline(job.getDeadline());
+//                            return d == null || !d.isBefore(LocalDate.now());
+//                        })
                         .toList();
 
                 jobsContainer.getChildren().clear(); // Clear existing content
+                for (JobPosting job : jobService.getAllJobs()) {
+                    System.out.println("Raw deadline = " + job.getDeadline() + " | Type = " +
+                            (job.getDeadline() != null ? job.getDeadline().getClass() : "null"));
+                }
 
                 if (activeJobs.isEmpty()) {
                     Label noJobsLabel = new Label("No active job postings found at this time.");
@@ -111,6 +140,7 @@ public class BrowseJobsController {
             showErrorAlert("Failed to load jobs: " + e.getMessage());
         }
     }
+
 
     private void openJobDetails(JobPosting job, javafx.event.ActionEvent event) {
         try {

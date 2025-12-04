@@ -5,8 +5,10 @@ import com.recruitment.app.di.ControllerFactory;
 import com.recruitment.app.models.JobPosting;
 import com.recruitment.app.services.ApplicationService;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.util.function.Consumer;
@@ -16,42 +18,59 @@ public class SceneLoader {
     private static final ControllerFactory controllerFactory = ControllerFactory.getInstance();
     private static final String GLOBAL_CSS_PATH = "/styles/style.css"; // Ensure this matches your CSS location
 
-    // Helper method to create a scene and apply the global stylesheet
+    /**
+     * Creates a Scene that fills the screen resolution with the global stylesheet applied
+     */
     private static Scene createStyledScene(Parent root) {
-        Scene scene = new Scene(root);
+        Rectangle2D bounds = Screen.getPrimary().getVisualBounds();
+        double screenWidth = bounds.getWidth();
+        double screenHeight = bounds.getHeight();
+
+        Scene scene = new Scene(root, screenWidth, screenHeight);
+
         try {
-            // Load the CSS file
             String css = SceneLoader.class.getResource(GLOBAL_CSS_PATH).toExternalForm();
             scene.getStylesheets().add(css);
         } catch (Exception e) {
             System.err.println("Error loading global stylesheet: " + GLOBAL_CSS_PATH);
             e.printStackTrace();
         }
+
         return scene;
     }
 
-    // ============== KEEP ALL EXISTING METHODS FOR BACKWARD COMPATIBILITY ==============
+    // ================== BASIC LOAD METHODS ==================
 
-    // Basic load method for simple cases
     public static void load(Stage stage, String fxmlPath) {
+        load(stage, fxmlPath, null, true);
+    }
+
+    public static void load(Stage stage, String fxmlPath, String title, boolean resizable) {
         try {
             FXMLLoader loader = new FXMLLoader(SceneLoader.class.getResource(fxmlPath));
-
             loader.setControllerFactory(controllerFactory);
 
             Parent root = loader.load();
-            stage.setScene(createStyledScene(root)); // <-- Using the new helper
+            stage.setScene(createStyledScene(root));
+            stage.setResizable(resizable);
+
+            if (title != null) stage.setTitle(title);
             stage.show();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    // Load with data configuration (for controllers with setters)
+    // ================== LOAD WITH CONTROLLER CONFIG ==================
+
     public static void loadWithData(Stage stage, String fxmlPath, Consumer<Object> controllerConfigurer) {
+        loadWithData(stage, fxmlPath, controllerConfigurer, null, true);
+    }
+
+    public static void loadWithData(Stage stage, String fxmlPath, Consumer<Object> controllerConfigurer, String title, boolean resizable) {
         try {
             FXMLLoader loader = new FXMLLoader(SceneLoader.class.getResource(fxmlPath));
-
             loader.setControllerFactory(controllerFactory);
 
             Parent root = loader.load();
@@ -59,31 +78,32 @@ public class SceneLoader {
             if (controllerConfigurer != null && controller != null) {
                 controllerConfigurer.accept(controller);
             }
-            stage.setScene(createStyledScene(root)); // <-- Using the new helper
+
+            stage.setScene(createStyledScene(root));
+            stage.setResizable(resizable);
+            if (title != null) stage.setTitle(title);
             stage.show();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    // ============== UPDATE THIS METHOD TO USE CONTROLLERFACTORY ==============
+    // ================== APPLICATION FORM LOAD ==================
+
     public static void loadApplicationForm(Stage stage, String fxmlPath,
                                            ApplicationService applicationService,
                                            JobPosting job) {
         try {
             FXMLLoader loader = new FXMLLoader(SceneLoader.class.getResource(fxmlPath));
-
             loader.setControllerFactory(controllerFactory);
 
             Parent root = loader.load();
-
-            // Get the controller (services already injected by ControllerFactory)
             ApplicationFormController controller = loader.getController();
+            controller.setJob(job); // dynamic data
 
-            // Still need to set the dynamic job parameter
-            controller.setJob(job);
-
-            stage.setScene(createStyledScene(root)); // <-- Using the new helper
+            stage.setScene(createStyledScene(root));
+            stage.setResizable(true); // allow resizing if needed
             stage.show();
 
         } catch (Exception e) {
@@ -91,32 +111,26 @@ public class SceneLoader {
         }
     }
 
-    // ============== ADD THESE NEW METHODS FOR DI (UPDATED) ==============
+    // ================== DEPENDENCY INJECTION LOAD ==================
 
-    /**
-     * NEW: Load FXML with Dependency Injection (ControllerFactory)
-     * Use this for controllers that need services injected
-     */
     public static void loadWithDI(Stage stage, String fxmlPath) {
-        loadWithDI(stage, fxmlPath, null);
+        loadWithDI(stage, fxmlPath, null, true);
     }
 
-    /**
-     * NEW: Load FXML with Dependency Injection and custom title
-     */
     public static void loadWithDI(Stage stage, String fxmlPath, String title) {
-        try {
-            System.out.println("SceneLoader (DI): Loading " + fxmlPath);
+        loadWithDI(stage, fxmlPath, title, true);
+    }
 
+    public static void loadWithDI(Stage stage, String fxmlPath, String title, boolean resizable) {
+        try {
             FXMLLoader loader = new FXMLLoader(SceneLoader.class.getResource(fxmlPath));
             loader.setControllerFactory(controllerFactory);
 
             Parent root = loader.load();
-            stage.setScene(createStyledScene(root)); // <-- Using the new helper
+            stage.setScene(createStyledScene(root));
+            stage.setResizable(resizable);
 
-            if (title != null) {
-                stage.setTitle(title);
-            }
+            if (title != null) stage.setTitle(title);
             stage.show();
 
         } catch (Exception e) {
@@ -124,12 +138,15 @@ public class SceneLoader {
         }
     }
 
-    /**
-     * NEW: Load FXML with DI and additional controller configuration
-     * Useful when you need to pass extra data to controller
-     */
     public static void loadWithDIAndConfig(Stage stage, String fxmlPath,
                                            Consumer<Object> controllerConfigurer) {
+        loadWithDIAndConfig(stage, fxmlPath, controllerConfigurer, null, true);
+    }
+
+    public static void loadWithDIAndConfig(Stage stage, String fxmlPath,
+                                           Consumer<Object> controllerConfigurer,
+                                           String title,
+                                           boolean resizable) {
         try {
             FXMLLoader loader = new FXMLLoader(SceneLoader.class.getResource(fxmlPath));
             loader.setControllerFactory(controllerFactory);
@@ -137,12 +154,14 @@ public class SceneLoader {
             Parent root = loader.load();
             Object controller = loader.getController();
 
-            // Apply additional configuration if provided
             if (controllerConfigurer != null && controller != null) {
                 controllerConfigurer.accept(controller);
             }
 
-            stage.setScene(createStyledScene(root)); // <-- Using the new helper
+            stage.setScene(createStyledScene(root));
+            stage.setResizable(resizable);
+
+            if (title != null) stage.setTitle(title);
             stage.show();
 
         } catch (Exception e) {
@@ -150,9 +169,8 @@ public class SceneLoader {
         }
     }
 
-    /**
-     * Get controller factory instance (for use in other controllers)
-     */
+    // ================== CONTROLLER FACTORY ACCESS ==================
+
     public static ControllerFactory getControllerFactory() {
         return controllerFactory;
     }

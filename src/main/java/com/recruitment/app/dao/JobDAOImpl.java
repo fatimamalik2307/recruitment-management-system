@@ -143,26 +143,24 @@ public class JobDAOImpl implements JobDAO {
         }
         return "Unknown";
     }
-
     private JobPosting mapResultSetToJob(ResultSet rs) throws SQLException {
         JobPosting job = new JobPosting();
         job.setId(rs.getInt("id"));
-        job.setJobTitle(rs.getString("job_title"));
+        job.setTitle(rs.getString("job_title"));
         job.setDepartment(rs.getString("department"));
-        job.setDescription(rs.getString("description"));
-        job.setRecruiterId(rs.getInt("recruiter_id"));
 
-        // Add hiring manager ID if column exists
-        if (columnExists(rs, "hiring_manager_id")) {
-            job.setHiringManagerId(rs.getInt("hiring_manager_id"));
+        // --- Fix: read the deadline properly ---
+        java.sql.Date sqlDate = rs.getDate("deadline");  // returns null if DB column is null
+        if (sqlDate != null) {
+            job.setDeadline(sqlDate.toLocalDate());     // convert java.sql.Date to java.time.LocalDate
+        } else {
+            job.setDeadline(null);
         }
 
-        // Optional: set status if available in DB
-        if (columnExists(rs, "status")) {
-            job.setStatus(rs.getString("status"));
-        }
+        // Map other fields as needed
         return job;
     }
+
 
     private boolean columnExists(ResultSet rs, String columnName) {
         try {

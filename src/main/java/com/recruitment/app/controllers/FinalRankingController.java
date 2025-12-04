@@ -55,7 +55,7 @@ public class FinalRankingController {
         colStatus.setCellValueFactory(data -> new ReadOnlyStringWrapper(data.getValue().getStatus()));
 
         sendToHMButton.setDisable(true);
-
+        populateJobs();
 
         // Don't populate jobs here - wait for services to be injected
         // We'll populate jobs when services are available

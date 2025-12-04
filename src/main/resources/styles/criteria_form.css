@@ -28,11 +28,10 @@
     -fx-font-size: 14px;
 }
 
-/* ---------- INPUT ELEMENTS ---------- */
-.textfield,
-.combo {
+/* ---------- TEXT FIELD ---------- */
+.textfield {
     -fx-background-color: #0b1320;
-    -fx-text-fill: #ffffff;
+    -fx-text-fill: #ffffff !important;
     -fx-border-color: #475569;
     -fx-border-radius: 8;
     -fx-background-radius: 8;
@@ -40,25 +39,75 @@
     -fx-font-size: 14px;
 }
 
-.textfield:focused,
-.combo:focused {
+.textfield:focused {
     -fx-border-color: #60a5fa;
     -fx-effect: dropshadow(gaussian, rgba(96,165,250,0.45), 12, 0.5, 0, 0);
 }
 
-/* ---- internal text for ComboBox ---- */
-.combo-box .text-field,
-.combo-box .label {
-    -fx-text-fill: #ffffff;
-}
-
-.combo-box .list-view .list-cell {
-    -fx-text-fill: #ffffff;
+/* ---------- COMBO BOX ---------- */
+.combo {
     -fx-background-color: #0b1320;
+    -fx-border-color: #475569;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
 }
 
-.combo-box .list-view .list-cell:hover {
+/* ComboBox text field (the editable/display area) */
+.combo-box .text-input {
+    -fx-text-fill: #ffffff !important;
+    -fx-background-color: transparent;
+}
+
+.combo-box .arrow-button {
+    -fx-background-color: transparent;
+}
+
+.combo-box .arrow {
+    -fx-background-color: #ffffff;
+}
+
+/* ComboBox popup/list view */
+.combo-box-popup .list-view {
+    -fx-background-color: #0b1320;
+    -fx-border-color: #475569;
+    -fx-border-radius: 4;
+}
+
+/* ComboBox list cells */
+.combo-box-popup .list-cell {
+    -fx-background-color: #0b1320;
+    -fx-text-fill: #ffffff;
+    -fx-padding: 8 10;
+}
+
+.combo-box-popup .list-cell:hover {
     -fx-background-color: #1e293b;
+}
+
+.combo-box-popup .list-cell:filled:selected {
+    -fx-background-color: #2563eb;
+    -fx-text-fill: white;
+}
+
+/* Force text color in ComboBox display area */
+.combo-box .cell:selected {
+    -fx-text-fill: #ffffff !important;
+}
+
+.combo-box .list-cell {
+    -fx-text-fill: #ffffff;
+}
+
+/* Specifically target the text field inside ComboBox */
+.combo-box > .text-field {
+    -fx-text-fill: #ffffff !important;
+    -fx-background-color: transparent;
+    -fx-prompt-text-fill: #94a3b8;
+}
+
+/* Alternative: Direct styling for ComboBox text */
+.combo-box .text {
+    -fx-fill: #ffffff !important;
 }
 
 /* ---------- BUTTON ---------- */
