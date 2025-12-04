@@ -20,7 +20,7 @@
             </padding>
 
             <!-- App Title -->
-            <Label text="JobSeeker Portal" styleClass="header-title"/>
+            <Label text="" styleClass="header-title"/>
 
             <!-- Navigation Items -->
             <HBox alignment="CENTER_LEFT" spacing="10" styleClass="nav-group">

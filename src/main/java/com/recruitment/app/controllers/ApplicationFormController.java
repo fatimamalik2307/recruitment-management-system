@@ -126,12 +126,66 @@ public class ApplicationFormController {
         }
     }
 
-    // ---------- SUBMIT APPLICATION (SIMPLIFIED) ----------
     private void submitApplication(ActionEvent event) {
         try {
-            // REMOVED: Null check for applicationService (it's guaranteed)
-            // if (applicationService == null) { ... }
+            // ---------- BASIC CHECKS ----------
+            if (job == null) {
+                showError("Error: No job selected.");
+                return;
+            }
 
+            if (applicationService == null) {
+                showError("Internal error: Application service unavailable.");
+                return;
+            }
+
+            // ---------- FIELD VALIDATION ----------
+            if (fullNameField.getText().isBlank()) {
+                showError("Full name is required.");
+                return;
+            }
+
+            if (emailField.getText().isBlank() || !isValidEmail(emailField.getText())) {
+                showError("Please enter a valid email.");
+                return;
+            }
+
+            if (contactField.getText().isBlank() || !isValidPhone(contactField.getText())) {
+                showError("Please enter a valid contact number.");
+                return;
+            }
+
+            if (qualificationField.getText().isBlank()) {
+                showError("Qualifications cannot be empty.");
+                return;
+            }
+
+            if (qualificationField.getText().length() < 20) {
+                showError("Please provide more detailed qualifications.");
+                return;
+            }
+
+            if (experienceField.getText().length() > 0 && experienceField.getText().length() < 10) {
+                showError("Experience section is too short. Provide more detail.");
+                return;
+            }
+
+            if (coverLetterField.getText().isBlank()) {
+                showError("Cover letter is required.");
+                return;
+            }
+
+            if (coverLetterField.getText().length() < 30) {
+                showError("Your cover letter must be more descriptive.");
+                return;
+            }
+
+            if (uploadedFiles.isEmpty()) {
+                showError("Please upload at least one document (CV).");
+                return;
+            }
+
+            // ---------- BUILD APPLICATION ----------
             Application app = new Application();
             app.setUserId(SessionManager.loggedInUser.getId());
             app.setJobId(job.getId());
@@ -140,18 +194,19 @@ public class ApplicationFormController {
             app.setCoverLetter(coverLetterField.getText());
             app.setStatus("submitted");
 
+            // ---------- SUBMIT ----------
             applicationService.submit(app);
 
+            messageLabel.setStyle("-fx-text-fill: #4ade80; -fx-font-weight: bold;");
             messageLabel.setText("Application Submitted Successfully!");
 
             clearForm();
 
         } catch (Exception e) {
             e.printStackTrace();
-            messageLabel.setText("Error while submitting application.");
+            showError("Error while submitting application.");
         }
     }
-
     private void clearForm() {
         qualificationField.clear();
         experienceField.clear();
@@ -159,18 +214,42 @@ public class ApplicationFormController {
         filesList.getItems().clear();
         uploadedFiles.clear();
     }
-
-    // ---------- BACK (NO CHANGE) ----------
     private void goBack(ActionEvent event) {
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        SceneLoader.load(stage, "/ui/job_details.fxml");
-    }
+        try {
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
-    // ---------- CV PARSING METHODS (NO CHANGE) ----------
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/job_details.fxml"));
+            loader.setControllerFactory(com.recruitment.app.di.ControllerFactory.getInstance());
+
+            Parent root = loader.load();
+            JobDetailsController controller = loader.getController();
+
+            // restore job details properly
+            controller.setJob(SessionManager.selectedJob);
+
+            stage.setScene(new Scene(root));
+            stage.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     private String extractEmail(String text) {
         Matcher m = Pattern.compile("[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+")
                 .matcher(text);
         return m.find() ? m.group() : null;
+    }
+    private boolean isValidEmail(String email) {
+        return email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");
+    }
+
+    private boolean isValidPhone(String phone) {
+        return phone.matches("^[0-9+()\\s-]{7,15}$");
+    }
+
+    private void showError(String msg) {
+        messageLabel.setStyle("-fx-text-fill: #ff6b6b; -fx-font-weight: bold;");
+        messageLabel.setText(msg);
     }
 
     private String extractPhone(String text) {
@@ -302,7 +381,6 @@ public class ApplicationFormController {
 
             result.put(sectionType, body);
         }
-
         return result;
     }
 }

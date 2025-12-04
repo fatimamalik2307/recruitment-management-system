@@ -22,8 +22,10 @@ public class RecruiterDashboardController {
     private AssessmentService assessmentService;
     private FinalRankingService finalRankingService;
     private HMService hmService;
+
     // NO-ARG constructor required for FXMLLoader
-    public RecruiterDashboardController() { }
+    public RecruiterDashboardController() {
+    }
 
     // Setter method to inject services (KEEP THIS - ControllerFactory uses it)
     public void setServices(
@@ -225,12 +227,11 @@ public class RecruiterDashboardController {
         stage.close();
 
         try {
+            Stage loginStage = new Stage();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/Login.fxml"));
 
-            // USE ControllerFactory for Login too (if LoginController needs services)
-            // loader.setControllerFactory(ControllerFactory.getInstance());
+            loader.setControllerFactory(ControllerFactory.getInstance()); // ✅ FIX
 
-            Stage loginStage = new Stage();
             loginStage.setScene(new Scene(loader.load()));
             loginStage.setTitle("Login");
             loginStage.show();
@@ -238,4 +239,5 @@ public class RecruiterDashboardController {
             e.printStackTrace();
         }
     }
+
 }

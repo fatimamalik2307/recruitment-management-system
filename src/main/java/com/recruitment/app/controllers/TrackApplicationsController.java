@@ -30,18 +30,16 @@ public class TrackApplicationsController {
         // Empty - service will be injected
     }
 
-    // ---------- SERVICE INJECTION ----------
     public void setApplicationService(ApplicationService applicationService) {
         this.applicationService = applicationService;
     }
     @FXML
     public void initialize() {
-        // ADD null check for service
+
         if (applicationService == null) {
             System.err.println("ApplicationService not injected!");
             return;
         }
-
         int userId = SessionManager.loggedInUser.getId();
 
         // Use injected service instead of direct DAO

@@ -41,9 +41,6 @@ public class BrowseJobsController {
         loadJobs();
     }
 
-    /**
-     * Creates and returns a beautifully styled job card (VBox) for a single job posting.
-     */
     private VBox createJobCard(JobPosting job) {
         // 1. Job Details Section (Title, Dept, Deadline)
         Label titleLabel = new Label(job.getTitle());

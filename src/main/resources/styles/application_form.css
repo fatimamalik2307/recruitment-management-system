@@ -28,18 +28,37 @@
     -fx-font-size: 14px;
 }
 
-/* ---------- INPUTS ---------- */
+/* ---------- INPUTS (TextField + TextArea) ---------- */
 .textfield,
 .textarea {
     -fx-background-color: #0b1320;
-    -fx-text-fill: #ffffff;
     -fx-border-color: #475569;
     -fx-border-radius: 8;
     -fx-background-radius: 8;
     -fx-padding: 8 10;
     -fx-font-size: 14px;
+    -fx-text-fill: #ffffff;
 }
 
+/* TEXT VISIBILITY FIX */
+.textfield .text,
+.textarea .text {
+    -fx-fill: #ffffff !important;
+}
+
+/* FIX: TextArea inner scrollable region */
+.textarea .content {
+    -fx-background-color: #0b1320 !important;
+}
+
+/* FIX: prompt text color */
+.textfield .prompt-text,
+.textarea .prompt-text {
+    -fx-fill: #94a3b8;
+    -fx-opacity: 1;
+}
+
+/* FOCUS EFFECT */
 .textfield:focused,
 .textarea:focused {
     -fx-border-color: #60a5fa;
@@ -54,14 +73,22 @@
     -fx-background-radius: 8;
 }
 
+/* FIX: list cell text visibility */
 .list-cell {
-    -fx-text-fill: #ffffff;
     -fx-background-color: #0b1320;
 }
 
+.list-cell .text {
+    -fx-fill: #ffffff;
+}
+
+/* Selected row */
 .list-cell:filled:selected {
     -fx-background-color: #2563eb;
-    -fx-text-fill: white;
+}
+
+.list-cell:filled:selected .text {
+    -fx-fill: white;
 }
 
 /* ---------- BUTTONS ---------- */

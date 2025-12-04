@@ -3,6 +3,7 @@ package com.recruitment.app.controllers;
 import com.recruitment.app.models.JobPosting;
 import com.recruitment.app.services.ApplicationService;
 import com.recruitment.app.utils.SceneLoader;
+import com.recruitment.app.utils.SessionManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -26,6 +27,13 @@ public class JobDetailsController {
     public JobDetailsController() {
         // Empty - service will be injected
     }
+    @FXML
+    public void initialize() {
+        if (SessionManager.selectedJob != null) {
+            setJob(SessionManager.selectedJob);
+        }
+    }
+
 
 
     public void setApplicationService(ApplicationService applicationService) {
@@ -56,14 +64,10 @@ public class JobDetailsController {
 
     @FXML
     public void openApplicationForm(ActionEvent event) {
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        SessionManager.selectedJob = job;  // ← SAVE JOB before leaving page
 
-        // Use updated SceneLoader that uses DI
-        SceneLoader.loadApplicationForm(
-                stage,
-                "/ui/application_form.fxml",
-                applicationService, // Pass the injected service
-                job
-        );
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        SceneLoader.loadApplicationForm(stage, "/ui/application_form.fxml", applicationService, job);
     }
+
 }

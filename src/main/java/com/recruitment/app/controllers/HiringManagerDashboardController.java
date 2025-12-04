@@ -1,13 +1,18 @@
 package com.recruitment.app.controllers;
 
+import com.recruitment.app.di.ControllerFactory;
 import com.recruitment.app.services.*;
 import com.recruitment.app.utils.SceneLoader;
 import com.recruitment.app.utils.SessionManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
+
+import java.io.IOException;
 
 public class HiringManagerDashboardController {
     private RecruiterService recruiterService;
@@ -16,12 +21,10 @@ public class HiringManagerDashboardController {
     private JobService jobService;
     private UserService userService;
 
-    // ---------- DEFAULT CONSTRUCTOR ----------
     public HiringManagerDashboardController() {
         // Empty - services will be injected via setter
     }
 
-    // ---------- SERVICE INJECTION ----------
     public void setServices(
             RecruiterService recruiterService,
             HMService hmService,
@@ -36,9 +39,6 @@ public class HiringManagerDashboardController {
         this.userService = userService;
     }
 
-    // -----------------------
-    // Candidate Review
-    // -----------------------
     @FXML
     private void openHMCandidateReview(ActionEvent event) {
         try {
@@ -83,9 +83,7 @@ public class HiringManagerDashboardController {
     }
     */
 
-    // -----------------------
-    // Selected Candidates view
-    // -----------------------
+
     @FXML
     private void openSelectedCandidates(ActionEvent event) {
         showAlert(Alert.AlertType.INFORMATION,
@@ -132,18 +130,17 @@ public class HiringManagerDashboardController {
         stage.close();
 
         try {
-            // Use DI for login too (if LoginController needs services)
             Stage loginStage = new Stage();
-            SceneLoader.loadWithDI(loginStage, "/ui/Login.fxml", "Login");
-
-        } catch (Exception e) {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/Login.fxml"));
+            loader.setControllerFactory(ControllerFactory.getInstance());
+            loginStage.setScene(new Scene(loader.load()));
+            loginStage.setTitle("Login");
+            loginStage.show();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    // -----------------------
-    // Helpers
-    // -----------------------
     private int getCurrentUserId() {
         return SessionManager.loggedInUser.getId();
     }

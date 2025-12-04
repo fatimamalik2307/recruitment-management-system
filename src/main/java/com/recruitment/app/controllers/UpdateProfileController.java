@@ -21,7 +21,7 @@ public class UpdateProfileController {
 
     public UpdateProfileController() {}
 
-    // ---------- SERVICE INJECTION ----------
+
     public void setUserService(UserService userService) {
         this.userService = userService;
     }
@@ -88,6 +88,26 @@ public class UpdateProfileController {
     @FXML
     public void backToJobs(ActionEvent event) {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        SceneLoader.loadWithDI(stage, "/ui/browse_jobs.fxml", "Browse Jobs");
+
+        String role = SessionManager.loggedInUser.getRole(); // assuming role is saved
+
+        switch (role.toLowerCase()) {
+            case "user":
+            case "applicant":
+                SceneLoader.loadWithDI(stage, "/ui/browse_jobs.fxml", "Browse Jobs");
+                break;
+
+            case "recruiter":
+                SceneLoader.loadWithDI(stage, "/ui/RecruiterDashboard.fxml", "Recruiter Dashboard");
+                break;
+
+            case "hiring manager":
+                SceneLoader.loadWithDI(stage, "/ui/HiringManagerDashboard.fxml", "Hiring Manager Dashboard");
+                break;
+
+            default:
+                SceneLoader.loadWithDI(stage, "/ui/browse_jobs.fxml", "Browse Jobs");
+                break;
+        }
     }
-}
+    }
