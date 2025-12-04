@@ -11,10 +11,10 @@ public class JobPosting {
     private String title;
     private String department;
     private String description;
-    private String requiredQualification;
-    private String jobLocation;
+    private String required_qualification;
+    private String job_location;
     private LocalDate deadline;
-    private String jobType; // Full-Time, Internship, etc.
+    private String job_type; // Full-Time, Internship, etc.
     private String salaryRange;
     private String status; // Active / Closed
     private int createdBy; // Recruiter ID
@@ -29,15 +29,15 @@ public class JobPosting {
     public JobPosting() {}
 
     // Full constructor
-    public JobPosting(String title, String department, String description, String requiredQualification,
+    public JobPosting(String title, String department, String description, String required_qualification,
                       String jobLocation, LocalDate deadline, String jobType, String salaryRange, int createdBy) {
         this.title = title;
         this.department = department;
         this.description = description;
-        this.requiredQualification = requiredQualification;
-        this.jobLocation = jobLocation;
+        this.required_qualification = required_qualification;
+        this.job_location = jobLocation;
         this.deadline = deadline;
-        this.jobType = jobType;
+        this.job_type = jobType;
         this.salaryRange = salaryRange;
         this.status = "Active";
         this.createdBy = createdBy;
@@ -77,19 +77,19 @@ public class JobPosting {
     }
 
     public String getRequiredQualification() {
-        return requiredQualification;
+        return required_qualification;
     }
 
     public void setRequiredQualification(String requiredQualification) {
-        this.requiredQualification = requiredQualification;
+        this.required_qualification = requiredQualification;
     }
 
     public String getJobLocation() {
-        return jobLocation;
+        return job_location;
     }
 
     public void setJobLocation(String jobLocation) {
-        this.jobLocation = jobLocation;
+        this.job_location = jobLocation;
     }
 
     public LocalDate getDeadline() {
@@ -101,11 +101,11 @@ public class JobPosting {
     }
 
     public String getJobType() {
-        return jobType;
+        return job_type;
     }
 
     public void setJobType(String jobType) {
-        this.jobType = jobType;
+        this.job_type = jobType;
     }
 
     public String getSalaryRange() {

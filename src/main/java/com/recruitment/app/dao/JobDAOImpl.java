@@ -14,15 +14,36 @@ public class JobDAOImpl implements JobDAO {
         this.conn = conn;
     }
 
+
     @Override
     public void addJob(JobPosting job) {
-        String sql = "INSERT INTO jobs (job_title, department, description, recruiter_id, hiring_manager_id) VALUES (?, ?, ?, ?, ?)";
+        String sql = """
+        INSERT INTO jobs 
+        (job_title, department, description, required_qualification, job_location,
+         deadline, job_type, salary_range, status, recruiter_id, hiring_manager_id)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """;
+
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
+
             ps.setString(1, job.getJobTitle());
             ps.setString(2, job.getDepartment());
             ps.setString(3, job.getDescription());
-            ps.setInt(4, job.getRecruiterId());
-            ps.setInt(5, job.getHiringManagerId()); // Add this
+            ps.setString(4, job.getRequiredQualification());
+            ps.setString(5, job.getJobLocation());
+
+            if (job.getDeadline() != null)
+                ps.setDate(6, java.sql.Date.valueOf(job.getDeadline()));
+            else
+                ps.setNull(6, Types.DATE);
+
+            ps.setString(7, job.getJobType());
+            ps.setString(8, job.getSalaryRange());
+            ps.setString(9, job.getStatus());
+
+            ps.setInt(10, job.getRecruiterId());
+            ps.setInt(11, job.getHiringManagerId());
+
             ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -145,19 +166,27 @@ public class JobDAOImpl implements JobDAO {
     }
     private JobPosting mapResultSetToJob(ResultSet rs) throws SQLException {
         JobPosting job = new JobPosting();
+
         job.setId(rs.getInt("id"));
         job.setTitle(rs.getString("job_title"));
         job.setDepartment(rs.getString("department"));
+        job.setDescription(rs.getString("description"));
+        job.setRequiredQualification(rs.getString("required_qualification"));
+        job.setJobLocation(rs.getString("job_location"));
 
-        // --- Fix: read the deadline properly ---
-        java.sql.Date sqlDate = rs.getDate("deadline");  // returns null if DB column is null
+        // Deadline (convert SQL date → LocalDate)
+        Date sqlDate = rs.getDate("deadline");
         if (sqlDate != null) {
-            job.setDeadline(sqlDate.toLocalDate());     // convert java.sql.Date to java.time.LocalDate
-        } else {
-            job.setDeadline(null);
+            job.setDeadline(sqlDate.toLocalDate());
         }
 
-        // Map other fields as needed
+        job.setJobType(rs.getString("job_type"));
+        job.setSalaryRange(rs.getString("salary_range"));
+        job.setStatus(rs.getString("status"));
+        job.setCreatedBy(rs.getInt("created_by"));
+        job.setRecruiterId(rs.getInt("recruiter_id"));
+        job.setHiringManagerId(rs.getInt("hiring_manager_id"));
+
         return job;
     }
 

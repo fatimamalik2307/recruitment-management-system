@@ -114,12 +114,6 @@ public class JobDescriptionController {
         }
     }
 
-    @FXML
-    private void openSavedDescriptions() {
-        JobDescriptionListController.caller = "edit_description";
-        Stage stage = (Stage) titleField.getScene().getWindow();
-        SceneLoader.load(stage, "/ui/job_description_list.fxml");
-    }
 
     @FXML
     private void cancel() {

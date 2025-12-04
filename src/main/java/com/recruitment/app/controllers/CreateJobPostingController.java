@@ -47,25 +47,33 @@ public class CreateJobPostingController {
     @FXML
     public void initialize() {
 
-        jobTypeCombo.getItems().addAll("Full-Time", "Part-Time", "Contract", "Internship");
+        jobTypeCombo.getItems().addAll(
+                "Full-Time", "Part-Time", "Contract", "Internship"
+        );
 
         deptCombo.getItems().addAll(
                 "Human Resources", "Marketing", "Finance", "IT",
                 "Administration", "Sales", "Operations"
         );
 
-        // Autofill from saved description
+        // -----------------------------------------
+        // AUTO FILL ALL FIELDS WHEN DESCRIPTION IS LOADED
+        // -----------------------------------------
         if (selectedDescription != null) {
+
             titleField.setText(selectedDescription.getTitle());
             descriptionArea.setText(selectedDescription.getDuties());
-            locationField.setText("");
-            jobTypeCombo.setValue(selectedDescription.getJobType());
-            deptCombo.setValue(selectedDescription.getDepartment());
-            qualificationField.setText(selectedDescription.getRequiredQualification());
 
+            // These fields were missing mapping earlier:
+            qualificationField.setText(selectedDescription.getRequiredQualification());
+            deptCombo.setValue(selectedDescription.getDepartment());
+            jobTypeCombo.setValue(selectedDescription.getJobType());
+
+            // Reset store so old data doesn't leak on next screen load
             selectedDescription = null;
         }
     }
+
 
     @FXML
     private void publishJob() {

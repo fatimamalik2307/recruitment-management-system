@@ -49,14 +49,9 @@ public class JobDescriptionListController {
         if (selected == null) return;
 
         Stage stage = (Stage) table.getScene().getWindow();
-
-        if ("edit_description".equals(caller)) {
-            JobDescriptionController.prefill(selected);
-            SceneLoader.load(stage, "/ui/job_description.fxml");
-        } else {
             CreateJobPostingController.prefillFromDescription(selected);
             SceneLoader.load(stage, "/ui/create_job_posting.fxml");
-        }
+
     }
 
     @FXML
