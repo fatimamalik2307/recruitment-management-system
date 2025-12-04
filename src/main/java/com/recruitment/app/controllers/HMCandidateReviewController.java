@@ -43,6 +43,7 @@ public class HMCandidateReviewController {
     private int currentUserId;
     private JobPosting currentJob;
     private ApplicantNote currentlyEditingNote = null;
+    private NotificationService notificationService;
 
     // ---------- DEFAULT CONSTRUCTOR ----------
     public HMCandidateReviewController() {
@@ -54,13 +55,16 @@ public class HMCandidateReviewController {
             HMService hmService,
             RecruiterService recruiterService,
             UserService userService,
-            NoteService noteService
+            NoteService noteService,
+            NotificationService notificationService
     ) {
         this.hmService = hmService;
         this.recruiterService = recruiterService;
         this.userService = userService;
         this.noteService = noteService;
+        this.notificationService = notificationService;
     }
+
 
     // --- Runtime data setter (KEEP) ---
     public void setCurrentUserId(int id) {
@@ -363,7 +367,6 @@ public class HMCandidateReviewController {
     private void rejectCandidate() {
         makeHiringDecision("REJECTED");
     }
-
     private void makeHiringDecision(String decision) {
         FinalRankedCandidate c = candidateTable.getSelectionModel().getSelectedItem();
         if (c == null) {
@@ -379,8 +382,28 @@ public class HMCandidateReviewController {
             }
 
             hmService.updateCandidateStatus(c.getId(), "HM_REVIEWED");
+
+            // --- SEND NOTIFICATION TO APPLICANT ---
+            Application app = recruiterService.getApplicationById(c.getApplicationId());
+            if (app != null) {
+
+                String subject = "Update on your Job Application";
+                String message;
+
+                if (decision.equals("SELECTED")) {
+                    message = "Congratulations! You have been SELECTED for the position: "
+                            + currentJob.getTitle();
+                } else {
+                    message = "Thank you for applying. Unfortunately, you were NOT selected for: "
+                            + currentJob.getTitle();
+                }
+
+                notificationService.sendNotificationToApplicant(app.getUserId(), subject, message);
+            }
+
             showAlert(Alert.AlertType.INFORMATION, "Candidate " + decision + "!");
             loadCandidatesForSelectedJob();
+
         } catch (Exception e) {
             e.printStackTrace();
             showAlert(Alert.AlertType.ERROR, "Error: " + e.getMessage());
@@ -391,4 +414,27 @@ public class HMCandidateReviewController {
         Alert alert = new Alert(type, msg, ButtonType.OK);
         alert.showAndWait();
     }
+    @FXML
+    private Button notifyButton;
+
+    @FXML
+    private void notifyCandidates() {
+
+        if (currentJob == null) {
+            showAlert(Alert.AlertType.WARNING, "Please select a job first.");
+            return;
+        }
+
+        boolean success = hmService.notifyCandidatesForJob(currentJob.getId());
+
+        if (success) {
+            showAlert(Alert.AlertType.INFORMATION,
+                    "All candidates have been notified successfully!");
+        } else {
+            showAlert(Alert.AlertType.ERROR,
+                    "Failed to notify candidates or no candidates were eligible.");
+        }
+    }
+
+
 }

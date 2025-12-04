@@ -16,6 +16,11 @@
     <HBox spacing="10" alignment="CENTER_LEFT">
         <ComboBox fx:id="jobDropdown" prefWidth="250" styleClass="combo-box"/>
         <Button text="Load Candidates" onAction="#loadCandidatesForSelectedJob" styleClass="btn-blue"/>
+        <Button fx:id="notifyButton"
+                text="📧 Notify Candidates"
+                onAction="#notifyCandidates"
+                styleClass="btn-blue"/>
+
     </HBox>
 
     <Label fx:id="statusLabel" text="Select a job to load candidates" styleClass="status-label"/>
