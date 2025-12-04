@@ -4,23 +4,29 @@
 <?import javafx.scene.control.*?>
 <?import javafx.geometry.Insets?>
 
-<VBox xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.recruitment.app.controllers.UpdateProfileController"
-      spacing="10" alignment="CENTER">
+<StackPane xmlns:fx="http://javafx.com/fxml"
+           fx:controller="com.recruitment.app.controllers.UpdateProfileController"
+           stylesheets="@../styles/UpdateProfile.css"
+           styleClass="root-pane">
 
-    <padding>
-        <Insets top="20" right="20" bottom="20" left="20"/>
-    </padding>
+    <VBox alignment="CENTER" spacing="20">
 
-    <Label text="Update Profile" style="-fx-font-size: 20px; -fx-font-weight: bold;" />
+        <VBox spacing="15" alignment="CENTER" styleClass="card">
 
-    <TextField fx:id="fullNameField" promptText="Full Name"/>
-    <TextField fx:id="emailField" promptText="Email"/>
-    <TextField fx:id="contactField" promptText="Contact"/>
+            <Label text="Update Profile" styleClass="title"/>
 
-    <Button text="Save" onAction="#updateProfile"/>
-    <Label fx:id="messageLabel"/>
+            <TextField fx:id="fullNameField" promptText="Full Name" styleClass="input-field"/>
+            <TextField fx:id="emailField" promptText="Email" styleClass="input-field"/>
+            <TextField fx:id="contactField" promptText="Contact" styleClass="input-field"/>
 
-    <Button text="Back to Jobs" onAction="#backToJobs"/>
+            <Button text="Save" onAction="#updateProfile" styleClass="primary-btn"/>
 
-</VBox>
+            <Label fx:id="messageLabel" styleClass="label-error" wrapText="true"/>
+
+            <Button text="Back to Jobs" onAction="#backToJobs" styleClass="secondary-btn"/>
+
+        </VBox>
+
+    </VBox>
+
+</StackPane>

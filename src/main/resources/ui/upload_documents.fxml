@@ -2,9 +2,19 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.geometry.Insets?>
+<?import java.net.URL?>
 <VBox xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.recruitment.app.controllers.UploadDocumentsController"
-      spacing="10">
+      spacing="10"
+      styleClass="root-pane">
+
+    <stylesheets>
+        <URL value="@../styles/uploadDocuments.css"/>
+    </stylesheets>
+
+    <!-- rest of your VBox content -->
+
+
 
     <padding>
         <Insets top="10" right="10" bottom="10" left="10"/>

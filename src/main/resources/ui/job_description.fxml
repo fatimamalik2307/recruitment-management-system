@@ -3,26 +3,28 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.geometry.Insets?>
-<VBox spacing="10" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.recruitment.app.controllers.JobDescriptionController">
 
-    <padding>
-        <Insets top="20" right="20" bottom="20" left="20"/>
-    </padding>
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.recruitment.app.controllers.JobDescriptionController"
+      spacing="15" styleClass="root" style="-fx-padding: 20;"
+      stylesheets="@../styles/JobDescription.css">
 
-    <Label text="Prepare Job Description" style="-fx-font-size:18; -fx-font-weight:bold;"/>
+    <Label text="Prepare Job Description" styleClass="header-title"/>
 
-    <TextField fx:id="titleField" promptText="Job Title"/>
+    <TextField fx:id="titleField" promptText="Job Title" styleClass="text-field"/>
 
-    <ComboBox fx:id="jobTypeCombo" promptText="Job Type"/>
-    <ComboBox fx:id="departmentCombo" promptText="Department"/>
+    <ComboBox fx:id="jobTypeCombo" promptText="Job Type" styleClass="combo-box"/>
+    <ComboBox fx:id="departmentCombo" promptText="Department" styleClass="combo-box"/>
 
-    <TextArea fx:id="dutiesArea" promptText="Duties"/>
-    <TextArea fx:id="respArea" promptText="Responsibilities"/>
-    <TextArea fx:id="purposeArea" promptText="Job Purpose"/>
-    <TextArea fx:id="reportArea" promptText="Reporting Structure"/>
-    <TextArea fx:id="qualificationArea" promptText="Required Qualification"/>
-    <Button text="Save" onAction="#saveDescription"/>
-    <Button text="Load Saved Description" onAction="#openSavedDescriptions"/>
-    <Button text="Cancel" onAction="#cancel"/>
+    <TextArea fx:id="dutiesArea" promptText="Duties" prefRowCount="3" styleClass="text-area"/>
+    <TextArea fx:id="respArea" promptText="Responsibilities" prefRowCount="3" styleClass="text-area"/>
+    <TextArea fx:id="purposeArea" promptText="Job Purpose" prefRowCount="2" styleClass="text-area"/>
+    <TextArea fx:id="reportArea" promptText="Reporting Structure" prefRowCount="2" styleClass="text-area"/>
+    <TextArea fx:id="qualificationArea" promptText="Required Qualification" prefRowCount="2" styleClass="text-area"/>
+
+    <HBox spacing="15" alignment="CENTER_LEFT">
+        <Button text="Save" onAction="#saveDescription" styleClass="btn-blue"/>
+        <Button text="Load Saved Description" onAction="#openSavedDescriptions" styleClass="btn-cyan"/>
+        <Button text="Cancel" onAction="#cancel" styleClass="btn-pink"/>
+    </HBox>
 </VBox>

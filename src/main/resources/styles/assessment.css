@@ -1,0 +1,81 @@
+/* ---------- GLOBAL LAYOUT ---------- */
+.root {
+    -fx-font-family: "Segoe UI";
+    -fx-background-color: #f4f6f9;
+}
+
+/* ---------- TITLES ---------- */
+.title-label {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+    -fx-padding: 0 0 10 0;
+}
+
+/* ---------- FORM LABELS ---------- */
+.form-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #34495e;
+    -fx-font-weight: bold;
+}
+
+/* ---------- INPUT FIELDS ---------- */
+.input-field {
+    -fx-padding: 7px 10px;
+    -fx-background-color: #ffffff;
+    -fx-border-color: #cbd5e0;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+.input-field:focused {
+    -fx-border-color: #4a90e2;
+    -fx-background-color: #ffffff;
+    -fx-effect: dropshadow(gaussian, #d0d0d0, 5, 0.1, 0, 0);
+}
+
+/* ---------- TEXT AREA ---------- */
+.input-area {
+    -fx-padding: 8px;
+    -fx-background-color: #ffffff;
+    -fx-border-color: #cbd5e0;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+}
+
+.input-area:focused {
+    -fx-border-color: #4a90e2;
+    -fx-effect: dropshadow(gaussian, #d0d0d0, 5, 0.1, 0, 0);
+}
+
+/* ---------- BUTTONS ---------- */
+.primary-btn {
+    -fx-background-color: #2d89ef;
+    -fx-text-fill: white;
+    -fx-padding: 8px 18px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6px;
+}
+
+.primary-btn:hover {
+    -fx-background-color: #1b6cd8;
+}
+
+.primary-btn:pressed {
+    -fx-background-color: #1659b8;
+}
+
+.secondary-btn {
+    -fx-background-color: #e0e0e0;
+    -fx-text-fill: #333;
+    -fx-padding: 8px 18px;
+    -fx-background-radius: 6px;
+}
+
+.secondary-btn:hover {
+    -fx-background-color: #d5d5d5;
+}
+
+.secondary-btn:pressed {
+    -fx-background-color: #c8c8c8;
+}

@@ -1,48 +1,73 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
+
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
 <VBox xmlns="http://javafx.com/javafx/8.0.171"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.recruitment.app.controllers.ShortlistingCriteriaController"
-      spacing="10">
+      stylesheets="@/styles/criteria_form.css"
+      styleClass="root-bg"
+      alignment="TOP_CENTER"
+      spacing="20"
+      prefWidth="900"
+      prefHeight="650">
 
     <padding>
-        <Insets top="10" right="10" bottom="10" left="10"/>
+        <Insets top="25" right="25" bottom="25" left="25"/>
     </padding>
 
-    <Label text="Select Job:"/>
-    <ComboBox fx:id="jobComboBox" prefWidth="300"/>
+    <!-- PAGE TITLE -->
+    <Label text="Shortlisting Criteria" styleClass="title-text"/>
 
-    <HBox spacing="10">
-        <Label text="Minimum Experience:"/>
-        <TextField fx:id="minExperienceField" promptText="Years"/>
-    </HBox>
+    <!-- FORM AREA -->
+    <VBox spacing="15" styleClass="form-card">
 
-    <HBox spacing="10">
-        <Label text="Qualification:"/>
-        <TextField fx:id="qualificationField" promptText="Required Qualification"/>
-    </HBox>
+        <Label text="Select Job:" styleClass="label"/>
+        <ComboBox fx:id="jobComboBox" prefWidth="350" styleClass="combo"/>
 
-    <HBox spacing="10">
-        <Label text="Skills:"/>
-        <TextField fx:id="skillsField" promptText="Required Skills"/>
-    </HBox>
+        <HBox spacing="15">
+            <Label text="Minimum Experience:" styleClass="label"/>
+            <TextField fx:id="minExperienceField"
+                       promptText="Years"
+                       styleClass="textfield"/>
+        </HBox>
 
-    <HBox spacing="10">
-        <Label text="Location (Optional):"/>
-        <TextField fx:id="locationField" promptText="Optional"/>
-    </HBox>
+        <HBox spacing="15">
+            <Label text="Qualification:" styleClass="label"/>
+            <TextField fx:id="qualificationField"
+                       promptText="Required Qualification"
+                       styleClass="textfield"/>
+        </HBox>
 
-    <HBox spacing="10">
-        <Label text="Grade (Optional):"/>
-        <TextField fx:id="gradeField" promptText="Optional"/>
-    </HBox>
+        <HBox spacing="15">
+            <Label text="Skills:" styleClass="label"/>
+            <TextField fx:id="skillsField"
+                       promptText="Required Skills"
+                       styleClass="textfield"/>
+        </HBox>
 
-    <Button text="Save Criteria" onAction="#saveCriteria" prefWidth="150"/>
+        <HBox spacing="15">
+            <Label text="Location (Optional):" styleClass="label"/>
+            <TextField fx:id="locationField"
+                       promptText="Optional"
+                       styleClass="textfield"/>
+        </HBox>
+
+        <HBox spacing="15">
+            <Label text="Grade (Optional):" styleClass="label"/>
+            <TextField fx:id="gradeField"
+                       promptText="Optional"
+                       styleClass="textfield"/>
+        </HBox>
+
+    </VBox>
+
+    <!-- SAVE BUTTON -->
+    <Button text="Save Criteria"
+            onAction="#saveCriteria"
+            styleClass="btn-primary"
+            prefWidth="180"/>
+
 </VBox>

@@ -5,23 +5,25 @@
 <StackPane xmlns:fx="http://javafx.com/fxml"
            fx:controller="com.recruitment.app.controllers.LoginController"
            prefWidth="500" prefHeight="500"
+           stylesheets="@../styles/Login.css"
            styleClass="root-pane">
 
     <VBox alignment="CENTER" spacing="20">
+
         <VBox spacing="20" alignment="CENTER" styleClass="card">
 
-            <Label text="Welcome Back" styleClass="title" />
-            <Label text="Recruitment Management System" styleClass="subtitle" />
+            <Label text="Welcome Back" styleClass="title"/>
+            <Label text="Recruitment Management System" styleClass="subtitle"/>
 
             <TextField fx:id="usernameField" promptText="Enter Username" styleClass="input-field"/>
             <PasswordField fx:id="passwordField" promptText="Enter Password" styleClass="input-field"/>
 
             <Button text="Login" onAction="#loginUser" styleClass="primary-btn"/>
 
-            <Label fx:id="messageLabel" styleClass="label-error" wrapText="true" />
+            <Label fx:id="messageLabel" styleClass="label-error" wrapText="true"/>
 
             <Hyperlink text="Don't have an account? Register" onAction="#openRegister"
-                       style="-fx-text-fill: #99aaff; -fx-underline: true;"/>
+                       styleClass="link"/>
         </VBox>
 
     </VBox>

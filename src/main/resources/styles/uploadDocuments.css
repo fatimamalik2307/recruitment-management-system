@@ -1,0 +1,40 @@
+/* Root container */
+.root-pane {
+    -fx-background-color: #0f172a; /* Dark navy */
+    -fx-font-family: "Segoe UI", "Arial", sans-serif;
+    -fx-padding: 15;
+}
+
+/* Title label */
+.label {
+    -fx-text-fill: #f8fafc;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+}
+
+/* Buttons */
+.button {
+    -fx-background-color: #2563eb;
+    -fx-text-fill: #f8fafc;
+    -fx-font-weight: bold;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+}
+
+.button:hover {
+    -fx-background-color: #1e40af;
+}
+
+/* HBox spacing buttons */
+.hbox .button {
+    -fx-min-width: 120;
+}
+
+/* ListView */
+.list-view {
+    -fx-background-color: #1e293b;
+    -fx-border-color: #334155;
+    -fx-border-radius: 4;
+    -fx-text-fill: #e2e8f0;
+}

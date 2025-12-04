@@ -1,37 +1,77 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.geometry.Insets?>
 
-<!-- REMOVED fx:controller attribute - it will be set by controller factory -->
 <VBox xmlns:fx="http://javafx.com/fxml"
-       fx:controller="com.recruitment.app.controllers.ApplicationFormController"
-       spacing="10">
+      fx:controller="com.recruitment.app.controllers.ApplicationFormController"
+      stylesheets="@/styles/application_form.css"
+      styleClass="root-bg"
+      alignment="TOP_CENTER"
+      spacing="20"
+      prefWidth="900"
+      prefHeight="750">
 
-
-<padding>
-        <Insets top="10" right="10" bottom="10" left="10"/>
+    <padding>
+        <Insets top="25" right="25" bottom="25" left="25"/>
     </padding>
 
-    <Label text="Application Form" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+    <!-- TITLE -->
+    <Label text="Application Form" styleClass="title-text"/>
 
-    <TextField fx:id="fullNameField" promptText="Full name"/>
-    <TextField fx:id="emailField" promptText="Email"/>
-    <TextField fx:id="contactField" promptText="Contact number"/>
+    <!-- FORM BOX -->
+    <VBox spacing="12" styleClass="form-card">
 
-    <TextArea fx:id="qualificationField" promptText="Qualifications" prefRowCount="3"/>
-    <TextArea fx:id="experienceField" promptText="Experience (optional)" prefRowCount="3"/>
-    <TextArea fx:id="coverLetterField" promptText="Cover letter" prefRowCount="4"/>
+        <TextField fx:id="fullNameField"
+                   promptText="Full name"
+                   styleClass="textfield"/>
 
-    <Label text="Uploaded documents:"/>
-    <ListView fx:id="filesList" prefHeight="120"/>
+        <TextField fx:id="emailField"
+                   promptText="Email"
+                   styleClass="textfield"/>
 
-    <HBox spacing="8">
-        <Button fx:id="btnUpload" text="Upload Documents"/>
-        <Button fx:id="btnSubmit" text="Submit Application"/>
-        <Button fx:id="btnBack" text="Back"/>
-    </HBox>
+        <TextField fx:id="contactField"
+                   promptText="Contact number"
+                   styleClass="textfield"/>
 
-    <Label fx:id="messageLabel"/>
+        <TextArea fx:id="qualificationField"
+                  promptText="Qualifications"
+                  prefRowCount="3"
+                  styleClass="textarea"/>
+
+        <TextArea fx:id="experienceField"
+                  promptText="Experience (optional)"
+                  prefRowCount="3"
+                  styleClass="textarea"/>
+
+        <TextArea fx:id="coverLetterField"
+                  promptText="Cover letter"
+                  prefRowCount="4"
+                  styleClass="textarea"/>
+
+        <Label text="Uploaded documents:" styleClass="label"/>
+
+        <ListView fx:id="filesList"
+                  prefHeight="120"
+                  styleClass="listview"/>
+
+        <HBox spacing="10">
+            <Button fx:id="btnUpload"
+                    text="Upload Documents"
+                    styleClass="btn-secondary"/>
+
+            <Button fx:id="btnSubmit"
+                    text="Submit Application"
+                    styleClass="btn-primary"/>
+
+            <Button fx:id="btnBack"
+                    text="Back"
+                    styleClass="btn-secondary"/>
+        </HBox>
+
+        <Label fx:id="messageLabel" styleClass="message-label"/>
+
+    </VBox>
 
 </VBox>

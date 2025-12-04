@@ -6,28 +6,50 @@
 
 <VBox xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.recruitment.app.controllers.ReviewShortlistController"
-      spacing="10" alignment="CENTER">
+      stylesheets="@/styles/review_shortlist.css"
+      spacing="20"
+      alignment="TOP_CENTER"
+      styleClass="root-bg"
+      prefWidth="1100"
+      prefHeight="750">
 
     <padding>
-        <Insets top="10" right="10" bottom="10" left="10"/>
+        <Insets top="25" right="25" bottom="25" left="25"/>
     </padding>
 
-    <Label text="Review Shortlist" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+    <!-- Page Title -->
+    <Label text="Review Shortlist" styleClass="title-text"/>
 
-    <ComboBox fx:id="jobComboBox" promptText="Select Job"/>
-    <TextArea fx:id="criteriaDetails" editable="false" prefRowCount="5" prefWidth="400"/>
-    <Button fx:id="generateBtn" text="Generate Shortlist" onAction="#generateShortlist"/>
+    <!-- Selection + Criteria -->
+    <VBox spacing="12" styleClass="form-card">
 
-    <TableView fx:id="shortlistTable">
+        <ComboBox fx:id="jobComboBox" promptText="Select Job" styleClass="combo"/>
+
+        <Label text="Criteria Details:" styleClass="label"/>
+        <TextArea fx:id="criteriaDetails"
+                  editable="false"
+                  prefRowCount="4"
+                  styleClass="textarea"/>
+    </VBox>
+
+    <!-- Generate Button -->
+    <Button fx:id="generateBtn"
+            text="Generate Shortlist"
+            onAction="#generateShortlist"
+            styleClass="btn-primary"/>
+
+    <!-- TABLE AREA -->
+    <TableView fx:id="shortlistTable" styleClass="dark-table" VBox.vgrow="ALWAYS">
+
         <columns>
-            <TableColumn text="ID" prefWidth="50" fx:id="colId"/>
-            <TableColumn text="Application ID" prefWidth="100" fx:id="colAppId"/> <!-- Added -->
-            <TableColumn text="Applicant Name" prefWidth="150" fx:id="colApplicantName"/>
-            <TableColumn text="Phone" prefWidth="120" fx:id="colPhone"/>
-            <TableColumn text="Shortlisted At" prefWidth="150" fx:id="colShortlistedAt"/>
-            <TableColumn text="Actions" prefWidth="250" fx:id="colActions"/>
+            <TableColumn text="ID" fx:id="colId" prefWidth="60"/>
+            <TableColumn text="Application ID" fx:id="colAppId" prefWidth="120"/>
+            <TableColumn text="Applicant Name" fx:id="colApplicantName" prefWidth="180"/>
+            <TableColumn text="Phone" fx:id="colPhone" prefWidth="140"/>
+            <TableColumn text="Shortlisted At" fx:id="colShortlistedAt" prefWidth="180"/>
+            <TableColumn text="Actions" fx:id="colActions" prefWidth="200"/>
         </columns>
-    </TableView>
 
+    </TableView>
 
 </VBox>

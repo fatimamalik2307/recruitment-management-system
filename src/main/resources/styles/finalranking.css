@@ -1,0 +1,119 @@
+/* ROOT BACKGROUND */
+.root-bg {
+    -fx-background-color: #0f172a; /* deep navy */
+    -fx-font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+}
+
+/* TITLE */
+.title-text {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffffff;
+    -fx-padding: 10 0 25 0;
+}
+
+/* LABELS */
+.label {
+    -fx-text-fill: #cbd5e1;
+    -fx-font-size: 15px;
+}
+
+/* FORM ROW */
+.form-row {
+    -fx-padding: 10 0;
+}
+
+/* COMBOBOX */
+.combo {
+    -fx-background-color: #0b1320;
+    -fx-border-color: #475569;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 8;
+    -fx-text-fill: white;
+}
+
+.combo:focused {
+    -fx-border-color: #3b82f6;
+    -fx-effect: dropshadow(gaussian, rgba(59,130,246,0.45), 14, 0.4, 0, 0);
+}
+
+/* BUTTON STYLES ------------------------------------------------- */
+
+/* MAIN BUTTON */
+.btn-primary {
+    -fx-background-color: linear-gradient(to right, #2563eb, #3b82f6);
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 10 26;
+    -fx-background-radius: 10;
+    -fx-cursor: hand;
+}
+
+.btn-primary:hover {
+    -fx-background-color: linear-gradient(to right, #1d4ed8, #2563eb);
+    -fx-scale-x: 1.03;
+    -fx-scale-y: 1.03;
+}
+
+/* WARNING BUTTON */
+.btn-warning {
+    -fx-background-color: #f59e0b;
+    -fx-text-fill: #1f2937;
+    -fx-font-size: 14px;
+    -fx-padding: 10 22;
+    -fx-background-radius: 10;
+}
+
+.btn-warning:hover {
+    -fx-background-color: #d97706;
+}
+
+/* SUCCESS BUTTON */
+.btn-success {
+    -fx-background-color: #22c55e;
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-padding: 12 30;
+    -fx-background-radius: 10;
+}
+
+.btn-success:hover {
+    -fx-background-color: #16a34a;
+}
+
+/* TABLEVIEW ----------------------------------------------------- */
+
+.data-table {
+    -fx-background-color: #1a2332;
+    -fx-border-color: #334155;
+    -fx-border-width: 1;
+}
+
+.data-table .column-header-background {
+    -fx-background-color: #111827;
+}
+
+.data-table .column-header,
+.data-table .column-header .label {
+    -fx-text-fill: #e2e8f0;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+.data-table .table-row-cell {
+    -fx-background-color: #1e293b;
+    -fx-text-fill: #e2e8f0;
+    -fx-font-size: 14px;
+}
+
+.data-table .table-row-cell:filled:hover {
+    -fx-background-color: #2b3550;
+}
+
+.data-table .table-row-cell:selected {
+    -fx-background-color: #3b82f6;
+    -fx-text-fill: white;
+}

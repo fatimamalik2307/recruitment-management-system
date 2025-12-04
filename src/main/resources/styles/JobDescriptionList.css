@@ -1,0 +1,61 @@
+/* ROOT */
+.root {
+    -fx-font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    -fx-base: #0f172a;
+    -fx-background-color: #0f172a;
+    -fx-text-fill: white;
+}
+
+/* HEADER */
+.header-title {
+    -fx-text-fill: white;
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+}
+
+/* TABLE VIEW */
+.table-view {
+    -fx-background-color: #1e293b;
+    -fx-table-cell-border-color: #334155;
+    -fx-border-color: #334155;
+    -fx-border-width: 1;
+    -fx-text-fill: white;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #1e293b;
+}
+
+.table-view .column-header, .table-view .filler {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+}
+
+.table-view .cell {
+    -fx-text-fill: white;
+}
+
+/* BUTTONS */
+.btn-blue {
+    -fx-background-color: linear-gradient(from 100% 0% to 0% 100%, #2563eb, #0891b2);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 8 16 8 16;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+}
+
+.btn-blue:hover {
+    -fx-background-color: linear-gradient(from 100% 0% to 0% 100%, #1d4ed8, #0e7490);
+}
+
+.btn-pink {
+    -fx-background-color: linear-gradient(from 100% 0% to 0% 100%, #ec4899, #f43f5e);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.btn-pink:hover {
+    -fx-background-color: linear-gradient(from 100% 0% to 0% 100%, #be185d, #e11d48);
+}

@@ -1,46 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
 <?import javafx.geometry.Insets?>
 
-<VBox xmlns:fx="http://javafx.com/fxml"
-      spacing="15"
-      fx:controller="com.recruitment.app.controllers.RecruitmentReportController">
+<StackPane xmlns:fx="http://javafx.com/fxml"
+           fx:controller="com.recruitment.app.controllers.RecruitmentReportController"
+           stylesheets="@../styles/RecruitmentReport.css"
+           styleClass="root-pane">
 
-    <!-- Set padding correctly -->
-    <padding>
-        <Insets top="15" right="15" bottom="15" left="15"/>
-    </padding>
+    <VBox spacing="20" alignment="TOP_CENTER">
 
-    <!-- Job selection -->
-    <HBox spacing="10">
-        <Label text="Select Job:"/>
-        <ComboBox fx:id="jobComboBox" prefWidth="300"/>
-        <Button text="Generate Report" onAction="#onGenerateReport"/>
-    </HBox>
+        <VBox spacing="15" styleClass="card">
 
-    <!-- Report display -->
-    <GridPane hgap="10" vgap="10">
-        <Label text="Job Title:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-        <Label fx:id="jobTitleLabel" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+            <!-- Job selection -->
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Label text="Select Job:" styleClass="label"/>
+                <ComboBox fx:id="jobComboBox" prefWidth="250" styleClass="input-field"/>
+                <Button text="Generate Report" onAction="#onGenerateReport" styleClass="primary-btn"/>
+            </HBox>
 
-        <Label text="Department:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-        <Label fx:id="departmentLabel" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+            <!-- Report display -->
+            <GridPane hgap="10" vgap="10">
+                <Label text="Job Title:" GridPane.rowIndex="0" GridPane.columnIndex="0" styleClass="label"/>
+                <Label fx:id="jobTitleLabel" GridPane.rowIndex="0" GridPane.columnIndex="1" styleClass="label-value"/>
 
-        <Label text="Posted On:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-        <Label fx:id="postedDateLabel" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                <Label text="Department:" GridPane.rowIndex="1" GridPane.columnIndex="0" styleClass="label"/>
+                <Label fx:id="departmentLabel" GridPane.rowIndex="1" GridPane.columnIndex="1" styleClass="label-value"/>
 
-        <Label text="Total Applications:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
-        <Label fx:id="totalAppsLabel" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+                <Label text="Posted On:" GridPane.rowIndex="2" GridPane.columnIndex="0" styleClass="label"/>
+                <Label fx:id="postedDateLabel" GridPane.rowIndex="2" GridPane.columnIndex="1" styleClass="label-value"/>
 
-        <Label text="Shortlisted:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
-        <Label fx:id="shortlistedLabel" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+                <Label text="Total Applications:" GridPane.rowIndex="3" GridPane.columnIndex="0" styleClass="label"/>
+                <Label fx:id="totalAppsLabel" GridPane.rowIndex="3" GridPane.columnIndex="1" styleClass="label-value"/>
 
-        <Label text="Generated At:" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
-        <Label fx:id="generatedDateLabel" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
-    </GridPane>
+                <Label text="Shortlisted:" GridPane.rowIndex="4" GridPane.columnIndex="0" styleClass="label"/>
+                <Label fx:id="shortlistedLabel" GridPane.rowIndex="4" GridPane.columnIndex="1" styleClass="label-value"/>
 
-    <!-- Export button -->
-    <Button text="Export as PDF" onAction="#exportPDF"/>
-</VBox>
+                <Label text="Generated At:" GridPane.rowIndex="5" GridPane.columnIndex="0" styleClass="label"/>
+                <Label fx:id="generatedDateLabel" GridPane.rowIndex="5" GridPane.columnIndex="1" styleClass="label-value"/>
+            </GridPane>
+
+            <!-- Export button -->
+            <Button text="Export as PDF" onAction="#exportPDF" styleClass="secondary-btn"/>
+        </VBox>
+
+    </VBox>
+
+</StackPane>

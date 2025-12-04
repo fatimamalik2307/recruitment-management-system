@@ -3,19 +3,30 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.geometry.Insets?>
-<VBox spacing="10" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.recruitment.app.controllers.PersonSpecificationController"
-      >
-    <padding>
-        <Insets top="20" right="20" bottom="20" left="20"/>
-    </padding>
-    <Label text="Prepare Person Specification" style="-fx-font-size:18; -fx-font-weight:bold;"/>
 
-    <TextArea fx:id="skillsArea" promptText="Required Skills"/>
-    <TextArea fx:id="experienceArea" promptText="Required Experience"/>
-    <TextArea fx:id="educationArea" promptText="Required Education"/>
-    <TextArea fx:id="traitsArea" promptText="Traits / Personality"/>
+<StackPane xmlns:fx="http://javafx.com/fxml"
+           fx:controller="com.recruitment.app.controllers.PersonSpecificationController"
+           stylesheets="@../styles/PersonSpecification.css"
+           styleClass="root-pane">
 
-    <Button text="Save" onAction="#saveSpecification"/>
-    <Button text="Cancel" onAction="#cancel"/>
-</VBox>
+    <VBox alignment="CENTER" spacing="20">
+
+        <VBox spacing="15" alignment="CENTER" styleClass="card">
+
+            <Label text="Prepare Person Specification" styleClass="title"/>
+
+            <TextArea fx:id="skillsArea" promptText="Required Skills" styleClass="input-field"/>
+            <TextArea fx:id="experienceArea" promptText="Required Experience" styleClass="input-field"/>
+            <TextArea fx:id="educationArea" promptText="Required Education" styleClass="input-field"/>
+            <TextArea fx:id="traitsArea" promptText="Traits / Personality" styleClass="input-field"/>
+
+            <HBox spacing="10" alignment="CENTER">
+                <Button text="Save" onAction="#saveSpecification" styleClass="primary-btn"/>
+                <Button text="Cancel" onAction="#cancel" styleClass="secondary-btn"/>
+            </HBox>
+
+        </VBox>
+
+    </VBox>
+
+</StackPane>

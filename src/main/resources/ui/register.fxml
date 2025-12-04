@@ -71,7 +71,7 @@
     </VBox>
 
     <stylesheets>
-        <URL value="@style.css" />
+        <URL value="@../styles/style.css" />
     </stylesheets>
 
 </StackPane>

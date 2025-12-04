@@ -2,9 +2,9 @@ package com.recruitment.app.services;
 
 import com.recruitment.app.dao.*;
 import com.recruitment.app.models.*;
-
 import com.recruitment.app.utils.SessionManager;
 import javafx.application.Platform;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TextInputDialog;
 
 import java.time.LocalDateTime;
@@ -37,19 +37,14 @@ public class FinalRankingServiceImpl implements FinalRankingService {
 
     @Override
     public boolean existsForJob(int jobId) {
-        return candidateDAO.existsForJob(jobId);   // <-- calls DAO
+        return candidateDAO.existsForJob(jobId);
     }
-    /** ==========================
-     * Jobs
-     * ========================== */
+
     public List<JobPosting> getAllJobsForRecruiter() {
         int id = SessionManager.loggedInUser.getId();
         return jobDAO.getJobsByRecruiterId(id);
     }
 
-    /** ==========================
-     * Ranking Criteria
-     * ========================== */
     @Override
     public void setRankingCriteria(FinalRankingCriteria criteria) {
         FinalRankingCriteria existing = criteriaDAO.getByJobId(criteria.getJobId());
@@ -71,57 +66,47 @@ public class FinalRankingServiceImpl implements FinalRankingService {
         return candidateDAO.getFinalRankingApplicationsByJob(jobId);
     }
 
-    /** ==========================
-     * Generate final ranking
-     * ========================== */
     @Override
     public List<FinalRankedCandidate> generateFinalRanking(JobPosting job,
                                                            List<AssessmentResult> assessments,
                                                            List<Shortlist> shortlists,
                                                            double technicalWeight,
                                                            double hrWeight) {
-        if (assessments.isEmpty() || shortlists.isEmpty()) return Collections.emptyList();
+        if (assessments.isEmpty() || shortlists.isEmpty()) {
+            // No alerts here; controller will handle empty list
+            return Collections.emptyList();
+        }
 
-        // Map assessments by shortlistId for quick lookup
         Map<Integer, AssessmentResult> assessmentMap = new HashMap<>();
         for (AssessmentResult ar : assessments) {
             assessmentMap.put(ar.getShortlistId(), ar);
         }
 
         List<FinalRankedCandidate> finalList = new ArrayList<>();
-        int rank = 1; // start ranking
+        int rank = 1;
 
         for (Shortlist s : shortlists) {
-            AssessmentResult a = assessmentMap.get(s.getId()); // match by shortlistId
-            if (a == null) continue; // skip if assessment missing
+            AssessmentResult a = assessmentMap.get(s.getId());
+            if (a == null) continue;
 
-            // Calculate composite score using weights
             double composite = a.getTechnicalScore() * technicalWeight + a.getHrScore() * hrWeight;
 
             FinalRankedCandidate candidate = new FinalRankedCandidate();
-            candidate.setApplicationId(s.getApplicationId()); // use the actual applicationId
+            candidate.setApplicationId(s.getApplicationId());
             candidate.setJobId(job.getId());
 
-            // Fetch applicant name from Application/User DAO
-            String applicantName = "Unknown";
-            var user = userDAO.getByApplicationId(s.getApplicationId()); // fetch user linked to application
-            if (user != null) applicantName = user.getFullName();
-            candidate.setApplicantName(applicantName);
+            var user = userDAO.getByApplicationId(s.getApplicationId());
+            candidate.setApplicantName(user != null ? user.getFullName() : "Unknown");
 
             candidate.setCompositeScore(composite);
             candidate.setGeneratedAt(LocalDateTime.now());
             candidate.setStatus("Pending");
-            candidate.setRank(rank++); // assign rank incrementally
-
+            candidate.setRank(rank++);
             finalList.add(candidate);
         }
 
-
-
         finalList.sort((c1, c2) -> Double.compare(c2.getCompositeScore(), c1.getCompositeScore()));
-        for (int i = 0; i < finalList.size(); i++) {
-            finalList.get(i).setRank(i + 1);
-        }
+        for (int i = 0; i < finalList.size(); i++) finalList.get(i).setRank(i + 1);
 
         saveFinalRanking(finalList);
         flagListReady(job.getId());
@@ -129,69 +114,33 @@ public class FinalRankingServiceImpl implements FinalRankingService {
         return finalList;
     }
 
-    /** ==========================
-     * Convenience method for generating by jobId (fetch assessments & shortlist automatically)
-     * ========================== */
-    /** ==========================
-     * Generate final ranking for a job
-     * ========================== */
+    @Override
     public List<FinalRankedCandidate> generateFinalRankingForJob(int jobId) {
         JobPosting job = jobDAO.getJobById(jobId);
-        if (job == null) {
-            throw new IllegalStateException("Job not found.");
-        }
+        if (job == null) return Collections.emptyList();
 
-        // Check if final ranking already exists
         if (candidateDAO.existsForJob(jobId)) {
             List<FinalRankedCandidate> existing = candidateDAO.getByJobId(jobId);
-
-            // Check if already sent or ready for HM
-            boolean alreadySentOrReady = existing.stream()
-                    .allMatch(c -> c.getStatus().equalsIgnoreCase("Sent to HM")
-                            || c.getStatus().equalsIgnoreCase("Ready for HM"));
-            if (alreadySentOrReady) {
-                throw new IllegalStateException("Final ranking already sent to HM. Cannot generate again.");
-            }
-
-            // Populate applicant names if missing
-            for (FinalRankedCandidate candidate : existing) {
-                if (candidate.getApplicantName() == null || candidate.getApplicantName().isBlank()) {
-                    var user = userDAO.getByApplicationId(candidate.getApplicationId());
-                    if (user != null) candidate.setApplicantName(user.getFullName());
-                }
-            }
-
             return existing;
         }
 
-        // Fetch shortlists
         List<Shortlist> shortlists = shortlistDAO.getByJobId(jobId);
-        if (shortlists.isEmpty()) {
-            throw new IllegalStateException("No shortlisted candidates found for this job. Cannot generate final ranking.");
-        }
+        if (shortlists.isEmpty()) return Collections.emptyList();
 
-        // Fetch assessments
         List<AssessmentResult> assessments = assessmentDAO.getByJobId(jobId);
-        if (assessments.isEmpty() || assessments.size() < shortlists.size()) {
-            throw new IllegalStateException("Assessment results not complete for all shortlisted candidates.");
-        }
+        if (assessments.isEmpty() || assessments.size() < shortlists.size()) return Collections.emptyList();
 
-        // Fetch ranking criteria
         FinalRankingCriteria criteria = criteriaDAO.getByJobId(jobId);
         if (criteria == null) {
-            double[] weights = getCriteriaFromUser(); // prompt user
+            double[] weights = getCriteriaFromUser();
+            if (weights == null) return Collections.emptyList();
             criteria = new FinalRankingCriteria(jobId, weights[0], weights[1], 1.0);
             criteriaDAO.save(criteria);
         }
 
-        // Generate final ranking
         return generateFinalRanking(job, assessments, shortlists, criteria.getTechnicalWeight(), criteria.getHrWeight());
     }
 
-
-    /** ==========================
-     * Get jobs eligible for final ranking
-     * ========================== */
     @Override
     public List<JobPosting> getJobsEligibleForFinalRanking() {
         int recruiterId = SessionManager.loggedInUser.getId();
@@ -201,20 +150,20 @@ public class FinalRankingServiceImpl implements FinalRankingService {
                 .filter(job -> {
                     if (candidateDAO.existsForJob(job.getId())) {
                         List<FinalRankedCandidate> candidates = candidateDAO.getByJobId(job.getId());
-                        // Hide jobs where all candidates are HM_REVIEWED
                         boolean allHMReviewed = candidates.stream()
                                 .allMatch(c -> c.getStatus().equalsIgnoreCase("HM_REVIEWED"));
-                        return !allHMReviewed; // include job only if not fully HM_REVIEWED
+                        return !allHMReviewed;
                     }
-                    return true; // include if no ranking exists
+                    return true;
                 })
                 .toList();
     }
 
-
     @Override
     public double[] getCriteriaFromUser() {
         final double[] weights = new double[2];
+        final boolean[] cancelled = {false};
+
         Runnable dialogTask = () -> {
             TextInputDialog techDialog = new TextInputDialog("0.7");
             techDialog.setTitle("Final Ranking Criteria");
@@ -227,14 +176,17 @@ public class FinalRankingServiceImpl implements FinalRankingService {
             Optional<String> hrInput = hrDialog.showAndWait();
 
             if (techInput.isEmpty() || hrInput.isEmpty()) {
-                throw new IllegalStateException("Final ranking criteria not set.");
+                cancelled[0] = true;
+                showAlert("Final ranking criteria not set.", Alert.AlertType.WARNING);
+                return;
             }
 
             try {
                 weights[0] = Double.parseDouble(techInput.get());
                 weights[1] = Double.parseDouble(hrInput.get());
             } catch (NumberFormatException e) {
-                throw new IllegalStateException("Invalid input for weights.");
+                cancelled[0] = true;
+                showAlert("Invalid input for weights.", Alert.AlertType.WARNING);
             }
         };
 
@@ -245,59 +197,49 @@ public class FinalRankingServiceImpl implements FinalRankingService {
                 Platform.runLater(dialogTask);
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+                Thread.currentThread().interrupt();
             }
         }
-        return weights;
+
+        return cancelled[0] ? null : weights;
     }
 
-    /** ==========================
-     * Save final ranking
-     * ========================== */
     @Override
     public void saveFinalRanking(List<FinalRankedCandidate> finalList) {
-        for (FinalRankedCandidate candidate : finalList){
-            candidateDAO.save(candidate);
-            } // Make sure DAO has saveAll()
+        for (FinalRankedCandidate candidate : finalList) candidateDAO.save(candidate);
     }
 
-    /** ==========================
-     * Flag list ready
-     * ========================== */
     @Override
     public void flagListReady(int jobId) {
-        // Update in-memory flag (optional, still useful)
         readyForHMJobs.add(jobId);
-
-        // Update all candidates for this job
         List<FinalRankedCandidate> candidates = candidateDAO.getByJobId(jobId);
         for (FinalRankedCandidate candidate : candidates) {
             candidateDAO.updateStatusAndNotes(candidate.getId(), "Ready for HM", candidate.getHmNotes());
         }
     }
 
-    /** ==========================
-     * Get ranking for job
-     * ========================== */
     @Override
     public List<FinalRankedCandidate> getFinalRankingByJob(int jobId) {
         return candidateDAO.getByJobId(jobId);
     }
 
-    /** ==========================
-     * Update status & HM notes
-     * ========================== */
     @Override
     public void updateStatusAndNotes(int candidateId, String status, String hmNotes) {
         candidateDAO.updateStatusAndNotes(candidateId, status, hmNotes);
     }
 
-    /** ==========================
-     * Check if ready for HM
-     * ========================== */
     public boolean isListReadyForHM(int jobId) {
         return readyForHMJobs.contains(jobId);
     }
 
-
+    private void showAlert(String message, Alert.AlertType type) {
+        Platform.runLater(() -> {
+            Alert alert = new Alert(type);
+            alert.setTitle("Alert");
+            alert.setHeaderText(null);
+            alert.setContentText(message);
+            alert.showAndWait();
+        });
+    }
 }
+

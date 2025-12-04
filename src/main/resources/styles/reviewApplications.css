@@ -1,0 +1,70 @@
+/* ROOT CONTAINER */
+.root-pane {
+    -fx-background-color: #0f172a; /* Dark navy background */
+    -fx-font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    -fx-padding: 15;
+}
+
+/* TITLE LABEL */
+.title {
+    -fx-text-fill: #f8fafc; /* Off-white */
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+}
+
+/* COMBOBOX */
+.input-field {
+    -fx-background-color: #1e293b; /* Slightly lighter dark navy */
+    -fx-text-fill: #e2e8f0;
+    -fx-border-color: #334155;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+}
+
+/* TABLE VIEW */
+.table-view {
+    -fx-background-color: #1e293b; /* Dark table background */
+    -fx-border-color: #334155;
+    -fx-border-width: 1;
+    -fx-table-cell-border-color: #334155;
+    -fx-selection-bar: #2563eb; /* Blue selection */
+    -fx-selection-bar-non-focused: #475569;
+    -fx-text-fill: #e2e8f0; /* Light text */
+}
+
+/* TABLE HEADER */
+.table-view .column-header {
+    -fx-background-color: #1e293b;
+    -fx-border-color: #334155;
+    -fx-text-fill: #f8fafc;
+    -fx-font-weight: bold;
+}
+
+/* TABLE ROWS */
+.table-view .table-row-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #e2e8f0;
+}
+
+/* PRIMARY BUTTON */
+.primary-btn {
+    -fx-background-color: #2563eb; /* Bright blue */
+    -fx-text-fill: #f8fafc;
+    -fx-font-weight: bold;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+}
+
+.primary-btn:hover {
+    -fx-background-color: #1e40af; /* Darker blue on hover */
+}
+
+/* SCROLLBAR (optional) */
+.table-view .scroll-bar:vertical {
+    -fx-background-color: #1e293b;
+}
+
+.table-view .scroll-bar:horizontal {
+    -fx-background-color: #1e293b;
+}

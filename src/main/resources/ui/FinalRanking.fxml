@@ -3,41 +3,66 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.geometry.Insets?>
+<?import java.net.URL?>
 
-<VBox xmlns:fx="http://javafx.com/fxml"
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.recruitment.app.controllers.FinalRankingController"
-      spacing="15" alignment="TOP_CENTER">
+      spacing="22"
+      alignment="TOP_CENTER"
+      styleClass="root-bg">
 
     <padding>
-        <Insets top="20" right="20" bottom="20" left="20"/>
+        <Insets top="35" right="40" bottom="35" left="40"/>
     </padding>
 
-    <Label text="Final Ranking" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+    <!-- TITLE -->
+    <Label text="Final Ranking" styleClass="title-text"/>
 
-    <HBox spacing="10" alignment="CENTER_LEFT">
-        <Label text="Select Job:"/>
-        <ComboBox fx:id="jobComboBox" prefWidth="250"/>
+    <!-- SELECT JOB -->
+    <HBox spacing="15" alignment="CENTER_LEFT" styleClass="form-row">
+        <Label text="Select Job:" styleClass="label"/>
+        <ComboBox fx:id="jobComboBox" prefWidth="280" styleClass="combo"/>
     </HBox>
 
-    <HBox spacing="10">
-        <Button text="Generate Final Ranking" onAction="#generateFinalRanking"/>
-        <Button fx:id="sendToHMButton" text="📤 Send to Hiring Manager" onAction="#sendToHiringManager"
-                disable="true" style="-fx-background-color: #3498db; -fx-text-fill: white;"/>
+    <!-- ACTION BUTTONS -->
+    <HBox spacing="15" alignment="CENTER">
+        <Button text="Generate Final Ranking"
+                onAction="#generateFinalRanking"
+                styleClass="btn-primary"/>
+
+        <Button fx:id="sendToHMButton"
+                text="📤 Send to Hiring Manager"
+                disable="true"
+                onAction="#sendToHiringManager"
+                styleClass="btn-warning"/>
     </HBox>
 
-    <TableView fx:id="finalRankingTable" prefHeight="400" prefWidth="600">
+    <!-- TABLE -->
+    <TableView fx:id="finalRankingTable"
+               prefHeight="430"
+               prefWidth="900"
+               styleClass="data-table">
+
         <columns>
             <TableColumn fx:id="colRank" text="Rank" prefWidth="80"/>
-            <TableColumn fx:id="colApplicantName" text="Applicant Name" prefWidth="250"/>
-            <TableColumn fx:id="colScore" text="Composite Score" prefWidth="120"/>
-            <TableColumn fx:id="colStatus" text="Status" prefWidth="120"/>
+            <TableColumn fx:id="colApplicantName" text="Applicant Name" prefWidth="330"/>
+            <TableColumn fx:id="colScore" text="Composite Score" prefWidth="150"/>
+            <TableColumn fx:id="colStatus" text="Status" prefWidth="200"/>
         </columns>
+
     </TableView>
 
+    <!-- NOTIFY BUTTON -->
     <Button fx:id="notifyCandidatesButton"
             text="📧 Notify Candidates"
-            onAction="#notifyCandidates"
             disable="true"
-            style="-fx-background-color: #2ecc71; -fx-text-fill: white;"/>
+            onAction="#notifyCandidates"
+            styleClass="btn-success"/>
+
+    <!-- STYLESHEET -->
+    <stylesheets>
+        <URL value="@../styles/finalranking.css"/>
+    </stylesheets>
 
 </VBox>

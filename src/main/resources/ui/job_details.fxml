@@ -6,21 +6,35 @@
 
 <VBox xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.recruitment.app.controllers.JobDetailsController"
-      spacing="10">
+      spacing="15" styleClass="root" style="-fx-padding: 20;"
+      stylesheets="@../styles/JobDetails.css">
 
-    <padding>
-        <Insets top="10" right="10" bottom="10" left="10"/>
-    </padding>
+    <Label text="Job Details" styleClass="header-title"/>
 
-    <Label text="Job Details" style="-fx-font-size: 22px; -fx-font-weight: bold;" />
+    <VBox spacing="10" styleClass="card">
+        <padding>
+            <Insets top="15" right="15" bottom="15" left="15"/>
+        </padding>
 
-    <Label fx:id="titleLabel"/>
-    <Label fx:id="deptLabel"/>
-    <Label fx:id="descLabel" wrapText="true"/>
-    <Label fx:id="reqLabel" wrapText="true"/>
-    <Label fx:id="deadlineLabel"/>
+        <Label text="Job Title:" styleClass="card-description"/>
+        <Label fx:id="titleLabel" styleClass="card-title"/>
 
-    <Button text="Back" onAction="#goBack"/>
-    <Button text="Apply Now" onAction="#openApplicationForm"/>
+        <Label text="Department:" styleClass="card-description"/>
+        <Label fx:id="deptLabel" styleClass="card-title"/>
+
+        <Label text="Description:" styleClass="card-description"/>
+        <Label fx:id="descLabel" wrapText="true" styleClass="card-description"/>
+
+        <Label text="Requirements:" styleClass="card-description"/>
+        <Label fx:id="reqLabel" wrapText="true" styleClass="card-description"/>
+
+        <Label text="Deadline:" styleClass="card-description"/>
+        <Label fx:id="deadlineLabel" styleClass="card-title"/>
+    </VBox>
+
+    <HBox spacing="15" alignment="CENTER_LEFT">
+        <Button text="Back" onAction="#goBack" styleClass="btn-pink"/>
+        <Button text="Apply Now" onAction="#openApplicationForm" styleClass="btn-blue"/>
+    </HBox>
 
 </VBox>

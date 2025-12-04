@@ -1,0 +1,181 @@
+/* ---------- ROOT BACKGROUND ---------- */
+
+.root-bg {
+    -fx-background-color: #0f172a; /* Dark navy */
+}
+
+/* ---------- TITLES ---------- */
+/* ---------- INPUTS, TEXTAREA, COMBOBOX, DATEPICKER ---------- */
+.input,
+.textarea,
+.combo,
+.date {
+    -fx-background-color: #1e293b; /* slightly lighter dark for contrast */
+    -fx-text-fill: #e2e8f0;
+    -fx-prompt-text-fill: #94a3b8; /* placeholder color */
+    -fx-border-color: #334155;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 8 10;
+    -fx-font-size: 14px;
+}
+
+/* Focus effect */
+.input:focused,
+.textarea:focused,
+.combo:focused,
+.date:focused {
+    -fx-border-color: #3b82f6;
+    -fx-effect: dropshadow(gaussian, rgba(59,130,246,0.4), 10, 0.4, 0, 0);
+}
+
+/* Text selection color */
+.input .text-input,
+.textarea .text-input {
+    -fx-highlight-fill: #2563eb;   /* selection background */
+    -fx-highlight-text-fill: white; /* selection text */
+}
+
+/* Combobox popup list */
+.combo-box-popup {
+    -fx-background-color: #1e293b;
+}
+
+.combo-box-popup .list-cell {
+    -fx-text-fill: #e2e8f0;
+}
+
+.combo-box-popup .list-cell:hover {
+    -fx-background-color: #2563eb;
+    -fx-text-fill: white;
+}
+
+/* DatePicker popup calendar */
+.date-picker .arrow-button {
+    -fx-background-color: #2563eb;
+}
+
+.date-picker .text {
+    -fx-fill: #e2e8f0;
+}
+
+.date-picker .calendar-popup {
+    -fx-background-color: #1e293b;
+    -fx-border-color: #334155;
+}
+
+.date-picker .day-cell {
+    -fx-text-fill: #e2e8f0;
+}
+
+.date-picker .day-cell:hover {
+    -fx-background-color: #2563eb;
+    -fx-text-fill: white;
+}
+
+.title-text {
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #e2e8f0;
+}
+
+/* ---------- FORM CARD ---------- */
+
+.form-card {
+    -fx-background-color: #1e293b;
+    -fx-padding: 25;
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
+    -fx-border-color: #334155;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.35), 18, 0.2, 0, 6);
+}
+
+/* ---------- LABELS ---------- */
+
+.label {
+    -fx-text-fill: #cbd5e1;
+    -fx-font-size: 14px;
+}
+
+/* ---------- INPUTS & TEXTAREA ---------- */
+
+.input,
+.textarea,
+.combo,
+.date {
+    -fx-background-color: #0f172a;
+    -fx-text-fill: #e2e8f0;
+    -fx-border-color: #334155;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 8 10;
+    -fx-font-size: 14px;
+}
+
+.input:focused,
+.textarea:focused,
+.combo:focused,
+.date:focused {
+    -fx-border-color: #3b82f6;
+    -fx-effect: dropshadow(gaussian, rgba(59,130,246,0.4), 10, 0.4, 0, 0);
+}
+
+/* ---------- TEXTAREA SPECIAL ---------- */
+
+.textarea {
+    -fx-pref-height: 120;
+}
+
+/* ---------- BUTTON GROUP ---------- */
+
+.button-group {
+    -fx-padding: 10 0 0 0;
+}
+
+/* ---------- BUTTONS ---------- */
+
+.btn-primary {
+    -fx-background-color: linear-gradient(to right, #2563eb, #3b82f6);
+    -fx-text-fill: white;
+    -fx-font-size: 15px;
+    -fx-padding: 10 26;
+    -fx-background-radius: 10;
+    -fx-cursor: hand;
+}
+.btn-primary:hover {
+    -fx-background-color: linear-gradient(to right, #1d4ed8, #2563eb);
+}
+
+/* Blue */
+.btn-blue {
+    -fx-background-color: #2563eb;
+    -fx-text-fill: white;
+    -fx-padding: 8 20;
+    -fx-background-radius: 8;
+}
+.btn-blue:hover {
+    -fx-background-color: #1d4ed8;
+}
+
+/* Green */
+.btn-green {
+    -fx-background-color: #059669;
+    -fx-text-fill: white;
+    -fx-padding: 8 20;
+    -fx-background-radius: 8;
+}
+.btn-green:hover {
+    -fx-background-color: #047857;
+}
+
+/* Purple */
+.btn-purple {
+    -fx-background-color: #7c3aed;
+    -fx-text-fill: white;
+    -fx-padding: 8 20;
+    -fx-background-radius: 8;
+}
+.btn-purple:hover {
+    -fx-background-color: #6d28d9;
+}

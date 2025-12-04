@@ -4,71 +4,61 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.Circle?>
-<?import javafx.scene.text.Font?>
-
 <?import java.net.URL?>
+
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.recruitment.app.controllers.BrowseJobsController"
-            prefWidth="1000" prefHeight="700"
+            prefWidth="1200" prefHeight="800"
             styleClass="root-pane">
 
-    <!-- 🌟 HEADER (Top Section) 🌟 -->
+    <!-- 🌟 MODERN HEADER / NAVBAR -->
     <top>
-        <HBox alignment="CENTER_LEFT" spacing="30" styleClass="header-bar">
-
-            <!-- Logo/Title -->
-            <Label text="JobSeeker Dashboard" styleClass="header-title" HBox.hgrow="ALWAYS" />
-
-            <!-- Navigation Links (Left Side) -->
-            <HBox spacing="15" alignment="CENTER_LEFT">
-                <Button text="Track Applications" onAction="#openTrackApplications" styleClass="header-link" />
-                <Button text="Change Password" onAction="#openChangePassword" styleClass="header-link" />
-            </HBox>
-
-            <!-- Spacer to push profile/logout to the right -->
-            <Region HBox.hgrow="ALWAYS" />
-
-            <!-- Profile and Logout (Right Side) -->
-            <HBox spacing="10" alignment="CENTER_RIGHT" styleClass="profile-group">
-                <!-- Update Profile -->
-                <Button onAction="#openProfile" styleClass="icon-btn-circular">
-                    <!-- Placeholder Icon (Use SVG or proper icon library in a real app) -->
-                    <graphic>
-                        <StackPane>
-                            <Circle radius="12" fill="#cee0ff" />
-                            <Label text="👤" style="-fx-font-size: 14px;" />
-                        </StackPane>
-                    </graphic>
-                </Button>
-
-                <!-- Logout Button (Icon only) -->
-                <Button onAction="#logout" styleClass="icon-btn">
-                    <graphic>
-                        <Label text="⏻" style="-fx-font-size: 18px; -fx-text-fill: white;" />
-                    </graphic>
-                    <tooltip>
-                        <Tooltip text="Logout" />
-                    </tooltip>
-                </Button>
-            </HBox>
-
+        <HBox alignment="CENTER_LEFT" spacing="25" styleClass="header-bar">
             <padding>
-                <Insets top="15" right="20" bottom="15" left="20" />
+                <Insets top="15" right="25" bottom="15" left="25"/>
             </padding>
+
+            <!-- App Title -->
+            <Label text="JobSeeker Portal" styleClass="header-title"/>
+
+            <!-- Navigation Items -->
+            <HBox alignment="CENTER_LEFT" spacing="10" styleClass="nav-group">
+                <Button text="Track Applications" onAction="#openTrackApplications" styleClass="nav-btn"/>
+                <Button text="Change Password" onAction="#openChangePassword" styleClass="nav-btn"/>
+            </HBox>
+
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <!-- Profile & Logout -->
+            <HBox spacing="15" alignment="CENTER_RIGHT" styleClass="profile-group">
+                <Button onAction="#openProfile" styleClass="round-btn">
+                    <graphic>
+                        <Label text="👤" style="-fx-font-size: 15px;"/>
+                    </graphic>
+                </Button>
+
+                <Button onAction="#logout" styleClass="logout-btn">
+                    <graphic>
+                        <Label text="⏻" style="-fx-font-size: 16px;"/>
+                    </graphic>
+                    <tooltip><Tooltip text="Logout"/></tooltip>
+                </Button>
+            </HBox>
+
         </HBox>
     </top>
 
-    <!-- 📜 BODY (Scrollable Job Listings) 📜 -->
+    <!-- 📜 JOB LISTINGS AREA -->
     <center>
-        <ScrollPane styleClass="job-scroll-pane" fitToWidth="true" hbarPolicy="NEVER">
-            <!-- Container for job cards -->
-            <VBox fx:id="jobsContainer" spacing="20" alignment="TOP_CENTER" style="-fx-padding: 30;" />
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="job-scroll-pane">
+            <VBox fx:id="jobsContainer" spacing="25" alignment="TOP_CENTER" styleClass="jobs-container"/>
         </ScrollPane>
     </center>
 
+    <!-- Stylesheet -->
     <stylesheets>
-        <URL value="@style.css" />
+        <URL value="@../styles/browsejobs.css"/>
     </stylesheets>
 
 </BorderPane>

@@ -1,0 +1,205 @@
+/* ROOT STYLING */
+.root {
+    -fx-font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    -fx-base: #0f172a;
+}
+
+/* SIDEBAR */
+.sidebar {
+    -fx-background-color: linear-gradient(from 0% 0% to 0% 100%, #1e293b, #0f172a);
+    -fx-border-color: #334155;
+    -fx-border-width: 0 1 0 0;
+    -fx-padding: 0;
+}
+
+.logo-badge {
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-color: linear-gradient(from 100% 0% to 0% 100%, #3b82f6, #06b6d4);
+    -fx-padding: 8;
+    -fx-text-alignment: center;
+    -fx-min-width: 40;
+    -fx-min-height: 40;
+}
+
+.logo-text {
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+.sidebar-btn {
+    -fx-font-size: 13px;
+    -fx-text-fill: #cbd5e1;
+    -fx-background-color: transparent;
+    -fx-padding: 12 16 12 16;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-border-color: transparent;
+    -fx-cursor: hand;
+    -fx-font-weight: 500;
+}
+
+.sidebar-btn:hover {
+    -fx-background-color: #47556980; /* rgba(71,85,105,0.5) */
+    -fx-text-fill: white;
+}
+
+.sidebar-btn-active {
+    -fx-background-color: linear-gradient(from 100% 0% to 0% 100%, #2563eb, #0891b2);
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, #2563eb80, 8, 0, 0, 0); /* rgba(37,99,235,0.5) */
+}
+
+.logout-btn {
+    -fx-text-fill: #ef4444;
+}
+
+.logout-btn:hover {
+    -fx-background-color: #ef44441A; /* rgba(239,68,68,0.1) */
+    -fx-text-fill: #f87171;
+}
+
+/* HEADER */
+.header-title {
+    -fx-text-fill: white;
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+}
+
+.header-subtitle {
+    -fx-text-fill: #94a3b8;
+    -fx-font-size: 12px;
+}
+
+/* CARDS */
+.card {
+    -fx-background-color: linear-gradient(from 100% 0% to 0% 100%, #1e293b, #0f172a);
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-effect: dropshadow(gaussian, #0000004D, 8, 0, 0, 4); /* rgba(0,0,0,0.3) */
+    -fx-border-color: #334155;
+    -fx-border-width: 1;
+    -fx-cursor: hand;
+}
+
+.card:hover {
+    -fx-effect: dropshadow(gaussian, #00000080, 16, 0, 0, 8); /* rgba(0,0,0,0.5) */
+    -fx-translate-y: -4;
+}
+
+.card-blue:hover {
+    -fx-border-color: #3B82F680; /* rgba(59,130,246,0.5) */
+}
+
+.card-emerald:hover {
+    -fx-border-color: #10B98180; /* rgba(16,185,129,0.5) */
+}
+
+.card-orange:hover {
+    -fx-border-color: #EA580C80; /* rgba(234,88,12,0.5) */
+}
+
+.card-pink:hover {
+    -fx-border-color: #EC489980; /* rgba(236,72,153,0.5) */
+}
+
+.card-cyan:hover {
+    -fx-border-color: #06B6D480; /* rgba(6,182,212,0.5) */
+}
+
+.card-yellow:hover {
+    -fx-border-color: #CA8A0480; /* rgba(202,138,4,0.5) */
+}
+
+.card-title {
+    -fx-text-fill: white;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+}
+
+.card-description {
+    -fx-text-fill: #94a3b8;
+    -fx-font-size: 12px;
+    -fx-wrap-text: true;
+}
+
+/* BUTTONS */
+.card-btn {
+    -fx-font-size: 12px;
+    -fx-padding: 10 20 10 20;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-border-width: 0;
+    -fx-effect: dropshadow(gaussian, #00000033, 4, 0, 0, 2); /* rgba(0,0,0,0.2) */
+}
+
+.btn-blue {
+    -fx-background-color: linear-gradient(from 100% 0% to 0% 100%, #2563eb, #0891b2);
+}
+
+.btn-blue:hover {
+    -fx-background-color: linear-gradient(from 100% 0% to 0% 100%, #1d4ed8, #0e7490);
+    -fx-effect: dropshadow(gaussian, #2563EB80, 8, 0, 0, 4);
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+.btn-emerald {
+    -fx-background-color: linear-gradient(from 100% 0% to 0% 100%, #10b981, #14b8a6);
+}
+
+.btn-emerald:hover {
+    -fx-background-color: linear-gradient(from 100% 0% to 0% 100%, #059669, #0d9488);
+    -fx-effect: dropshadow(gaussian, #10B98180, 8, 0, 0, 4);
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+.btn-orange {
+    -fx-background-color: linear-gradient(from 100% 0% to 0% 100%, #ea580c, #d97706);
+}
+
+.btn-orange:hover {
+    -fx-background-color: linear-gradient(from 100% 0% to 0% 100%, #c2410c, #b45309);
+    -fx-effect: dropshadow(gaussian, #EA580C80, 8, 0, 0, 4);
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+.btn-pink {
+    -fx-background-color: linear-gradient(from 100% 0% to 0% 100%, #ec4899, #f43f5e);
+}
+
+.btn-pink:hover {
+    -fx-background-color: linear-gradient(from 100% 0% to 0% 100%, #be185d, #e11d48);
+    -fx-effect: dropshadow(gaussian, #EC489980, 8, 0, 0, 4);
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+.btn-cyan {
+    -fx-background-color: linear-gradient(from 100% 0% to 0% 100%, #06b6d4, #0891b2);
+}
+
+.btn-cyan:hover {
+    -fx-background-color: linear-gradient(from 100% 0% to 0% 100%, #0891b2, #0e7490);
+    -fx-effect: dropshadow(gaussian, #06B6D480, 8, 0, 0, 4);
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+.btn-yellow {
+    -fx-background-color: linear-gradient(from 100% 0% to 0% 100%, #ca8a04, #d97706);
+}
+
+.btn-yellow:hover {
+    -fx-background-color: linear-gradient(from 100% 0% to 0% 100%, #b45309, #ba4a00);
+    -fx-effect: dropshadow(gaussian, #CA8A0480, 8, 0, 0, 4);
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}

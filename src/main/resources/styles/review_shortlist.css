@@ -1,0 +1,134 @@
+/* ---------- ROOT BACKGROUND ---------- */
+
+.root-bg {
+    -fx-background-color: #0d1117; /* darker for contrast */
+}
+
+/* ---------- TITLES ---------- */
+
+.title-text {
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffffff; /* pure white for clarity */
+}
+
+/* ---------- FORM CARD ---------- */
+
+.form-card {
+    -fx-background-color: #1a2332;
+    -fx-padding: 20;
+    -fx-spacing: 12;
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
+    -fx-border-color: #2f3b4d;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.45), 20, 0.25, 0, 6);
+}
+
+/* ---------- LABELS ---------- */
+
+.label {
+    -fx-text-fill: #f1f5f9; /* BRIGHTER */
+    -fx-font-size: 14px;
+}
+
+/* ---------- INPUTS ---------- */
+
+.combo,
+.textarea,
+.textfield {
+    -fx-background-color: #0b1320; /* darker input background */
+    -fx-text-fill: #ffffff;        /* full white text */
+    -fx-border-color: #475569;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 8 10;
+    -fx-font-size: 14px;
+}
+
+.combo:focused,
+.textarea:focused,
+.textfield:focused {
+    -fx-border-color: #60a5fa; /* lighter blue */
+    -fx-effect: dropshadow(gaussian, rgba(96,165,250,0.5), 12, 0.5, 0, 0);
+}
+
+/* ---------- PRIMARY BUTTON ---------- */
+
+.btn-primary {
+    -fx-background-color: linear-gradient(to right, #3b82f6, #60a5fa);
+    -fx-text-fill: white;
+    -fx-font-size: 15px;
+    -fx-padding: 10 26;
+    -fx-background-radius: 10;
+    -fx-cursor: hand;
+}
+
+.btn-primary:hover {
+    -fx-background-color: linear-gradient(to right, #2563eb, #3b82f6);
+}
+
+/* ---------- DARK TABLEVIEW ---------- */
+
+.dark-table {
+    -fx-background-color: transparent;
+}
+
+.dark-table .column-header-background {
+    -fx-background-color: #1e293b;
+}
+
+.dark-table .column-header,
+.dark-table .column-header .label {
+    -fx-text-fill: #ffffff; /* brighter */
+    -fx-font-weight: bold;
+    -fx-background-color: #1e293b;
+}
+
+.dark-table .table-row-cell {
+    -fx-background-color: #0d1117;
+    -fx-text-fill: #f8fafc; /* bright */
+}
+
+.dark-table .table-row-cell:filled:selected {
+    -fx-background-color: #2563eb;
+    -fx-text-fill: #ffffff;
+}
+
+.dark-table .table-row-cell:odd {
+    -fx-background-color: #111827;
+}
+/* Force text color inside TextArea */
+.text-area .content {
+    -fx-text-fill: #ffffff;
+    -fx-background-color: #0b1320;
+}
+
+/* Force text color inside ComboBox dropdown items */
+.combo-box .list-view .list-cell {
+    -fx-text-fill: #ffffff;
+    -fx-background-color: #0b1320;
+}
+
+.combo-box .list-view .list-cell:hover {
+    -fx-background-color: #1e293b;
+}
+
+/* Force text color in ComboBox editor area */
+.combo-box .text-field {
+    -fx-text-fill: #ffffff;
+    -fx-background-color: #0b1320;
+    -fx-prompt-text-fill: #94a3b8; /* visible placeholder */
+}
+
+/* If your ComboBox is non-editable */
+.combo-box .label {
+    -fx-text-fill: #ffffff;
+}
+
+
+.dark-table .table-cell {
+    -fx-text-fill: #f1f5f9; /* brighter */
+    -fx-padding: 10;
+    -fx-alignment: CENTER_LEFT;
+}

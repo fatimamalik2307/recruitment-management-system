@@ -4,18 +4,19 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 
+<?import java.net.URL?>
 <VBox xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.recruitment.app.controllers.TrackApplicationsController"
-      spacing="15">
+      spacing="15"
+      styleClass="root-pane">
 
     <padding>
         <Insets top="20" right="20" bottom="20" left="20"/>
     </padding>
 
-    <Label text="My Applications Status"
-           style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+    <Label text="My Applications Status" styleClass="title"/>
 
-    <TableView fx:id="applicationsTable" prefHeight="400">
+    <TableView fx:id="applicationsTable" prefHeight="400" styleClass="table-view">
         <columns>
             <TableColumn fx:id="jobCol" text="Job Title" prefWidth="200"/>
             <TableColumn fx:id="dateCol" text="Applied On" prefWidth="180"/>
@@ -23,7 +24,11 @@
         </columns>
     </TableView>
 
-    <Button text="Back"
-            onAction="#goBack"
-            style="-fx-background-color: #777; -fx-text-fill: white;"/>
+    <Button text="Back" onAction="#goBack" styleClass="secondary-btn"/>
+
+    <stylesheets>
+        <URL value="@../styles/track_application.css"/>
+    </stylesheets>
+
+
 </VBox>

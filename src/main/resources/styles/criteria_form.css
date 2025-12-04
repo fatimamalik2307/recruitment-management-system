@@ -1,0 +1,76 @@
+/* ---------- ROOT BACKGROUND ---------- */
+.root-bg {
+    -fx-background-color: #0d1117;
+}
+
+/* ---------- TITLES ---------- */
+.title-text {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffffff;
+}
+
+/* ---------- FORM CONTAINER ---------- */
+.form-card {
+    -fx-background-color: #1a2332;
+    -fx-padding: 20;
+    -fx-spacing: 14;
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
+    -fx-border-color: #2f3b4d;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 18, 0.3, 0, 6);
+}
+
+/* ---------- LABELS ---------- */
+.label {
+    -fx-text-fill: #e2e8f0;
+    -fx-font-size: 14px;
+}
+
+/* ---------- INPUT ELEMENTS ---------- */
+.textfield,
+.combo {
+    -fx-background-color: #0b1320;
+    -fx-text-fill: #ffffff;
+    -fx-border-color: #475569;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 8 10;
+    -fx-font-size: 14px;
+}
+
+.textfield:focused,
+.combo:focused {
+    -fx-border-color: #60a5fa;
+    -fx-effect: dropshadow(gaussian, rgba(96,165,250,0.45), 12, 0.5, 0, 0);
+}
+
+/* ---- internal text for ComboBox ---- */
+.combo-box .text-field,
+.combo-box .label {
+    -fx-text-fill: #ffffff;
+}
+
+.combo-box .list-view .list-cell {
+    -fx-text-fill: #ffffff;
+    -fx-background-color: #0b1320;
+}
+
+.combo-box .list-view .list-cell:hover {
+    -fx-background-color: #1e293b;
+}
+
+/* ---------- BUTTON ---------- */
+.btn-primary {
+    -fx-background-color: linear-gradient(to right, #3b82f6, #60a5fa);
+    -fx-text-fill: white;
+    -fx-font-size: 15px;
+    -fx-padding: 10 20;
+    -fx-background-radius: 10;
+    -fx-cursor: hand;
+}
+
+.btn-primary:hover {
+    -fx-background-color: linear-gradient(to right, #2563eb, #3b82f6);
+}

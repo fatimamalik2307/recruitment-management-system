@@ -3,20 +3,23 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.geometry.Insets?>
-<VBox spacing="10" xmlns:fx="http://javafx.com/fxml" fx:controller="com.recruitment.app.controllers.JobDescriptionListController">
 
-    <padding>
-        <Insets top="20" right="20" bottom="20" left="20"/>
-    </padding>
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.recruitment.app.controllers.JobDescriptionListController"
+      spacing="15" styleClass="root" style="-fx-padding: 20;"
+      stylesheets="@../styles/JobDescriptionList.css">
 
-    <TableView fx:id="table">
+    <Label text="Saved Job Descriptions" styleClass="header-title"/>
+
+    <TableView fx:id="table" styleClass="table-view" prefHeight="400">
         <columns>
-            <TableColumn fx:id="titleCol" text="Job Title" prefWidth="200"/>
-            <TableColumn fx:id="dateCol" text="Created" prefWidth="150"/>
+            <TableColumn fx:id="titleCol" text="Job Title" prefWidth="250"/>
+            <TableColumn fx:id="dateCol" text="Created On" prefWidth="150"/>
         </columns>
     </TableView>
 
-    <Button text="Load Selected" onAction="#loadSelected"/>
-    <Button text="Back" onAction="#goBack"/>
-
+    <HBox spacing="15" alignment="CENTER_LEFT">
+        <Button text="Load Selected" onAction="#loadSelected" styleClass="btn-blue"/>
+        <Button text="Back" onAction="#goBack" styleClass="btn-pink"/>
+    </HBox>
 </VBox>

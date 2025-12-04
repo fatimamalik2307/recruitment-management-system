@@ -3,26 +3,114 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.image.ImageView?>
 
-<VBox xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.recruitment.app.controllers.RecruiterDashboardController"
-      spacing="20" alignment="CENTER">
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.recruitment.app.controllers.RecruiterDashboardController"
+            stylesheets="@/styles/dashboard.css"
+            style="-fx-background-color: #0f172a;">
 
-    <padding>
-        <Insets top="20" right="20" bottom="20" left="20"/>
-    </padding>
+    <!-- LEFT SIDEBAR -->
+    <left>
+        <VBox styleClass="sidebar" spacing="0" prefWidth="280">
+            <padding><Insets top="20" right="15" bottom="20" left="15"/></padding>
 
-    <Label text="Recruiter Dashboard" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+            <!-- Logo -->
+            <HBox spacing="12" alignment="CENTER_LEFT" style="-fx-padding: 15; -fx-background-color: #1e293b; -fx-border-color: #334155; -fx-border-width: 0 0 1 0;">
+                <Label text="RD" styleClass="logo-badge"/>
+                <Label text="Recruiter" styleClass="logo-text"/>
+            </HBox>
 
-    <Button text="Create Job Posting" onAction="#openCreateJob"/>
-    <Button text="Review Applications" onAction="#openReviewApplications"/>
-    <Button text="Define Shortlisting Criteria" onAction="#openShortlistingCriteria"/>
-    <Button text="Review Shortlist" onAction="#openReviewShortlist"/>
-    <Button text="Generate Recruitment Report" onAction="#openRecruitmentReport"/>
-    <Button text="Generate Final Ranking" onAction="#openFinalRanking"/>
-    <Button text="Update Profile" onAction="#openProfile"/>
-    <Button text="Change Password" onAction="#openChangePassword"/>
+            <!-- Navigation Menu -->
+            <VBox spacing="8" style="-fx-padding: 20 0 0 0; -fx-fill-height: true;">
+                <Button text="Create Job Posting" onAction="#openCreateJob" styleClass="sidebar-btn,sidebar-btn-active"/>
+                <Button text="Review Applications" onAction="#openReviewApplications" styleClass="sidebar-btn"/>
+                <Button text="Define Shortlisting Criteria" onAction="#openShortlistingCriteria" styleClass="sidebar-btn"/>
+                <Button text="Review Shortlist" onAction="#openReviewShortlist" styleClass="sidebar-btn"/>
+                <Button text="Generate Recruitment Report" onAction="#openRecruitmentReport" styleClass="sidebar-btn"/>
+                <Button text="Generate Final Ranking" onAction="#openFinalRanking" styleClass="sidebar-btn"/>
+                <Separator style="-fx-padding: 10 0 10 0; -fx-border-color: #334155;"/>
+                <Button text="Update Profile" onAction="#openProfile" styleClass="sidebar-btn"/>
+                <Button text="Change Password" onAction="#openChangePassword" styleClass="sidebar-btn"/>
+            </VBox>
 
-    <Button text="Logout" onAction="#logout"/>
+            <!-- Logout Button -->
+            <VBox style="-fx-grow: true;"/>
+            <Button text="Logout" onAction="#logout" styleClass="sidebar-btn,logout-btn"/>
+        </VBox>
+    </left>
 
-</VBox>
+    <!-- MAIN CONTENT -->
+    <center>
+        <VBox spacing="0" style="-fx-background-color: #020617;">
+            <!-- Header -->
+            <HBox alignment="CENTER_LEFT" spacing="20" style="-fx-padding: 30; -fx-background-color: #0f172a; -fx-border-color: #1e293b; -fx-border-width: 0 0 1 0;">
+                <VBox spacing="5">
+                    <Label text="Recruiter Dashboard" styleClass="header-title"/>
+                    <Label text="Manage your recruitment process" styleClass="header-subtitle"/>
+                </VBox>
+            </HBox>
+
+            <!-- Content Grid -->
+            <ScrollPane fitToWidth="true" style="-fx-background-color: #020617; -fx-padding: 30;">
+                <GridPane hgap="20" vgap="20" style="-fx-padding: 10;">
+
+                    <!-- Card 1: Create Job -->
+                    <VBox GridPane.columnIndex="0" GridPane.rowIndex="0" styleClass="card,card-blue" spacing="15">
+                        <padding><Insets top="25" right="25" bottom="25" left="25"/></padding>
+                        <Label text="📋" style="-fx-font-size: 36px;"/>
+                        <Label text="Create Job Posting" styleClass="card-title"/>
+                        <Label text="Post new job opportunities and manage openings" styleClass="card-description" wrapText="true"/>
+                        <Button text="Open" onAction="#openCreateJob" styleClass="card-btn,btn-blue"/>
+                    </VBox>
+
+                    <!-- Card 2: Review Applications -->
+                    <VBox GridPane.columnIndex="1" GridPane.rowIndex="0" styleClass="card,card-emerald" spacing="15">
+                        <padding><Insets top="25" right="25" bottom="25" left="25"/></padding>
+                        <Label text="📄" style="-fx-font-size: 36px;"/>
+                        <Label text="Review Applications" styleClass="card-title"/>
+                        <Label text="View and evaluate candidate submissions" styleClass="card-description" wrapText="true"/>
+                        <Button text="Open" onAction="#openReviewApplications" styleClass="card-btn,btn-emerald"/>
+                    </VBox>
+
+                    <!-- Card 3: Shortlisting Criteria -->
+                    <VBox GridPane.columnIndex="0" GridPane.rowIndex="1" styleClass="card,card-orange" spacing="15">
+                        <padding><Insets top="25" right="25" bottom="25" left="25"/></padding>
+                        <Label text="🔍" style="-fx-font-size: 36px;"/>
+                        <Label text="Define Shortlisting Criteria" styleClass="card-title"/>
+                        <Label text="Set evaluation parameters and requirements" styleClass="card-description" wrapText="true"/>
+                        <Button text="Open" onAction="#openShortlistingCriteria" styleClass="card-btn,btn-orange"/>
+                    </VBox>
+
+                    <!-- Card 4: Review Shortlist -->
+                    <VBox GridPane.columnIndex="1" GridPane.rowIndex="1" styleClass="card,card-pink" spacing="15">
+                        <padding><Insets top="25" right="25" bottom="25" left="25"/></padding>
+                        <Label text="✓" style="-fx-font-size: 36px;"/>
+                        <Label text="Review Shortlist" styleClass="card-title"/>
+                        <Label text="Check qualified candidates and rankings" styleClass="card-description" wrapText="true"/>
+                        <Button text="Open" onAction="#openReviewShortlist" styleClass="card-btn,btn-pink"/>
+                    </VBox>
+
+                    <!-- Card 5: Recruitment Report -->
+                    <VBox GridPane.columnIndex="0" GridPane.rowIndex="2" styleClass="card,card-cyan" spacing="15">
+                        <padding><Insets top="25" right="25" bottom="25" left="25"/></padding>
+                        <Label text="📊" style="-fx-font-size: 36px;"/>
+                        <Label text="Generate Recruitment Report" styleClass="card-title"/>
+                        <Label text="View analytics and insights about hiring" styleClass="card-description" wrapText="true"/>
+                        <Button text="Open" onAction="#openRecruitmentReport" styleClass="card-btn,btn-cyan"/>
+                    </VBox>
+
+                    <!-- Card 6: Final Ranking -->
+                    <VBox GridPane.columnIndex="1" GridPane.rowIndex="2" styleClass="card,card-yellow" spacing="15">
+                        <padding><Insets top="25" right="25" bottom="25" left="25"/></padding>
+                        <Label text="🏆" style="-fx-font-size: 36px;"/>
+                        <Label text="Generate Final Ranking" styleClass="card-title"/>
+                        <Label text="Rank and prioritize top candidates" styleClass="card-description" wrapText="true"/>
+                        <Button text="Open" onAction="#openFinalRanking" styleClass="card-btn,btn-yellow"/>
+                    </VBox>
+
+                </GridPane>
+            </ScrollPane>
+        </VBox>
+    </center>
+</BorderPane>

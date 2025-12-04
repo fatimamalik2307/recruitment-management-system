@@ -7,7 +7,7 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 
-    private static final String CSS_PATH = "/ui/style.css"; // Assuming CSS location
+    private static final String CSS_PATH = "/styles/style.css"; // Assuming CSS location
 
     @Override
     public void start(Stage stage) throws Exception {

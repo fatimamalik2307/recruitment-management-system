@@ -14,7 +14,7 @@ import java.util.function.Consumer;
 public class SceneLoader {
 
     private static final ControllerFactory controllerFactory = ControllerFactory.getInstance();
-    private static final String GLOBAL_CSS_PATH = "/ui/style.css"; // Ensure this matches your CSS location
+    private static final String GLOBAL_CSS_PATH = "/styles/style.css"; // Ensure this matches your CSS location
 
     // Helper method to create a scene and apply the global stylesheet
     private static Scene createStyledScene(Parent root) {

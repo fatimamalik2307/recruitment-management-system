@@ -3,24 +3,81 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.image.ImageView?>
 
-<VBox xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.recruitment.app.controllers.HiringManagerDashboardController"
-      spacing="20" alignment="CENTER">
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.recruitment.app.controllers.HiringManagerDashboardController"
+            stylesheets="@/styles/dashboard.css"
+            style="-fx-background-color: #0f172a;">
 
-    <padding>
-        <Insets top="20" right="20" bottom="20" left="20"/>
-    </padding>
+    <!-- LEFT SIDEBAR -->
+    <left>
+        <VBox styleClass="sidebar" spacing="0" prefWidth="280">
+            <padding><Insets top="20" right="15" bottom="20" left="15"/></padding>
 
-    <Label text="Hiring Manager Dashboard" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+            <!-- Logo -->
+            <HBox spacing="12" alignment="CENTER_LEFT" style="-fx-padding: 15; -fx-background-color: #1e293b; -fx-border-color: #334155; -fx-border-width: 0 0 1 0;">
+                <Label text="HM" styleClass="logo-badge"/>
+                <Label text="Hiring Manager" styleClass="logo-text"/>
+            </HBox>
 
-    <Button text="Review Candidates" onAction="#openHMCandidateReview" style="-fx-font-size: 14px;"/>
-<!--    <Button text="My Job Postings" onAction="#openJobPostings" style="-fx-font-size: 14px;"/>-->
-    <!-- REMOVE THE "Selected Candidates" BUTTON COMPLETELY -->
-    <!-- <Button text="Selected Candidates" onAction="#openSelectedCandidates" style="-fx-font-size: 14px;"/> -->
-    <Button text="Update Profile" onAction="#openProfile" style="-fx-font-size: 14px;"/>
-    <Button text="Update Profile" onAction="#openProfile"/>
-    <Button text="Change Password" onAction="#openChangePassword"/>
-    <Button text="Logout" onAction="#logout" style="-fx-font-size: 14px; -fx-text-fill: red;"/>
+            <!-- Navigation Menu -->
+            <VBox spacing="8" style="-fx-padding: 20 0 0 0; -fx-fill-height: true;">
+                <Button text="Review Candidates" onAction="#openHMCandidateReview" styleClass="sidebar-btn,sidebar-btn-active"/>
+                <Button text="Update Profile" onAction="#openProfile" styleClass="sidebar-btn"/>
+                <Button text="Change Password" onAction="#openChangePassword" styleClass="sidebar-btn"/>
+            </VBox>
 
-</VBox>
+            <!-- Logout Button -->
+            <VBox style="-fx-grow: true;"/>
+            <Button text="Logout" onAction="#logout" styleClass="sidebar-btn,logout-btn"/>
+        </VBox>
+    </left>
+
+    <!-- MAIN CONTENT -->
+    <center>
+        <VBox spacing="0" style="-fx-background-color: #020617;">
+            <!-- Header -->
+            <HBox alignment="CENTER_LEFT" spacing="20" style="-fx-padding: 30; -fx-background-color: #0f172a; -fx-border-color: #1e293b; -fx-border-width: 0 0 1 0;">
+                <VBox spacing="5">
+                    <Label text="Hiring Manager Dashboard" styleClass="header-title"/>
+                    <Label text="Manage your hiring process" styleClass="header-subtitle"/>
+                </VBox>
+            </HBox>
+
+            <!-- Content Grid -->
+            <ScrollPane fitToWidth="true" style="-fx-background-color: #020617; -fx-padding: 30;">
+                <GridPane hgap="20" vgap="20" style="-fx-padding: 10;">
+
+                    <!-- Card 1: Review Candidates -->
+                    <VBox GridPane.columnIndex="0" GridPane.rowIndex="0" styleClass="card,card-blue" spacing="15">
+                        <padding><Insets top="25" right="25" bottom="25" left="25"/></padding>
+                        <Label text="📄" style="-fx-font-size: 36px;"/>
+                        <Label text="Review Candidates" styleClass="card-title"/>
+                        <Label text="View and evaluate candidate submissions" styleClass="card-description" wrapText="true"/>
+                        <Button text="Open" onAction="#openHMCandidateReview" styleClass="card-btn,btn-blue"/>
+                    </VBox>
+
+                    <!-- Card 2: Update Profile -->
+                    <VBox GridPane.columnIndex="1" GridPane.rowIndex="0" styleClass="card,card-emerald" spacing="15">
+                        <padding><Insets top="25" right="25" bottom="25" left="25"/></padding>
+                        <Label text="👤" style="-fx-font-size: 36px;"/>
+                        <Label text="Update Profile" styleClass="card-title"/>
+                        <Label text="Edit your personal and professional information" styleClass="card-description" wrapText="true"/>
+                        <Button text="Open" onAction="#openProfile" styleClass="card-btn,btn-emerald"/>
+                    </VBox>
+
+                    <!-- Card 3: Change Password -->
+                    <VBox GridPane.columnIndex="0" GridPane.rowIndex="1" styleClass="card,card-orange" spacing="15">
+                        <padding><Insets top="25" right="25" bottom="25" left="25"/></padding>
+                        <Label text="🔒" style="-fx-font-size: 36px;"/>
+                        <Label text="Change Password" styleClass="card-title"/>
+                        <Label text="Update your account password securely" styleClass="card-description" wrapText="true"/>
+                        <Button text="Open" onAction="#openChangePassword" styleClass="card-btn,btn-orange"/>
+                    </VBox>
+
+                </GridPane>
+            </ScrollPane>
+        </VBox>
+    </center>
+</BorderPane>
