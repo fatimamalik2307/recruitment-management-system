@@ -123,10 +123,21 @@ public class UserDAOImpl implements UserDAO {
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, applicationId);
             ResultSet rs = ps.executeQuery();
-            if (rs.next()) return mapResultSetToUser(rs);
-        } catch (Exception e) { e.printStackTrace(); }
-        return null;
+
+            if (rs.next()) {  // ✅ Only call once
+                User u = mapResultSetToUser(rs);
+                System.out.println("DEBUG: Found user " + u.getFullName() + " for applicationId " + applicationId);
+                return u;
+            } else {
+                System.out.println("DEBUG: No user found for applicationId = " + applicationId);
+                return null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
+
 
     /** ============================
      *  Utility

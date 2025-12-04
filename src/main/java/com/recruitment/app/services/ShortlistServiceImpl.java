@@ -78,7 +78,8 @@ public class ShortlistServiceImpl implements ShortlistService {
         List<Shortlist> result = new ArrayList<>();
 
         for (Application app : applications) {
-            if (meetsCriteria(app, criteria)) {
+//            if (meetsCriteria(app, criteria)){
+            if(true){
                 Shortlist s = new Shortlist();
                 s.setCriteriaId(criteria.getId());
                 s.setApplicationId(app.getId());

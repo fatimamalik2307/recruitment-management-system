@@ -9,7 +9,6 @@ import javafx.scene.control.TextInputDialog;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.*;
 
 public class FinalRankingServiceImpl implements FinalRankingService {
@@ -35,6 +34,12 @@ public class FinalRankingServiceImpl implements FinalRankingService {
         this.jobDAO = jobDAO;
         this.shortlistDAO = shortlistDAO;
         this.userDAO = userDAO;
+
+        System.out.println("DEBUG(FinalRankingServiceImpl): Service created");
+        System.out.println("DEBUG(FinalRankingServiceImpl): userDAO = " + userDAO);
+        System.out.println("DEBUG(FinalRankingServiceImpl): jobDAO = " + jobDAO);
+        System.out.println("DEBUG(FinalRankingServiceImpl): shortlistDAO = " + shortlistDAO);
+        System.out.println("DEBUG(FinalRankingServiceImpl): assessmentDAO = " + assessmentDAO);
     }
 
     @Override
@@ -44,7 +49,11 @@ public class FinalRankingServiceImpl implements FinalRankingService {
 
     public List<JobPosting> getAllJobsForRecruiter() {
         int id = SessionManager.loggedInUser.getId();
-        return jobDAO.getJobsByRecruiterId(id);
+        System.out.println("DEBUG: getAllJobsForRecruiter -> recruiterId=" + id);
+
+        List<JobPosting> jobs = jobDAO.getJobsByRecruiterId(id);
+        System.out.println("DEBUG: Jobs returned -> " + jobs.size());
+        return jobs;
     }
 
     @Override
@@ -74,13 +83,19 @@ public class FinalRankingServiceImpl implements FinalRankingService {
                                                            List<Shortlist> shortlists,
                                                            double technicalWeight,
                                                            double hrWeight) {
+        System.out.println("DEBUG(generateFinalRanking): Called");
+        System.out.println("DEBUG(generateFinalRanking): Job = " + job);
+        System.out.println("DEBUG(generateFinalRanking): Assessments size = " + assessments.size());
+        System.out.println("DEBUG(generateFinalRanking): Shortlists size = " + shortlists.size());
+        System.out.println("DEBUG(generateFinalRanking): technicalWeight=" + technicalWeight + " hrWeight=" + hrWeight);
+
         if (assessments.isEmpty() || shortlists.isEmpty()) {
-            // No alerts here; controller will handle empty list
             return Collections.emptyList();
         }
 
         Map<Integer, AssessmentResult> assessmentMap = new HashMap<>();
         for (AssessmentResult ar : assessments) {
+            System.out.println("DEBUG: Mapping assessment shortlistId=" + ar.getShortlistId());
             assessmentMap.put(ar.getShortlistId(), ar);
         }
 
@@ -88,22 +103,29 @@ public class FinalRankingServiceImpl implements FinalRankingService {
         int rank = 1;
 
         for (Shortlist s : shortlists) {
+            System.out.println("DEBUG: Processing shortlist ID=" + s.getId() + " applicationId=" + s.getApplicationId());
             AssessmentResult a = assessmentMap.get(s.getId());
+            System.out.println("DEBUG: Assessment found = " + (a != null));
             if (a == null) continue;
 
             double composite = a.getTechnicalScore() * technicalWeight + a.getHrScore() * hrWeight;
+            System.out.println("DEBUG: Composite score = " + composite);
 
             FinalRankedCandidate candidate = new FinalRankedCandidate();
             candidate.setApplicationId(s.getApplicationId());
             candidate.setJobId(job.getId());
 
+            System.out.println("DEBUG: Calling userDAO.getByApplicationId(" + s.getApplicationId() + ")");
             var user = userDAO.getByApplicationId(s.getApplicationId());
-            candidate.setApplicantName(user != null ? user.getFullName() : "Unknown");
+            System.out.println("DEBUG: userDAO returned -> " + user);
 
+            candidate.setApplicantName(user != null ? user.getFullName() : "Unknown");
             candidate.setCompositeScore(composite);
             candidate.setGeneratedAt(LocalDateTime.now());
             candidate.setStatus("Pending");
             candidate.setRank(rank++);
+
+            System.out.println("DEBUG: Adding candidate -> " + candidate.getApplicantName());
             finalList.add(candidate);
         }
 
@@ -118,21 +140,34 @@ public class FinalRankingServiceImpl implements FinalRankingService {
 
     @Override
     public List<FinalRankedCandidate> generateFinalRankingForJob(int jobId) {
+        System.out.println("DEBUG(generateFinalRankingForJob): jobId=" + jobId);
+
         JobPosting job = jobDAO.getJobById(jobId);
+        System.out.println("DEBUG: jobDAO.getJobById returned -> " + job);
         if (job == null) return Collections.emptyList();
 
         if (candidateDAO.existsForJob(jobId)) {
+            System.out.println("DEBUG: Final ranking already exists. Fetching...");
             List<FinalRankedCandidate> existing = candidateDAO.getByJobId(jobId);
+            System.out.println("DEBUG: Existing size -> " + existing.size());
+            for (FinalRankedCandidate c : existing) {
+                var user = userDAO.getByApplicationId(c.getApplicationId());
+                c.setApplicantName(user != null ? user.getFullName() : "Unknown");
+                System.out.println("DEBUG: Populating existing candidate name -> " + c.getApplicantName());
+            }
             return existing;
         }
 
         List<Shortlist> shortlists = shortlistDAO.getByJobId(jobId);
+        System.out.println("DEBUG: shortlistDAO.getByJobId size -> " + shortlists.size());
         if (shortlists.isEmpty()) return Collections.emptyList();
 
         List<AssessmentResult> assessments = assessmentDAO.getByJobId(jobId);
+        System.out.println("DEBUG: assessmentDAO.getByJobId size -> " + assessments.size());
         if (assessments.isEmpty() || assessments.size() < shortlists.size()) return Collections.emptyList();
 
         FinalRankingCriteria criteria = criteriaDAO.getByJobId(jobId);
+        System.out.println("DEBUG: criteriaDAO.getByJobId returned -> " + criteria);
         if (criteria == null) {
             double[] weights = getCriteriaFromUser();
             if (weights == null) return Collections.emptyList();
@@ -151,23 +186,17 @@ public class FinalRankingServiceImpl implements FinalRankingService {
         LocalDate today = LocalDate.now();
 
         return allJobs.stream()
-                // Only jobs whose deadline is today or in the future
                 .filter(job -> job.getDeadline() != null && !job.getDeadline().isBefore(today))
                 .filter(job -> {
-                    // If final ranking exists, only include if not all candidates are sent to HM
                     if (candidateDAO.existsForJob(job.getId())) {
                         List<FinalRankedCandidate> candidates = candidateDAO.getByJobId(job.getId());
-
-                        // Job is eligible if at least one candidate is NOT yet sent to HM
                         return candidates.stream()
                                 .anyMatch(c -> !c.getStatus().equalsIgnoreCase("HM_REVIEWED"));
                     }
-                    return true; // No candidates yet, include the job
+                    return true;
                 })
                 .toList();
     }
-
-
 
     @Override
     public double[] getCriteriaFromUser() {
@@ -216,7 +245,11 @@ public class FinalRankingServiceImpl implements FinalRankingService {
 
     @Override
     public void saveFinalRanking(List<FinalRankedCandidate> finalList) {
-        for (FinalRankedCandidate candidate : finalList) candidateDAO.save(candidate);
+        System.out.println("DEBUG: Saving final ranking list size=" + finalList.size());
+        for (FinalRankedCandidate candidate : finalList) {
+            System.out.println("DEBUG: Saving candidate -> " + candidate);
+            candidateDAO.save(candidate);
+        }
     }
 
     @Override
@@ -252,4 +285,3 @@ public class FinalRankingServiceImpl implements FinalRankingService {
         });
     }
 }
-
