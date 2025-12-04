@@ -7,7 +7,9 @@ import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextInputDialog;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
 public class FinalRankingServiceImpl implements FinalRankingService {
@@ -146,18 +148,26 @@ public class FinalRankingServiceImpl implements FinalRankingService {
         int recruiterId = SessionManager.loggedInUser.getId();
         List<JobPosting> allJobs = jobDAO.getJobsByRecruiterId(recruiterId);
 
+        LocalDate today = LocalDate.now();
+
         return allJobs.stream()
+                // Only jobs whose deadline is today or in the future
+                .filter(job -> job.getDeadline() != null && !job.getDeadline().isBefore(today))
                 .filter(job -> {
+                    // If final ranking exists, only include if not all candidates are sent to HM
                     if (candidateDAO.existsForJob(job.getId())) {
                         List<FinalRankedCandidate> candidates = candidateDAO.getByJobId(job.getId());
-                        boolean allHMReviewed = candidates.stream()
-                                .allMatch(c -> c.getStatus().equalsIgnoreCase("HM_REVIEWED"));
-                        return !allHMReviewed;
+
+                        // Job is eligible if at least one candidate is NOT yet sent to HM
+                        return candidates.stream()
+                                .anyMatch(c -> !c.getStatus().equalsIgnoreCase("HM_REVIEWED"));
                     }
-                    return true;
+                    return true; // No candidates yet, include the job
                 })
                 .toList();
     }
+
+
 
     @Override
     public double[] getCriteriaFromUser() {

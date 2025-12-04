@@ -5,6 +5,7 @@ import com.recruitment.app.models.JobPosting;
 import com.recruitment.app.services.RecruitmentReportService;
 import com.recruitment.app.services.JobService;
 import com.recruitment.app.utils.SessionManager;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -33,7 +34,7 @@ public class RecruitmentReportController {
         this.reportService = reportService;
         this.jobService = jobService;
 
-        loadJobsForRecruiter();
+        Platform.runLater(this::loadJobsForRecruiter);
     }
 
     // ---------- LOAD JOBS AFTER INJECTION ----------
@@ -45,7 +46,9 @@ public class RecruitmentReportController {
 
         int recruiterId = SessionManager.loggedInUser.getId();
 
+
         try {
+                System.out.println(recruiterId);
             List<JobPosting> jobs = jobService.getAllJobsForRecruiter(recruiterId);
 
             if (jobs == null || jobs.isEmpty()) {
@@ -58,6 +61,10 @@ public class RecruitmentReportController {
         } catch (Exception e) {
             showError("Failed to load jobs: " + e.getMessage());
         }
+    }
+    @FXML
+    private void initialize() {
+        loadJobsForRecruiter(); // safe: FXML controls are injected here
     }
 
     @FXML

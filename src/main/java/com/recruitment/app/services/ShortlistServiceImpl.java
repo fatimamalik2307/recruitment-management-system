@@ -111,32 +111,32 @@ public class ShortlistServiceImpl implements ShortlistService {
 
     private boolean meetsCriteria(Application app, ShortlistingCriteria criteria) {
 
-//        // 1. Qualification
-//        if (criteria.getRequiredQualification() != null &&
-//                !criteria.getRequiredQualification().isEmpty() &&
-//                !criteria.getRequiredQualification().equalsIgnoreCase(app.getQualification())) {
-//            return false;
-//        }
-//
-//        // 2. Experience check
-//        if (criteria.getMinExperience() != null) {
-//            try {
-//                int applicantExp = Integer.parseInt(app.getExperience().split(" ")[0]);
-//                if (applicantExp < criteria.getMinExperience()) return false;
-//            } catch (NumberFormatException e) {
-//                return false;
-//            }
-//        }
-//
-//        // 3. Required skills → search in cover letter
-//        if (criteria.getRequiredSkills() != null && !criteria.getRequiredSkills().isEmpty()) {
-//            String[] keywords = criteria.getRequiredSkills().split(",\\s*");
-//            for (String keyword : keywords) {
-//                if (!app.getCoverLetter().toLowerCase().contains(keyword.toLowerCase())) {
-//                    return false;
-//                }
-//            }
-//        }
+        // 1. Qualification
+        if (criteria.getRequiredQualification() != null &&
+                !criteria.getRequiredQualification().isEmpty() &&
+                !criteria.getRequiredQualification().equalsIgnoreCase(app.getQualification())) {
+            return false;
+        }
+
+        // 2. Experience check
+        if (criteria.getMinExperience() != null) {
+            try {
+                int applicantExp = Integer.parseInt(app.getExperience().split(" ")[0]);
+                if (applicantExp < criteria.getMinExperience()) return false;
+            } catch (NumberFormatException e) {
+                return false;
+            }
+        }
+
+        // 3. Required skills → search in cover letter
+        if (criteria.getRequiredSkills() != null && !criteria.getRequiredSkills().isEmpty()) {
+            String[] keywords = criteria.getRequiredSkills().split(",\\s*");
+            for (String keyword : keywords) {
+                if (!app.getCoverLetter().toLowerCase().contains(keyword.toLowerCase())) {
+                    return false;
+                }
+            }
+        }
 
         return true;
     }
