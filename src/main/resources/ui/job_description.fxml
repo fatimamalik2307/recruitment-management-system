@@ -24,7 +24,6 @@
 
     <HBox spacing="15" alignment="CENTER_LEFT">
         <Button text="Save" onAction="#saveDescription" styleClass="btn-blue"/>
-        <Button text="Load Saved Description" onAction="#openSavedDescriptions" styleClass="btn-cyan"/>
         <Button text="Cancel" onAction="#cancel" styleClass="btn-pink"/>
     </HBox>
 </VBox>

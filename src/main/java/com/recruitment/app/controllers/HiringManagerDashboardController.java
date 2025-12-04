@@ -13,7 +13,6 @@ import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-
 public class HiringManagerDashboardController {
     private RecruiterService recruiterService;
     private HMService hmService;
@@ -105,10 +104,6 @@ public class HiringManagerDashboardController {
             System.out.println("⚠ ERROR: Could not load profile.fxml");
         }
     }
-
-    // -----------------------
-    // Change Password
-    // -----------------------
     @FXML
     private void openChangePassword(ActionEvent event) {
         try {
@@ -121,9 +116,7 @@ public class HiringManagerDashboardController {
         }
     }
 
-    // -----------------------
-    // Logout
-    // -----------------------
+
     @FXML
     private void logout(ActionEvent event) {
         Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
