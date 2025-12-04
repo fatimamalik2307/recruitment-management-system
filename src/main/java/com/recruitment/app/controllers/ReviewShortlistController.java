@@ -303,7 +303,6 @@ public class ReviewShortlistController {
 
             stage.setTitle("Fill Assessment");
             stage.showAndWait();
-
         } catch (Exception e) {
             e.printStackTrace();
             new Alert(Alert.AlertType.ERROR, "Failed to open assessment form: " + e.getMessage()).show();

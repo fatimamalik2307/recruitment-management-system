@@ -14,7 +14,6 @@ public class WelcomeController {
         // Use DI method for navigation
         SceneLoader.loadWithDI(stage, "/ui/login.fxml", "Login");
     }
-
     @FXML
     public void openRegister(ActionEvent event) {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();

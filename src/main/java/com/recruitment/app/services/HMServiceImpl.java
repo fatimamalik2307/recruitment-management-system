@@ -178,5 +178,5 @@ public class HMServiceImpl implements HMService {
     public boolean hasRecruiterSubmittedFinalList(int jobId) {
         // Delegate to DAO
         return candidateDAO.existsByJobPostingId(jobId);
-    }
+}
 }

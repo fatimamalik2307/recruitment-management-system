@@ -28,20 +28,50 @@ public class PersonSpecificationController {
         this.specService = service;
     }
 
+
     @FXML
     private void saveSpecification() {
-        // KEEP null check (good practice)
         if (specService == null) {
             new Alert(Alert.AlertType.ERROR, "Service not injected!").show();
             return;
         }
 
+        String skills = skillsArea.getText().trim();
+        String experience = experienceArea.getText().trim();
+        String education = educationArea.getText().trim();
+        String traits = traitsArea.getText().trim();
+
+        // Required checks
+        if (skills.isEmpty() || experience.isEmpty() || education.isEmpty()) {
+            new Alert(Alert.AlertType.WARNING, "Skills, Experience, and Education fields are required!").show();
+            return;
+        }
+
+        // Length validations
+        if (skills.length() < 10) {
+            new Alert(Alert.AlertType.WARNING, "Skills description must be at least 10 characters.").show();
+            return;
+        }
+        if (experience.length() < 10) {
+            new Alert(Alert.AlertType.WARNING, "Experience description must be at least 10 characters.").show();
+            return;
+        }
+        if (education.length() < 5) {
+            new Alert(Alert.AlertType.WARNING, "Education details must be at least 5 characters.").show();
+            return;
+        }
+
+        if (!traits.isEmpty() && traits.length() < 5) {
+            new Alert(Alert.AlertType.WARNING, "Traits must be at least 5 characters if entered.").show();
+            return;
+        }
+
         PersonSpecification spec = new PersonSpecification(
                 SessionManager.loggedInUser.getId(),
-                skillsArea.getText(),
-                experienceArea.getText(),
-                educationArea.getText(),
-                traitsArea.getText()
+                skills,
+                experience,
+                education,
+                traits
         );
 
         boolean saved = specService.save(spec);
@@ -49,12 +79,12 @@ public class PersonSpecificationController {
         if (saved) {
             new Alert(Alert.AlertType.INFORMATION, "Person Specification Saved!", ButtonType.OK).showAndWait();
             Stage stage = (Stage) skillsArea.getScene().getWindow();
-            // Use DI method for navigation back
             SceneLoader.loadWithDI(stage, "/ui/create_job_posting.fxml", "Create Job Posting");
         } else {
             new Alert(Alert.AlertType.ERROR, "Error saving person specification").show();
         }
     }
+
 
     @FXML
     private void cancel() {

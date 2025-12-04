@@ -19,7 +19,6 @@ public class LoginController {
     // Service will be injected by ControllerFactory
     private UserService userService;
 
-    // ---------- DEFAULT CONSTRUCTOR ----------
     public LoginController() {
         // Empty - service will be injected
     }

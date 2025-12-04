@@ -1,5 +1,6 @@
 package com.recruitment.app.services;
 
+import com.recruitment.app.models.Application;
 import com.recruitment.app.models.FinalRankedCandidate;
 import com.recruitment.app.models.JobPosting;
 import java.util.List;
@@ -28,4 +29,6 @@ public interface HMService {
     boolean finalizeHiringDecision(int applicationId, String decision, String notes);
 
     boolean hasRecruiterSubmittedFinalList(int jobId);
+
+
 }

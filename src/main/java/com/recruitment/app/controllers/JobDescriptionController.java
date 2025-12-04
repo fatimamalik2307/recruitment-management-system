@@ -28,7 +28,6 @@ public class JobDescriptionController {
         // Empty - service will be injected
     }
 
-    // ---------- SERVICE INJECTION ----------
     public void setJobDescriptionService(JobDescriptionService service) {
         this.service = service;
     }

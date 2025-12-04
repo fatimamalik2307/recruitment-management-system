@@ -22,7 +22,6 @@ public class RecruiterDashboardController {
     private AssessmentService assessmentService;
     private FinalRankingService finalRankingService;
     private HMService hmService;
-
     // NO-ARG constructor required for FXMLLoader
     public RecruiterDashboardController() { }
 

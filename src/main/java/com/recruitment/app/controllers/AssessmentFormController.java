@@ -16,26 +16,19 @@ public class AssessmentFormController {
     @FXML private Button submitBtn;
     @FXML private Button cancelBtn;
 
-    // Services injected by ControllerFactory
     private RecruiterService recruiterService;
     private AssessmentService assessmentService;
 
-    // IDs for the current assessment
     private int shortlistId;
     private int applicationId;
 
-    // ---------- DEFAULT CONSTRUCTOR (for ControllerFactory) ----------
-    public AssessmentFormController() {
-        // Empty - services will be injected via setter
-    }
+    public AssessmentFormController() {}
 
-    // ---------- SERVICE INJECTION (Setter instead of Constructor) ----------
     public void setServices(RecruiterService recruiterService, AssessmentService assessmentService) {
         this.recruiterService = recruiterService;
         this.assessmentService = assessmentService;
     }
 
-    // Pass contextual IDs separately
     public void setContext(int shortlistId, int applicationId) {
         this.shortlistId = shortlistId;
         this.applicationId = applicationId;
@@ -49,18 +42,41 @@ public class AssessmentFormController {
 
     private void saveAssessment() {
         try {
-            double technical = Double.parseDouble(technicalScoreField.getText());
-            double hr = Double.parseDouble(hrScoreField.getText());
-            String remarks = remarksArea.getText();
+            String techStr = technicalScoreField.getText().trim();
+            String hrStr = hrScoreField.getText().trim();
+
+            // Required field check
+            if (techStr.isEmpty() || hrStr.isEmpty()) {
+                new Alert(Alert.AlertType.WARNING, "Technical and HR scores are required!").show();
+                return;
+            }
+
+            // Numeric validation
+            double technical = Double.parseDouble(techStr);
+            double hr = Double.parseDouble(hrStr);
+
+            // Range validation
+            if (technical < 0 || technical > 100) {
+                new Alert(Alert.AlertType.ERROR, "Technical score must be between 0 and 100!").show();
+                return;
+            }
+            if (hr < 0 || hr > 100) {
+                new Alert(Alert.AlertType.ERROR, "HR score must be between 0 and 100!").show();
+                return;
+            }
+
+            String remarks = remarksArea.getText().trim();
+            if (!remarks.isEmpty() && remarks.length() < 5) {
+                new Alert(Alert.AlertType.WARNING, "Remarks must be at least 5 characters if entered!").show();
+                return;
+            }
 
             int recruiterId = SessionManager.loggedInUser.getId();
 
             AssessmentResult result = new AssessmentResult(shortlistId, recruiterId, technical, hr, remarks);
             assessmentService.recordAssessment(result);
 
-            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Assessment saved successfully!");
-            alert.showAndWait();
-
+            new Alert(Alert.AlertType.INFORMATION, "Assessment saved successfully!").showAndWait();
             closeWindow();
 
         } catch (NumberFormatException ex) {

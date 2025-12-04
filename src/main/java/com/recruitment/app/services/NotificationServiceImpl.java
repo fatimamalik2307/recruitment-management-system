@@ -34,7 +34,6 @@ public class NotificationServiceImpl implements NotificationService {
 
             if (!success) {
                 System.out.println("Email failed → placing in retry queue");
-                // TODO: Add retry queue / log failure
             }
         }
     }

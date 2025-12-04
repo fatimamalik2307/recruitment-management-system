@@ -77,24 +77,50 @@ public class ShortlistingCriteriaController {
 
     @FXML
     private void saveCriteria() {
-        // ADD null check for service
         if (recruiterService == null) {
             new Alert(Alert.AlertType.ERROR, "Service not initialized!").show();
             return;
         }
 
         JobPosting job = jobComboBox.getSelectionModel().getSelectedItem();
-        if (job == null) return;
+        if (job == null) {
+            new Alert(Alert.AlertType.WARNING, "Please select a job.").show();
+            return;
+        }
 
-        if (qualificationField.getText().isEmpty() && minExperienceField.getText().isEmpty() && skillsField.getText().isEmpty()) {
-            Alert alert = new Alert(Alert.AlertType.WARNING, "At least one shortlisting criterion is required.");
-            alert.showAndWait();
+        // Validate numeric experience
+        if (!minExperienceField.getText().trim().isEmpty() &&
+                !minExperienceField.getText().matches("\\d+")) {
+            new Alert(Alert.AlertType.ERROR, "Experience must be a whole number.").show();
+            return;
+        }
+
+        if (minExperienceField.getText().matches("-\\d+")) {
+            new Alert(Alert.AlertType.ERROR, "Experience cannot be negative.").show();
+            return;
+        }
+
+        // Must have at least one real criterion
+        if (qualificationField.getText().trim().isEmpty() &&
+                skillsField.getText().trim().isEmpty() &&
+                minExperienceField.getText().trim().isEmpty()) {
+
+            new Alert(Alert.AlertType.WARNING, "Enter at least one criterion.").show();
+            return;
+        }
+
+        
+        if (!gradeField.getText().trim().isEmpty() &&
+                !gradeField.getText().matches("[A-Ca-c]|[1-4]")) {
+
+            new Alert(Alert.AlertType.WARNING, "Grade must be A, B, C or 1–4.").show();
             return;
         }
 
         ShortlistingCriteria criteria = new ShortlistingCriteria();
         criteria.setJobId(job.getId());
-        criteria.setMinExperience(minExperienceField.getText().isEmpty() ? null : Integer.parseInt(minExperienceField.getText()));
+        criteria.setMinExperience(minExperienceField.getText().isEmpty() ? null :
+                Integer.parseInt(minExperienceField.getText()));
         criteria.setRequiredQualification(qualificationField.getText());
         criteria.setRequiredSkills(skillsField.getText());
         criteria.setOptionalLocation(locationField.getText());
@@ -102,7 +128,7 @@ public class ShortlistingCriteriaController {
 
         recruiterService.saveShortlistingCriteria(criteria);
 
-        Alert alert = new Alert(Alert.AlertType.INFORMATION, "Shortlisting criteria saved successfully.");
-        alert.showAndWait();
+        new Alert(Alert.AlertType.INFORMATION, "Shortlisting criteria saved successfully.").showAndWait();
     }
+
 }

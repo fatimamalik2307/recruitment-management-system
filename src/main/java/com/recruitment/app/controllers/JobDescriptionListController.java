@@ -16,10 +16,9 @@ public class JobDescriptionListController {
     @FXML private TableColumn<JobDescription, String> titleCol;
     @FXML private TableColumn<JobDescription, String> dateCol;
 
-    // Service will be injected by ControllerFactory
     private JobDescriptionService service;
 
-    // ---------- DEFAULT CONSTRUCTOR ----------
+
     public JobDescriptionListController() {
         // Empty - service will be injected
     }

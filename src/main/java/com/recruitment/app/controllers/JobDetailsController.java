@@ -22,12 +22,12 @@ public class JobDetailsController {
     @FXML private Label reqLabel;
     @FXML private Label deadlineLabel;
 
-    // ---------- DEFAULT CONSTRUCTOR ----------
+
     public JobDetailsController() {
         // Empty - service will be injected
     }
 
-    // ---------- SERVICE INJECTION ----------
+
     public void setApplicationService(ApplicationService applicationService) {
         this.applicationService = applicationService;
     }

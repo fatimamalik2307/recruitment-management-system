@@ -34,7 +34,6 @@ public class TrackApplicationsController {
     public void setApplicationService(ApplicationService applicationService) {
         this.applicationService = applicationService;
     }
-
     @FXML
     public void initialize() {
         // ADD null check for service

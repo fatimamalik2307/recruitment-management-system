@@ -128,7 +128,6 @@ public class BrowseJobsController {
         }
     }
 
-
     private void showErrorAlert(String message) {
         // NOTE: Standard JavaFX alerts are used here,
         // replace with custom modal dialogs if needed to avoid blocking in specific environments.

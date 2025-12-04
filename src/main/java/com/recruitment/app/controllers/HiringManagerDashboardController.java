@@ -10,8 +10,6 @@ import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 
 public class HiringManagerDashboardController {
-
-    // Services (will be injected by ControllerFactory)
     private RecruiterService recruiterService;
     private HMService hmService;
     private NoteService noteService;

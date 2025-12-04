@@ -28,7 +28,7 @@ public class FinalRankingController {
     // Services - will be injected by ControllerFactory
     private FinalRankingService finalRankingService;
     private HMService hmService;
-    private NotificationService notificationService;
+
 
     private int selectedJobId; // For notification purposes
 
@@ -43,7 +43,7 @@ public class FinalRankingController {
                             NotificationService notificationService) {
         this.finalRankingService = finalRankingService;
         this.hmService = hmService;
-        this.notificationService = notificationService;
+
     }
 
     @FXML
@@ -55,7 +55,7 @@ public class FinalRankingController {
         colStatus.setCellValueFactory(data -> new ReadOnlyStringWrapper(data.getValue().getStatus()));
 
         sendToHMButton.setDisable(true);
-        notifyCandidatesButton.setDisable(true);
+
 
         // Don't populate jobs here - wait for services to be injected
         // We'll populate jobs when services are available
@@ -155,37 +155,7 @@ public class FinalRankingController {
         }
     }
 
-    @FXML
-    private void notifyCandidates() {
-        // ADD null check for service
-        if (notificationService == null) {
-            showAlert(Alert.AlertType.ERROR, "Service not initialized!");
-            return;
-        }
 
-        if (selectedJobId == 0) {
-            showAlert(Alert.AlertType.WARNING, "Generate final ranking before notifying candidates.");
-            return;
-        }
-
-        try {
-            List<Application> finalRankings = finalRankingService.getFinalRankingApplicationsByJob(selectedJobId);
-
-            Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
-                    "Notify ALL candidates of their final decision?",
-                    ButtonType.YES, ButtonType.NO);
-            confirm.showAndWait();
-
-            if (confirm.getResult() == ButtonType.YES) {
-                notificationService.notifyCandidates(finalRankings);
-                showAlert(Alert.AlertType.INFORMATION, "All candidate notifications sent!");
-                notifyCandidatesButton.setDisable(true);
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "An error occurred while notifying candidates.");
-        }
-    }
 
     private void showAlert(Alert.AlertType type, String message) {
         Alert alert = new Alert(type, message, ButtonType.OK);

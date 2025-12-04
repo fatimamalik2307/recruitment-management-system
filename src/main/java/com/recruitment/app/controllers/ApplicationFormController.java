@@ -29,7 +29,7 @@ public class ApplicationFormController {
     // Service - will be injected by ControllerFactory
     private ApplicationService applicationService;
 
-    // ---------- UI FIELDS ----------
+
     @FXML private TextField fullNameField;
     @FXML private TextField emailField;
     @FXML private TextField contactField;
@@ -275,7 +275,6 @@ public class ApplicationFormController {
 
         String upper = text.toUpperCase();
 
-        // Find positions of all keywords
         for (String key : headerMap.keySet()) {
             int pos = upper.indexOf(key);
             if (pos >= 0) {

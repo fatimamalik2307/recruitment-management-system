@@ -60,7 +60,6 @@ public class ChangePasswordController {
             messageLabel.setText("Error updating password!");
         }
     }
-
     @FXML
     public void goBack(ActionEvent event) {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();

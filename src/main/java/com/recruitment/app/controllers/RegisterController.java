@@ -104,7 +104,6 @@ public class RegisterController {
             messageLabel.setText("Password is required.");
             return;
         }
-
         if (!passwordField.getText().equals(confirmPasswordField.getText())) {
             markError(confirmPasswordField);
             messageLabel.setText("Passwords do not match.");

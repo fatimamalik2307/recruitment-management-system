@@ -23,68 +23,97 @@ public class RecruitmentReportController {
 
     private RecruitmentReport report;
 
-    // Services will be injected by ControllerFactory
     private RecruitmentReportService reportService;
     private JobService jobService;
 
     // ---------- DEFAULT CONSTRUCTOR ----------
-    public RecruitmentReportController() {
-        // Empty - services will be injected
-    }
+    public RecruitmentReportController() { }
 
     // ---------- SERVICE INJECTION ----------
     public void setServices(RecruitmentReportService reportService, JobService jobService) {
         this.reportService = reportService;
         this.jobService = jobService;
+
+        loadJobsForRecruiter();
     }
 
-    @FXML
-    public void initialize() {
-        // Load jobs for recruiter
+    // ---------- LOAD JOBS AFTER INJECTION ----------
+    private void loadJobsForRecruiter() {
+        if (jobService == null) {
+            showError("JobService not initialized!");
+            return;
+        }
+
         int recruiterId = SessionManager.loggedInUser.getId();
 
-        // ADD null check for services
-        if (jobService != null) {
+        try {
             List<JobPosting> jobs = jobService.getAllJobsForRecruiter(recruiterId);
+
+            if (jobs == null || jobs.isEmpty()) {
+                showError("No jobs found for this recruiter.");
+                return;
+            }
+
             jobComboBox.setItems(FXCollections.observableArrayList(jobs));
-        } else {
-            System.err.println("JobService not injected!");
+
+        } catch (Exception e) {
+            showError("Failed to load jobs: " + e.getMessage());
         }
     }
 
     @FXML
     public void onGenerateReport() {
-        // ADD null check for service
+
         if (reportService == null) {
             showError("Service not initialized!");
             return;
         }
 
+        if (jobComboBox.getItems().isEmpty()) {
+            showError("No jobs available. Cannot generate report.");
+            return;
+        }
+
         JobPosting selectedJob = jobComboBox.getValue();
+
         if (selectedJob == null) {
             showError("Please select a job.");
             return;
         }
 
+        if (selectedJob.getId() <= 0) {
+            showError("Invalid job selected.");
+            return;
+        }
+
         int recruiterId = SessionManager.loggedInUser.getId();
-        this.report = reportService.generateReport(selectedJob.getId(), recruiterId);
+
+        try {
+            report = reportService.generateReport(selectedJob.getId(), recruiterId);
+        } catch (Exception e) {
+            showError("Failed to generate report: " + e.getMessage());
+            return;
+        }
 
         if (report == null) {
             showError("No report data found for this job.");
             return;
         }
 
-        // Populate UI
-        jobTitleLabel.setText(report.getJobTitle());
-        departmentLabel.setText(report.getDepartment());
-        postedDateLabel.setText(report.getPostedOn());
+        // Populate UI safely
+        jobTitleLabel.setText(report.getJobTitle() != null ? report.getJobTitle() : "N/A");
+        departmentLabel.setText(report.getDepartment() != null ? report.getDepartment() : "N/A");
+        postedDateLabel.setText(report.getPostedOn() != null ? report.getPostedOn() : "N/A");
         totalAppsLabel.setText(String.valueOf(report.getTotalApplications()));
         shortlistedLabel.setText(String.valueOf(report.getTotalShortlisted()));
-        generatedDateLabel.setText(report.getGeneratedAt().toString());
+        generatedDateLabel.setText(
+                report.getGeneratedAt() != null ? report.getGeneratedAt().toString() : "N/A"
+        );
     }
 
     @FXML
     public void exportPDF() {
+
         if (report == null) {
             showError("Generate the report before exporting.");
             return;
@@ -94,9 +123,9 @@ public class RecruitmentReportController {
             String path = "RecruitmentReport_" + report.getJobId() + ".pdf";
             reportService.exportReportAsPDF(report, path);
             showSuccess("Report exported successfully:\n" + path);
+
         } catch (Exception e) {
-            e.printStackTrace();
-            showError("Failed to export report.");
+            showError("Failed to export report: " + e.getMessage());
         }
     }
 

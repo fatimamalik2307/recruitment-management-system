@@ -120,7 +120,7 @@ public class ReviewApplicationsController {
 
     // Fetch applicant name using service or DAO
     private String getApplicantName(int userId) {
-        // Use the injected service instead of creating new DAO
+
         if (recruiterService != null) {
             return recruiterService.getApplicantName(userId);
         }

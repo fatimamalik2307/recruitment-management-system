@@ -25,7 +25,7 @@ public class UploadDocumentsController {
     @FXML
     private ListView<String> filesList;
 
-    // ---------- DEFAULT CONSTRUCTOR ----------
+
     public UploadDocumentsController() {
         // Empty - service will be injected
     }
@@ -59,9 +59,7 @@ public class UploadDocumentsController {
                 new FileChooser.ExtensionFilter("PDF Files", "*.pdf"),
                 new FileChooser.ExtensionFilter("Word Files", "*.docx")
         );
-
         List<File> files = fc.showOpenMultipleDialog(null);
-
         if (files != null) {
             for (File f : files) {
                 selectedFiles.add(f.getAbsolutePath());

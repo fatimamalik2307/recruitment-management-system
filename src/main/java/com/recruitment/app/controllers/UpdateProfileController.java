@@ -17,13 +17,9 @@ public class UpdateProfileController {
     @FXML private TextField contactField;
     @FXML private Label messageLabel;
 
-    // Service will be injected by ControllerFactory
     private UserService userService;
 
-    // ---------- DEFAULT CONSTRUCTOR ----------
-    public UpdateProfileController() {
-        // Empty - service will be injected
-    }
+    public UpdateProfileController() {}
 
     // ---------- SERVICE INJECTION ----------
     public void setUserService(UserService userService) {
@@ -46,22 +42,44 @@ public class UpdateProfileController {
 
     @FXML
     public void updateProfile(ActionEvent event) {
-        // ADD null check for service
+
         if (userService == null) {
             messageLabel.setText("System error: Services not initialized!");
             return;
         }
 
+
+        String fullName = fullNameField.getText().trim();
+        String email = emailField.getText().trim();
+        String contact = contactField.getText().trim();
+
+        if (!email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
+            messageLabel.setText("Invalid email format!");
+            return;
+        }
+
+
+        if (!contact.matches("\\d+")) {
+            messageLabel.setText("Contact number must contain digits only!");
+            return;
+        }
+
+
+        if (contact.length() != 11) {
+            messageLabel.setText("Contact number must be 11 digits!");
+            return;
+        }
+
         User user = SessionManager.loggedInUser;
 
-        user.setFullName(fullNameField.getText());
-        user.setEmail(emailField.getText());
-        user.setContact(contactField.getText());
+        user.setFullName(fullName);
+        user.setEmail(email);
+        user.setContact(contact);
 
         boolean updated = userService.updateProfile(user);
 
         if (updated) {
-            messageLabel.setText("Profile updated!");
+            messageLabel.setText("Profile updated successfully!");
         } else {
             messageLabel.setText("Update failed.");
         }
@@ -70,7 +88,6 @@ public class UpdateProfileController {
     @FXML
     public void backToJobs(ActionEvent event) {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        // Use DI method for navigation
         SceneLoader.loadWithDI(stage, "/ui/browse_jobs.fxml", "Browse Jobs");
     }
 }
