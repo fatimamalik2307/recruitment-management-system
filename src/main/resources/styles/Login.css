@@ -1,66 +1,50 @@
-/* ROOT */
 .root-pane {
-    -fx-background-color: #0f172a;
-    -fx-font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    -fx-background-color: linear-gradient(to bottom right, #0d1117, #1a2332);
 }
 
-/* CARD */
 .card {
-    -fx-background-color: #1e293b;
+    -fx-background-color: #111827;
     -fx-padding: 30;
-    -fx-spacing: 15;
-    -fx-border-radius: 12;
-    -fx-background-radius: 12;
-    -fx-effect: dropshadow(gaussian, #0000004D, 10, 0, 0, 4);
-    -fx-alignment: center;
+    -fx-background-radius: 15;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 25, 0.25, 0, 4);
 }
 
-/* TITLES */
 .title {
-    -fx-font-size: 24px;
-    -fx-text-fill: white;
+    -fx-font-size: 26px;
     -fx-font-weight: bold;
+    -fx-text-fill: white;
 }
 
 .subtitle {
-    -fx-font-size: 16px;
-    -fx-text-fill: #94a3b8;
+    -fx-font-size: 14px;
+    -fx-text-fill: #9ca3af;
 }
 
-/* INPUT FIELDS */
 .input-field {
-    -fx-background-color: #0f172a;
+    -fx-background-color: #1f2937;
     -fx-text-fill: white;
-    -fx-prompt-text-fill: #64748b;
-    -fx-border-color: #334155;
-    -fx-border-radius: 6;
-    -fx-background-radius: 6;
-    -fx-padding: 8 12 8 12;
+    -fx-padding: 10 12;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-border-color: #374151;
 }
 
-/* BUTTONS */
 .primary-btn {
-    -fx-background-color: linear-gradient(from 100% 0% to 0% 100%, #2563eb, #0891b2);
+    -fx-background-color: #3b82f6;
     -fx-text-fill: white;
-    -fx-font-weight: bold;
-    -fx-border-radius: 6;
-    -fx-background-radius: 6;
-    -fx-cursor: hand;
+    -fx-font-size: 14px;
+    -fx-padding: 10 20;
+    -fx-background-radius: 10;
 }
 
 .primary-btn:hover {
-    -fx-background-color: linear-gradient(from 100% 0% to 0% 100%, #1d4ed8, #0e7490);
+    -fx-background-color: #2563eb;
 }
 
-/* ERROR LABEL */
 .label-error {
     -fx-text-fill: #f87171;
-    -fx-font-size: 12px;
 }
 
-/* LINK */
 .link {
-    -fx-text-fill: #7dd3fc;
-    -fx-underline: true;
-    -fx-cursor: hand;
+    -fx-text-fill: #60a5fa;
 }

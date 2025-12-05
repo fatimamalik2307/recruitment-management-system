@@ -3,21 +3,44 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.geometry.*?>
-
 <?import java.net.URL?>
+
 <AnchorPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.recruitment.app.controllers.WelcomeController"
-            prefWidth="600" prefHeight="400"
-            styleClass="anchor-pane">
+            styleClass="anchor-pane"
+            prefWidth="800" prefHeight="500">
 
-    <VBox spacing="20" alignment="CENTER" styleClass="card">
-        <Label text="Recruitment System" styleClass="title"/>
-        <Button text="Login" onAction="#openLogin" styleClass="primary-btn"/>
-        <Button text="Register" onAction="#openRegister" styleClass="secondary-btn"/>
-    </VBox>
+    <!-- CENTER THE CARD -->
+    <StackPane AnchorPane.topAnchor="0"
+               AnchorPane.bottomAnchor="0"
+               AnchorPane.leftAnchor="0"
+               AnchorPane.rightAnchor="0"
+               alignment="CENTER">
+
+        <VBox spacing="20"
+              alignment="CENTER"
+              styleClass="card"
+              maxWidth="350">
+
+            <Label text="Recruitment System"
+                   styleClass="title"/>
+
+            <Button text="Login"
+                    onAction="#openLogin"
+                    styleClass="primary-btn"
+                    maxWidth="180"/>
+
+            <Button text="Register"
+                    onAction="#openRegister"
+                    styleClass="secondary-btn"
+                    maxWidth="180"/>
+
+        </VBox>
+
+    </StackPane>
 
     <stylesheets>
         <URL value="@../styles/welcome.css"/>
     </stylesheets>
-</AnchorPane>
 
+</AnchorPane>

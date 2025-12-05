@@ -1,31 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 
 <StackPane xmlns:fx="http://javafx.com/fxml"
            fx:controller="com.recruitment.app.controllers.LoginController"
-           prefWidth="500" prefHeight="500"
+           prefWidth="520" prefHeight="500"
            stylesheets="@../styles/Login.css"
+           alignment="CENTER"
            styleClass="root-pane">
 
-    <VBox alignment="CENTER" spacing="20">
-
-        <VBox spacing="20" alignment="CENTER" styleClass="card">
+    <!-- Outer container -->
+    <HBox alignment="CENTER">
+        <VBox spacing="20" alignment="CENTER" maxWidth="350" styleClass="card">
 
             <Label text="Welcome Back" styleClass="title"/>
             <Label text="Recruitment Management System" styleClass="subtitle"/>
 
-            <TextField fx:id="usernameField" promptText="Enter Username" styleClass="input-field"/>
-            <PasswordField fx:id="passwordField" promptText="Enter Password" styleClass="input-field"/>
+            <TextField fx:id="usernameField"
+                       promptText="Enter Username"
+                       maxWidth="280"
+                       styleClass="input-field"/>
 
-            <Button text="Login" onAction="#loginUser" styleClass="primary-btn"/>
+            <PasswordField fx:id="passwordField"
+                           promptText="Enter Password"
+                           maxWidth="280"
+                           styleClass="input-field"/>
 
-            <Label fx:id="messageLabel" styleClass="label-error" wrapText="true"/>
+            <Button text="Login"
+                    onAction="#loginUser"
+                    maxWidth="280"
+                    styleClass="primary-btn"/>
 
-            <Hyperlink text="Don't have an account? Register" onAction="#openRegister"
+            <Label fx:id="messageLabel"
+                   maxWidth="280"
+                   wrapText="true"
+                   styleClass="label-error"/>
+
+            <Hyperlink text="Don't have an account? Register"
+                       onAction="#openRegister"
+                       maxWidth="280"
                        styleClass="link"/>
-        </VBox>
 
-    </VBox>
+        </VBox>
+    </HBox>
 
 </StackPane>
