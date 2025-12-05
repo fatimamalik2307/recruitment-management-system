@@ -7,6 +7,13 @@
 <?import java.net.URL?>
 <VBox xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.recruitment.app.controllers.HMCandidateReviewController"
+      prefWidth="1000"
+      prefHeight="700"
+      minWidth="900"
+      minHeight="600"
+      maxWidth="Infinity"
+      maxHeight="Infinity"
+
       spacing="15" styleClass="root" style="-fx-padding: 20;">
     <stylesheets>
         <URL value="@/styles/HMCandidateReview.css"/>

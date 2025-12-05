@@ -9,7 +9,13 @@
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.recruitment.app.controllers.BrowseJobsController"
-            prefWidth="1200" prefHeight="800"
+            prefWidth="1000"
+            prefHeight="700"
+            minWidth="900"
+            minHeight="600"
+            maxWidth="Infinity"
+            maxHeight="Infinity"
+
             styleClass="root-pane">
 
     <!-- 🌟 MODERN HEADER / NAVBAR -->

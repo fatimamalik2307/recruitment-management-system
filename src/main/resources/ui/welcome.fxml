@@ -20,7 +20,13 @@
         <VBox spacing="20"
               alignment="CENTER"
               styleClass="card"
-              maxWidth="350">
+              prefWidth="1000"
+              prefHeight="700"
+              minWidth="900"
+              minHeight="600"
+              maxWidth="Infinity"
+              maxHeight="Infinity"
+        >
 
             <Label text="Recruitment System"
                    styleClass="title"/>

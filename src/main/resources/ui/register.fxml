@@ -7,10 +7,15 @@
 <StackPane xmlns:fx="http://javafx.com/fxml"
            fx:controller="com.recruitment.app.controllers.RegisterController"
            prefWidth="900" prefHeight="700"
-           styleClass="root-pane">
+           styleClass="root-pane"
+           maxWidth="Infinity"
+           maxHeight="Infinity">
 
     <!-- This VBox centers the card -->
-    <VBox alignment="CENTER">
+    <VBox alignment="CENTER"  prefWidth="1000"
+          prefHeight="700"
+          minWidth="900"
+          minHeight="600">
 
         <!-- Card -->
         <VBox styleClass="card" spacing="25" alignment="CENTER" prefWidth="500">

@@ -6,7 +6,13 @@
 <VBox xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.recruitment.app.controllers.UploadDocumentsController"
       spacing="10"
-      styleClass="root-pane">
+      prefWidth="1000"
+      prefHeight="700"
+      minWidth="900"
+      minHeight="600"
+      styleClass="root-pane"
+      maxWidth="Infinity"
+      maxHeight="Infinity">
 
     <stylesheets>
         <URL value="@../styles/uploadDocuments.css"/>

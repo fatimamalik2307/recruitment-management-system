@@ -9,7 +9,12 @@
            stylesheets="@../styles/RecruitmentReport.css"
            styleClass="root-pane">
 
-    <VBox spacing="20" alignment="TOP_CENTER">
+    <VBox spacing="20" alignment="TOP_CENTER"  prefWidth="1000"
+          prefHeight="700"
+          minWidth="900"
+          minHeight="600"
+          maxWidth="Infinity"
+          maxHeight="Infinity">
 
         <VBox spacing="15" styleClass="card">
 

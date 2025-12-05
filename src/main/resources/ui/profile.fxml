@@ -9,7 +9,13 @@
            stylesheets="@../styles/UpdateProfile.css"
            styleClass="root-pane">
 
-    <VBox alignment="CENTER" spacing="20">
+    <VBox alignment="CENTER" spacing="20"
+          prefWidth="1000"
+          prefHeight="700"
+          minWidth="900"
+          minHeight="600"
+          maxWidth="Infinity"
+          maxHeight="Infinity">
 
         <VBox spacing="15" alignment="CENTER" styleClass="card">
 

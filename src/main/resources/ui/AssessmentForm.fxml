@@ -8,6 +8,13 @@
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.recruitment.app.controllers.AssessmentFormController"
       spacing="15"
+      prefWidth="1000"
+      prefHeight="700"
+      minWidth="900"
+      minHeight="600"
+      maxWidth="Infinity"
+      maxHeight="Infinity"
+
       alignment="TOP_LEFT"
       stylesheets="@/styles/assessment.css">
 

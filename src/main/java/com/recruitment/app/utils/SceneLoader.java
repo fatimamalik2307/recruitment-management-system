@@ -41,7 +41,8 @@ public class SceneLoader {
             loader.setControllerFactory(controllerFactory);
 
             Parent root = loader.load();
-            stage.setScene(createStyledScene(root)); // <-- Using the new helper
+            stage.setScene(createStyledScene(root));
+            stage.setMaximized(true); // <-- Using the new helper
             stage.show();
         } catch (Exception e) {
             e.printStackTrace();
@@ -84,7 +85,8 @@ public class SceneLoader {
             // Still need to set the dynamic job parameter
             controller.setJob(job);
 
-            stage.setScene(createStyledScene(root)); // <-- Using the new helper
+            stage.setScene(createStyledScene(root));
+            stage.setMaximized(true); // <-- Using the new helper
             stage.show();
 
         } catch (Exception e) {
@@ -133,6 +135,7 @@ public class SceneLoader {
             if (title != null) {
                 stage.setTitle(title);
             }
+            stage.setMaximized(true);
             stage.show();
 
         } catch (Exception e) {
@@ -158,7 +161,8 @@ public class SceneLoader {
                 controllerConfigurer.accept(controller);
             }
 
-            stage.setScene(createStyledScene(root)); // <-- Using the new helper
+            stage.setScene(createStyledScene(root));
+            stage.setMaximized(true); // <-- Using the new helper
             stage.show();
 
         } catch (Exception e) {

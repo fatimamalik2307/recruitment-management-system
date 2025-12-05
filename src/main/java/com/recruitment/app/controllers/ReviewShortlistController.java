@@ -15,6 +15,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -230,6 +231,14 @@ public class ReviewShortlistController {
             confirm.showAndWait();
 
             if (confirm.getResult() != ButtonType.YES) return;
+            job.setDeadline(LocalDate.now().minusDays(1));
+            shortlistService.updateDeadline(job.getId(), job.getDeadline());
+            // First persist in DB
+            LocalDate yesterday = LocalDate.now().minusDays(1);
+            shortlistService.updateDeadline(job.getId(), yesterday);
+
+// Then update in-memory object (optional)
+            job.setDeadline(yesterday);
 
             // --- CALL SERVICE ---
             List<Shortlist> list = shortlistService.generateShortlist(job.getId());

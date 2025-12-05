@@ -5,7 +5,12 @@
 
 <StackPane xmlns:fx="http://javafx.com/fxml"
            fx:controller="com.recruitment.app.controllers.LoginController"
-           prefWidth="520" prefHeight="500"
+           prefWidth="1000"
+           prefHeight="700"
+           minWidth="900"
+           minHeight="600"
+           maxWidth="Infinity"
+           maxHeight="Infinity"
            stylesheets="@../styles/Login.css"
            alignment="CENTER"
            styleClass="root-pane">

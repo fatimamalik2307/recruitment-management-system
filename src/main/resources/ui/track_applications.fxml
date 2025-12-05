@@ -8,7 +8,13 @@
 <VBox xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.recruitment.app.controllers.TrackApplicationsController"
       spacing="15"
-      styleClass="root-pane">
+      prefWidth="1000"
+      prefHeight="700"
+      minWidth="900"
+      minHeight="600"
+      styleClass="root-pane"
+      maxWidth="Infinity"
+      maxHeight="Infinity">
 
     <padding>
         <Insets top="20" right="20" bottom="20" left="20"/>

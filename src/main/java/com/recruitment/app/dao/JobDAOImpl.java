@@ -3,6 +3,7 @@ package com.recruitment.app.dao;
 import com.recruitment.app.models.JobPosting;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +15,18 @@ public class JobDAOImpl implements JobDAO {
         this.conn = conn;
     }
 
-
+    @Override
+    public void updateDeadline(int jobId, LocalDate newDeadline) {
+        String sql = "UPDATE jobs SET deadline = ? WHERE id = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setObject(1, newDeadline); // PostgreSQL supports LocalDate via setObject
+            stmt.setInt(2, jobId);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Failed to update job deadline", e);
+        }
+    }
     @Override
     public void addJob(JobPosting job) {
         String sql = """
@@ -124,14 +136,17 @@ public class JobDAOImpl implements JobDAO {
     }
     @Override
     public void closeJob(int jobId) {
-        String sql = "UPDATE jobs SET deadline = NOW() WHERE id = ?";
+        String sql = "UPDATE jobs SET deadline = CURRENT_DATE - INTERVAL '1 day' WHERE id = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, jobId);
-            stmt.executeUpdate();
+            int updated = stmt.executeUpdate();
+            System.out.println("DEBUG: closeJob executed, rows updated = " + updated);
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new RuntimeException("Failed to close job with ID " + jobId, e);
         }
     }
+
 
 
     @Override

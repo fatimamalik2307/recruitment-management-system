@@ -13,7 +13,13 @@
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.recruitment.app.controllers.ReviewApplicationsController"
       spacing="10"
-      styleClass="root-pane">
+      prefWidth="1000"
+      prefHeight="700"
+      minWidth="900"
+      minHeight="600"
+      styleClass="root-pane"
+      maxWidth="Infinity"
+      maxHeight="Infinity">
 
     <padding>
         <Insets top="10" right="10" bottom="10" left="10"/>

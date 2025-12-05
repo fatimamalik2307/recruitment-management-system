@@ -10,8 +10,12 @@
       spacing="20"
       alignment="TOP_CENTER"
       styleClass="root-bg"
-      prefWidth="1100"
-      prefHeight="750">
+      prefWidth="1000"
+      prefHeight="700"
+      minWidth="900"
+      minHeight="600"
+      maxWidth="Infinity"
+      maxHeight="Infinity">
 
     <padding>
         <Insets top="25" right="25" bottom="25" left="25"/>

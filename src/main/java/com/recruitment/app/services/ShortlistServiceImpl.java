@@ -4,6 +4,7 @@ import com.recruitment.app.dao.*;
 import com.recruitment.app.models.*;
 import com.recruitment.app.utils.SessionManager;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.chrono.ChronoLocalDate;
 import java.util.ArrayList;
@@ -53,6 +54,12 @@ public class ShortlistServiceImpl implements ShortlistService {
                     return true;
                 })
                 .toList();
+    }
+
+    @Override
+    public void updateDeadline(int jobId, LocalDate newDeadline) {
+        // delegate to jobDAO
+        jobDAO.updateDeadline(jobId, newDeadline);
     }
 
     @Override
