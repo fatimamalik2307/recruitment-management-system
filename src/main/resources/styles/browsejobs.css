@@ -1,161 +1,104 @@
-/* ---------- ROOT BACKGROUND ---------- */
-.root {
-    -fx-font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
-    -fx-background-color: #0f172a; /* same dark base */
+/* 🌙 DARK FULL PAGE BACKGROUND */
+.root-pane {
+    -fx-background-color: linear-gradient(to bottom, #0d1117, #161b22);
 }
 
-/* ---------- MAIN WRAPPER ---------- */
-.background-container {
-    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #1e293b, #0f172a);
-}
-
-/* ---------- HEADER ---------- */
-.header {
-    -fx-background-color: #0f172a;
-    -fx-padding: 20;
-    -fx-border-color: #1e293b;
+/* HEADER */
+.header-bar {
+    -fx-background-color: #0d1117;
+    -fx-padding: 15 20;
+    -fx-border-color: #1f2937;
     -fx-border-width: 0 0 1 0;
 }
 
-.header-title {
+.nav-btn {
+    -fx-background-color: #1e40af;
     -fx-text-fill: white;
-    -fx-font-size: 28px;
+    -fx-padding: 8 16;
+    -fx-background-radius: 8;
     -fx-font-weight: bold;
 }
 
-.header-subtitle {
-    -fx-text-fill: #94a3b8;
-    -fx-font-size: 12px;
+.nav-btn:hover {
+    -fx-background-color: #1d4ed8;
 }
 
-/* ---------- JOB LIST CARD ---------- */
+/* ROUND BUTTONS */
+.round-btn {
+    -fx-background-color: #1e293b;
+    -fx-background-radius: 100;
+    -fx-padding: 8;
+}
+
+.round-btn:hover {
+    -fx-background-color: #334155;
+}
+
+/* LOGOUT BUTTON */
+.logout-btn {
+    -fx-background-color: #dc2626;
+    -fx-background-radius: 8;
+    -fx-padding: 6 12;
+}
+.logout-btn:hover {
+    -fx-background-color: #b91c1c;
+}
+
+/* JOB LISTING AREA */
+.job-scroll-pane {
+    -fx-background-color: transparent;
+}
+
+.job-scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+.jobs-container {
+    -fx-background-color: transparent;
+    -fx-padding: 30 0 40 0;
+    -fx-alignment: top-center;
+}
+
+/* JOB CARD */
 .job-card {
-    -fx-background-color: linear-gradient(from 100% 0% to 0% 100%, #1e293b, #0f172a);
-    -fx-border-color: #334155;
+    -fx-background-color: rgba(255,255,255,0.04);
+    -fx-background-radius: 16;
+    -fx-border-radius: 16;
+    -fx-border-color: rgba(255,255,255,0.08);
     -fx-border-width: 1;
-    -fx-background-radius: 12;
-    -fx-border-radius: 12;
-    -fx-padding: 18;
-    -fx-effect: dropshadow(gaussian, #0000004D, 12, 0.2, 0, 4);
-    -fx-cursor: hand;
+    -fx-padding: 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.45), 18, 0.2, 0, 6);
+    -fx-max-width: 900;
 }
 
 .job-card:hover {
-    -fx-effect: dropshadow(gaussian, #00000080, 18, 0.3, 0, 6);
-    -fx-translate-y: -4;
+    -fx-background-color: rgba(255,255,255,0.12);
+    -fx-translate-y: -3;
 }
 
+/* TEXT INSIDE CARD */
 .job-title {
     -fx-text-fill: #ffffff;
-    -fx-font-size: 18px;
+    -fx-font-size: 20px;
     -fx-font-weight: bold;
 }
 
-.job-description {
-    -fx-text-fill: #94a3b8;
-    -fx-font-size: 12px;
-}
-
-.job-meta {
-    -fx-text-fill: #64748b;
-    -fx-font-size: 11px;
-}
-
-/* ---------- STATUS BADGES ---------- */
-.status-badge {
-    -fx-padding: 4 10;
-    -fx-background-radius: 20;
-    -fx-font-size: 11px;
-    -fx-font-weight: bold;
-}
-
-.status-active {
-    -fx-background-color: #16a34a33;
-    -fx-text-fill: #4ade80;
-}
-
-.status-closed {
-    -fx-background-color: #dc262633;
-    -fx-text-fill: #f87171;
-}
-
-.status-draft {
-    -fx-background-color: #ca8a0433;
-    -fx-text-fill: #facc15;
-}
-
-/* ---------- BUTTONS ---------- */
-.action-btn {
-    -fx-font-size: 12px;
-    -fx-padding: 10 18;
-    -fx-background-radius: 8;
-    -fx-cursor: hand;
-    -fx-font-weight: bold;
-    -fx-text-fill: white;
-    -fx-border-width: 0;
-    -fx-effect: dropshadow(gaussian, #00000033, 4, 0, 0, 2);
-}
-
-.btn-blue {
-    -fx-background-color: linear-gradient(from 100% 0% to 0% 100%, #2563eb, #0891b2);
-}
-
-.btn-blue:hover {
-    -fx-background-color: linear-gradient(from 100% 0% to 0% 100%, #1d4ed8, #0e7490);
-    -fx-effect: dropshadow(gaussian, #2563EB80, 8, 0, 0, 4);
-    -fx-scale-x: 1.05;
-    -fx-scale-y: 1.05;
-}
-
-/* ---------- FORM INPUTS ---------- */
-.input-field {
-    -fx-background-color: #0b1320;
-    -fx-text-fill: #ffffff;
-    -fx-border-color: #475569;
-    -fx-border-radius: 8;
-    -fx-background-radius: 8;
-    -fx-padding: 10;
+.job-dept {
+    -fx-text-fill: #9ca3af;
     -fx-font-size: 14px;
 }
 
-.input-field:focused {
-    -fx-border-color: #60a5fa;
-    -fx-effect: dropshadow(gaussian, rgba(96,165,250,0.5), 12, 0.5, 0, 0);
-}
-
-/* ---------- SCROLLPANE ---------- */
-.scroll-pane {
-    -fx-background: transparent;
-}
-
-.scroll-pane .viewport {
-    -fx-background-color: transparent;
-}
-
-/* ---------- TABLEVIEW ---------- */
-.table-dark {
-    -fx-background-color: transparent;
-}
-
-.table-dark .column-header-background {
-    -fx-background-color: #1e293b;
-}
-
-.table-dark .column-header .label {
-    -fx-text-fill: white;
-    -fx-font-weight: bold;
-}
-
-.table-dark .table-row-cell {
-    -fx-background-color: #0f172a;
-    -fx-text-fill: #e2e8f0;
-}
-
-.table-dark .table-row-cell:filled:selected {
+/* APPLY BUTTON */
+.apply-btn {
     -fx-background-color: #2563eb;
     -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 10 24;
+    -fx-background-radius: 10;
 }
 
-.table-dark .table-row-cell:odd {
-    -fx-background-color: #111827;
+.apply-btn:hover {
+    -fx-background-color: #1d4ed8;
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
 }
