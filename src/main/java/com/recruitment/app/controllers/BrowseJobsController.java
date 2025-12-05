@@ -3,7 +3,6 @@ package com.recruitment.app.controllers;
 import com.recruitment.app.models.JobPosting;
 import com.recruitment.app.services.JobService;
 import com.recruitment.app.utils.SceneLoader;
-
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
@@ -18,13 +17,19 @@ import java.util.List;
 
 public class BrowseJobsController {
 
-    @FXML private VBox jobsContainer; // container where job cards appear
+    // --- FXML element injection ---
+    @FXML
+    private VBox jobsContainer; // New container for job cards (Replaces TableView)
 
+    // Service injected by ControllerFactory
     private JobService jobService;
 
-    public BrowseJobsController() {}
+    // ---------- DEFAULT CONSTRUCTOR ----------
+    public BrowseJobsController() {
+        // Empty - services will be injected
+    }
 
-    // Injected via ControllerFactory
+    // ---------- SERVICE INJECTION ----------
     public void setJobService(JobService jobService) {
         System.out.println("BrowseJobsController: JobService injected = " + (jobService != null));
         this.jobService = jobService;
@@ -33,6 +38,7 @@ public class BrowseJobsController {
     @FXML
     public void initialize() {
         System.out.println("BrowseJobsController: initialize() called");
+        // No more TableView mapping, just load the jobs into the VBox container
         loadJobs();
     }
 
@@ -73,69 +79,80 @@ public class BrowseJobsController {
         card.setMaxWidth(900);
 
         return card;
-    }
+}
 
-    // --------------------------------------------------------
-    // Deadline extraction helper (for filtering expired posts)
-    // --------------------------------------------------------
+
     private LocalDate extractDeadline(Object deadlineObj) {
-        if (deadlineObj == null) return null;
-        if (deadlineObj instanceof LocalDate) return (LocalDate) deadlineObj;
-        if (deadlineObj instanceof java.sql.Date) return ((java.sql.Date) deadlineObj).toLocalDate();
+
+        if (deadlineObj == null)
+            return null;
+
+        if (deadlineObj instanceof LocalDate)
+            return (LocalDate) deadlineObj;
+
+        if (deadlineObj instanceof java.sql.Date)
+            return ((java.sql.Date) deadlineObj).toLocalDate();
+
         if (deadlineObj instanceof java.util.Date)
             return ((java.util.Date) deadlineObj).toInstant()
                     .atZone(java.time.ZoneId.systemDefault())
                     .toLocalDate();
 
         if (deadlineObj instanceof String) {
-            return LocalDate.parse(((String) deadlineObj).replace("\"", ""));
+            String s = ((String) deadlineObj).replace("\"", ""); // remove quotes
+            return LocalDate.parse(s); // must be yyyy-MM-dd
         }
-        return null;
+
+        return null; // unknown type
     }
 
-    // --------------------------------------------------------
-    // Load jobs from DB and display UI cards
-    // --------------------------------------------------------
     private void loadJobs() {
         try {
-            if (jobService == null) {
-                showErrorAlert("System error: JobService not initialized.");
-                return;
-            }
+            if (jobService != null) {
+                System.out.println("Loading jobs...");
 
-            List<JobPosting> activeJobs = jobService.getAllJobs();
+                List<JobPosting> activeJobs = jobService.getAllJobs().stream()
+                        .filter(job -> {
+                            LocalDate d = extractDeadline(job.getDeadline());
+                            return d == null || !d.isBefore(LocalDate.now());
+                        })
+                        .toList();
 
-            jobsContainer.getChildren().clear();
-
-            if (activeJobs.isEmpty()) {
-                Label noJobsLabel = new Label("No active job postings found at this time.");
-                noJobsLabel.setStyle("-fx-font-size: 16px; -fx-text-fill: #99aaff; -fx-padding: 50;");
-                jobsContainer.getChildren().add(noJobsLabel);
-            } else {
-                for (JobPosting job : activeJobs) {
-                    jobsContainer.getChildren().add(createJobCard(job));
+                jobsContainer.getChildren().clear(); // Clear existing content
+                for (JobPosting job : jobService.getAllJobs()) {
+                    System.out.println("Raw deadline = " + job.getDeadline() + " | Type = " +
+                            (job.getDeadline() != null ? job.getDeadline().getClass() : "null"));
                 }
+
+                if (activeJobs.isEmpty()) {
+                    Label noJobsLabel = new Label("No active job postings found at this time.");
+                    noJobsLabel.setStyle("-fx-font-size: 16px; -fx-text-fill: #99aaff; -fx-padding: 50;");
+                    jobsContainer.getChildren().add(noJobsLabel);
+                } else {
+                    for (JobPosting job : activeJobs) {
+                        jobsContainer.getChildren().add(createJobCard(job));
+                    }
+                }
+
+                System.out.println("Loaded " + activeJobs.size() + " active jobs");
+            } else {
+                System.err.println("ERROR: JobService is NULL!");
+                showErrorAlert("System error: Services not initialized");
             }
-
-            System.out.println("Loaded " + activeJobs.size() + " active jobs");
-
         } catch (Exception e) {
             e.printStackTrace();
             showErrorAlert("Failed to load jobs: " + e.getMessage());
         }
     }
 
-    // --------------------------------------------------------
-    // Open job details view
-    // --------------------------------------------------------
+
     private void openJobDetails(JobPosting job, javafx.event.ActionEvent event) {
         try {
-            Stage stage = (Stage) ((Node) event.getSource())
-                    .getScene().getWindow();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
             SceneLoader.loadWithDIAndConfig(stage, "/ui/job_details.fxml", controller -> {
                 if (controller instanceof JobDetailsController jdc) {
-                    jdc.setJob(job);
+                    jdc.setJob(job);     // FIX ✔
                 }
             });
 
@@ -145,20 +162,16 @@ public class BrowseJobsController {
         }
     }
 
-    // --------------------------------------------------------
-    // Error popup helper
-    // --------------------------------------------------------
     private void showErrorAlert(String message) {
-        Alert a = new Alert(Alert.AlertType.ERROR);
-        a.setTitle("Error");
-        a.setHeaderText(null);
-        a.setContentText(message);
-        a.showAndWait();
+        // NOTE: Standard JavaFX alerts are used here,
+        // replace with custom modal dialogs if needed to avoid blocking in specific environments.
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
-    // --------------------------------------------------------
-    // Navigation buttons
-    // --------------------------------------------------------
     @FXML
     public void logout(javafx.event.ActionEvent event) {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
