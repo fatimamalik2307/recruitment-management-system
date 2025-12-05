@@ -78,8 +78,7 @@ public class ShortlistServiceImpl implements ShortlistService {
         List<Shortlist> result = new ArrayList<>();
 
         for (Application app : applications) {
-//            if (meetsCriteria(app, criteria)){
-            if(true){
+           if (meetsCriteria(app, criteria)){
                 Shortlist s = new Shortlist();
                 s.setCriteriaId(criteria.getId());
                 s.setApplicationId(app.getId());
@@ -112,14 +111,25 @@ public class ShortlistServiceImpl implements ShortlistService {
 
     private boolean meetsCriteria(Application app, ShortlistingCriteria criteria) {
 
-        // 1. Qualification
         if (criteria.getRequiredQualification() != null &&
-                !criteria.getRequiredQualification().isEmpty() &&
-                !criteria.getRequiredQualification().equalsIgnoreCase(app.getQualification())) {
-            return false;
+                !criteria.getRequiredQualification().isEmpty()) {
+
+            String requiredQ = criteria.getRequiredQualification().toLowerCase();
+            String applicantQ = app.getQualification().toLowerCase();
+
+            String[] qKeywords = requiredQ.split("[ ,]+");
+
+            boolean qMatch = false;
+            for (String word : qKeywords) {
+                if (applicantQ.contains(word)) {
+                    qMatch = true;
+                    break;
+                }
+            }
+
+            if (!qMatch) return false;
         }
 
-        // 2. Experience check
         if (criteria.getMinExperience() != null) {
             try {
                 int applicantExp = Integer.parseInt(app.getExperience().split(" ")[0]);
@@ -129,16 +139,19 @@ public class ShortlistServiceImpl implements ShortlistService {
             }
         }
 
-        // 3. Required skills → search in cover letter
         if (criteria.getRequiredSkills() != null && !criteria.getRequiredSkills().isEmpty()) {
-            String[] keywords = criteria.getRequiredSkills().split(",\\s*");
-            for (String keyword : keywords) {
-                if (!app.getCoverLetter().toLowerCase().contains(keyword.toLowerCase())) {
+
+            String[] skills = criteria.getRequiredSkills().toLowerCase().split(",\\s*");
+            String coverLetter = app.getCoverLetter().toLowerCase();
+
+            for (String skill : skills) {
+                if (!coverLetter.contains(skill)) {
                     return false;
                 }
             }
         }
 
         return true;
+
     }
 }

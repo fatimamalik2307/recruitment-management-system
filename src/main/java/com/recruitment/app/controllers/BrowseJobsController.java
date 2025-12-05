@@ -105,10 +105,10 @@ public class BrowseJobsController {
                 System.out.println("Loading jobs...");
 
                 List<JobPosting> activeJobs = jobService.getAllJobs().stream()
-//                        .filter(job -> {
-//                            LocalDate d = extractDeadline(job.getDeadline());
-//                            return d == null || !d.isBefore(LocalDate.now());
-//                        })
+                        .filter(job -> {
+                            LocalDate d = extractDeadline(job.getDeadline());
+                            return d == null || !d.isBefore(LocalDate.now());
+                        })
                         .toList();
 
                 jobsContainer.getChildren().clear(); // Clear existing content
